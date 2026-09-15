@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bizscrape"
+version = "0.1.0"
+description = "CLI to discover Indian city businesses and enrich public contact details into CSV"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "BizScrape Contributors" },
+]
+keywords = ["scraping", "cli", "csv", "business", "google-maps", "enrichment"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Typing :: Typed",
+]
+dependencies = [
+    "playwright>=1.47",
+    "httpx>=0.27",
+    "beautifulsoup4>=4.12",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "types-beautifulsoup4",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/bizscrape"
+Documentation = "https://github.com/example/bizscrape#readme"
+Issues = "https://github.com/example/bizscrape/issues"
+Changelog = "https://github.com/example/bizscrape/blob/main/CHANGELOG.md"
+
+[project.scripts]
+bizscrape = "bizscrape.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bizscrape = ["py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "live: tests that hit real external networks (excluded from default CI)",
+]
+addopts = "-q --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501", "B008"]
+
+[tool.mypy]
+python_version = "3.10"
+packages = ["bizscrape"]
+mypy_path = "src"
+ignore_missing_imports = true
+warn_unused_ignores = true
+check_untyped_defs = true
