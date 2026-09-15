@@ -44,10 +44,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/example/bizscrape"
-Documentation = "https://github.com/example/bizscrape#readme"
-Issues = "https://github.com/example/bizscrape/issues"
-Changelog = "https://github.com/example/bizscrape/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/mayurnakum07/BizScrape"
+Documentation = "https://github.com/mayurnakum07/BizScrape#readme"
+Issues = "https://github.com/mayurnakum07/BizScrape/issues"
+Changelog = "https://github.com/mayurnakum07/BizScrape/blob/main/CHANGELOG.md"
 
 [project.scripts]
 bizscrape = "bizscrape.cli:main"

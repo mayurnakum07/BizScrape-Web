@@ -13,12 +13,14 @@ final public API contract; it documents what the working tool did at audit time.
 
 ```text
 User input
-  → Google Maps / optional Justdial discovery
+  → Google Maps discovery
   → Locality filter + dedupe + target cap
   → Missing website lookup (Bing / DDG / Google)
   → Website enrichment (emails, phones, social)
   → CSV export (18 columns, UTF-8 BOM)
 ```
+
+> Note: Justdial discovery was removed after this baseline; runtime discovery is Google Maps only.
 
 ## Commands
 

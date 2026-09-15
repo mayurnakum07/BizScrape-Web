@@ -97,7 +97,7 @@ def print_banner() -> None:
     title = (
         Text.from_markup(
             "[bold cyan]BizScrape[/bold cyan]  [dim]Indian city company scraper[/dim]\n"
-            "[dim]Google Maps + Justdial → websites → CSV[/dim]"
+            "[dim]Google Maps → websites → emails → CSV[/dim]"
         )
         if _RICH
         else None
@@ -107,7 +107,7 @@ def print_banner() -> None:
     else:
         print(
             "\n+======================================================================+\n"
-            "|  BizScrape — Google Maps + Justdial → websites → CSV                 |\n"
+            "|  BizScrape — Google Maps → websites → emails → CSV                 |\n"
             "+======================================================================+\n",
             flush=True,
         )
@@ -360,7 +360,7 @@ class JobConfig:
     niche_label: str = "IT / Software companies"
     areas: list[str] | None = field(default_factory=list)
     target: int = config.DEFAULT_TARGET
-    source: str = "gmaps,justdial"
+    source: str = "gmaps"
     skip_websites: bool = False
     engine: str = "bing"
     out: str = ""
@@ -419,18 +419,7 @@ def run_wizard() -> JobConfig:
     elif not areas:
         areas = []
 
-    rule("Step 4 — Sources")
-    source_pick = ask_choice(
-        "Where should we scrape from?",
-        [
-            ("gmaps,justdial", "Google Maps + Justdial (recommended)"),
-            ("gmaps", "Google Maps only (faster)"),
-            ("justdial", "Justdial only"),
-        ],
-        custom_label=None,
-    )
-
-    rule("Step 5 — How many companies?")
+    rule("Step 4 — How many companies?")
     target = ask_int("Target count", default=config.DEFAULT_TARGET, minimum=5, maximum=20_000)
 
     out = config.output_csv_path(city_key, niche)
@@ -441,7 +430,7 @@ def run_wizard() -> JobConfig:
         niche_label=niche_label,
         areas=areas,
         target=target,
-        source=source_pick,
+        source="gmaps",
         out=out,
         db=out,
         interactive=True,
@@ -461,7 +450,7 @@ def run_wizard() -> JobConfig:
         else:
             area_text = "entire city"
         summary.add_row("Areas", area_text)
-        summary.add_row("Sources", job.source)
+        summary.add_row("Source", "Google Maps")
         summary.add_row("Target", str(job.target))
         summary.add_row("CSV", f"[ok]{job.out}[/ok]")
         _console.print(Panel(summary, border_style="green", title="Job"))

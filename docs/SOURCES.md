@@ -5,9 +5,10 @@ Honest limitations of each discovery / enrichment provider.
 | Source | What it provides | Limitations |
 |--------|------------------|-------------|
 | Google Maps | Name, phone, website, address, rating, Maps URL | UI selectors break; rate limits; locality noise |
-| Justdial | Names / localities (phones often gated) | Headful browser required; blocking common |
 | Bing / DDG / Google search | Missing website candidates | Blocking; imperfect name→domain matching |
 | Company websites | Public emails, phones, social links | Broken TLS, JS-only pages, obfuscation |
+
+Justdial discovery was **removed** from BizScrape (unreliable data + forced visible browser).
 
 ## Crawl policy (enrichment)
 
@@ -26,5 +27,5 @@ Prefer modest targets, delays, and `--dry-run` to inspect planned queries.
 
 ## Maintenance
 
-When a provider changes markup, fix selectors **inside** the corresponding
-`sources/` or `search/` module and add an offline HTML fixture if possible.
+When Google Maps markup changes, fix selectors inside `sources/gmaps.py` and
+add an offline HTML fixture if possible.

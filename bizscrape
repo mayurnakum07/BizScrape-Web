@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Unix helper when the console script is not on PATH.
+exec python -m bizscrape "$@"

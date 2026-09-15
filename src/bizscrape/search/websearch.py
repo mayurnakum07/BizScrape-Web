@@ -1,5 +1,5 @@
 """
-Website discovery for companies that Maps or Justdial listed without a site.
+Website discovery for companies that Maps listed without a site.
 
 A company with no website has no findable email, so this stage is what converts
 dead rows into enrichable ones. DuckDuckGo and Bing are used by default because

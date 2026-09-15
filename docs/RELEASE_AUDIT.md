@@ -18,7 +18,7 @@ Date: 2026-09-15 · Version target: **0.1.0**
 |----------|--------|
 | Interactive CLI wizard | Preserved |
 | Non-interactive `--yes` | Preserved |
-| Google Maps / Justdial / websites / enrich | Preserved (relocated under packages) |
+| Google Maps / websites / enrich | Preserved (Justdial removed) |
 | Locality filtering / dedupe / target / CSV / Ctrl+C | Preserved |
 | 18-column CSV schema | Unchanged |
 

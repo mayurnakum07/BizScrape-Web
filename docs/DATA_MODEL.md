@@ -18,7 +18,7 @@ Order is fixed in `bizscrape.config.CSV_COLUMNS`:
 | `rating` | Maps rating if present |
 | `review_count` | Review count if present |
 | `linkedin` / `facebook` / `instagram` | Social profile URLs |
-| `sources` | Comma-separated provenance (`gmaps`, `justdial`, …) |
+| `sources` | Provenance (`gmaps`, …) |
 | `maps_url` | Google Maps place URL |
 | `first_seen` | UTC ISO-8601 first insert |
 | `last_enriched` | UTC ISO-8601 last enrichment |

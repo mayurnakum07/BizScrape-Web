@@ -1,2 +1,5 @@
-"""Deprecated — use bizscrape.sources.justdial."""
-from bizscrape.sources.justdial import *  # noqa: F403
+"""Justdial support was removed — use Google Maps only."""
+
+raise ImportError(
+    "Justdial discovery was removed from BizScrape. Use Google Maps (gmaps) only."
+)

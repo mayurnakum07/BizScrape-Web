@@ -27,6 +27,13 @@ def test_invalid_source():
     assert "gmaps" in str(exc.value)
 
 
+def test_legacy_justdial_coerced_to_gmaps():
+    parser = build_parser()
+    args = parser.parse_args(["discover", "--source", "justdial", "--target", "10", "--yes"])
+    validate_args(args)
+    assert args.source == "gmaps"
+
+
 def test_valid_sources_alias():
     parser = build_parser()
     args = parser.parse_args(["discover", "--sources", "gmaps", "--target", "10", "--yes"])

@@ -32,7 +32,7 @@ python main.py --help   # thin compatibility wrapper
 
 ## Tests
 
-Default suite is **offline** (no Google Maps / Justdial / live websites):
+Default suite is **offline** (no Google Maps / live websites):
 
 ```bash
 pytest
@@ -56,7 +56,7 @@ mypy src/bizscrape
 |------|----------|
 | CLI / validation | `src/bizscrape/cli.py` |
 | Pipeline stages | `src/bizscrape/pipeline.py` |
-| Google Maps / Justdial | `src/bizscrape/sources/` |
+| Google Maps | `src/bizscrape/sources/gmaps.py` |
 | Website search | `src/bizscrape/search/` |
 | Email crawl | `src/bizscrape/enrichment/` |
 | CSV store / dedupe | `src/bizscrape/store.py` |

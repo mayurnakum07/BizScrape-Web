@@ -1,7 +1,7 @@
 # Architecture
 
-BizScrape is a Python CLI that discovers businesses (primarily via Google Maps,
-optionally Justdial), optionally finds missing websites, crawls those sites for
+BizScrape is a Python CLI that discovers businesses via Google Maps,
+optionally finds missing websites, crawls those sites for
 public emails/phones/social links, and writes an 18-column CSV.
 
 ## High-level flow
@@ -11,7 +11,7 @@ CLI (cli.py)
    ↓
 pipeline stages (pipeline.py)
    ↓
-sources/gmaps.py  sources/justdial.py
+sources/gmaps.py
    ↓
 geo filter + Store upsert/dedupe
    ↓
@@ -36,13 +36,13 @@ store.export_csv     (atomic write)
 | `security.py` | fetch URL / host safety checks |
 | `browser.py` | Playwright launch fallbacks |
 | `shutdown.py` | Ctrl+C hard stop + CSV flush |
-| `sources/*` | provider-specific HTML/API scraping |
+| `sources/gmaps.py` | Google Maps scraping |
 | `search/*` | website lookup engines |
 | `enrichment/*` | company-site crawl |
 
 ## Design rules
 
-1. Do not put Google Maps / Justdial selectors in CLI, store, or enrichment.
+1. Keep Google Maps selectors inside `sources/gmaps.py`.
 2. Prefer small adapters over a heavy plugin framework.
 3. Keep the public CSV schema stable unless versioned deliberately.
 4. Default tests must not hit live external providers.

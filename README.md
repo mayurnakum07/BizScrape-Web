@@ -1,127 +1,206 @@
 # BizScrape
 
-**BizScrape** is a Python CLI that discovers businesses in Indian cities
-(Google Maps, optional Justdial), finds missing websites, crawls those sites
-for **publicly published** emails / phones / social links, and writes one CSV.
+**Discover local businesses from Google Maps, find their websites, extract public contact details, and export a clean CSV — from your terminal.**
 
-It is a terminal tool — not a web app, CRM, or email sender.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/mayurnakum07/BizScrape/actions/workflows/ci.yml/badge.svg)](https://github.com/mayurnakum07/BizScrape/actions/workflows/ci.yml)
+
+BizScrape is a **Python CLI** (not a web app). You pick a niche, city, and target count — it scrapes **Google Maps**, looks up missing websites, crawls those sites for **publicly published** emails / phones / social links, and writes one Excel-friendly CSV.
+
+---
 
 ## Features
 
-- Interactive wizard (`bizscrape run`) and non-interactive flags for automation
-- Google Maps discovery + optional Justdial
-- Locality filtering, deduplication, and hard target caps
-- Website lookup + enrichment with SSRF-oriented URL checks
-- Atomic CSV writes, UTF-8 BOM for Excel, Ctrl+C flush
-- Offline test suite and GitHub Actions CI
+- Interactive wizard (`run`) and fully non-interactive flags for scripts
+- Google Maps discovery with locality filtering and deduplication
+- Website lookup (Bing by default) + site enrichment for public emails
+- Hard target caps, periodic CSV flush, Ctrl+C safe shutdown
+- UTF-8 BOM CSV (opens cleanly in Excel)
+- Offline test suite + GitHub Actions CI
 
-## Supported Python
+---
 
-**3.10+** (tested in CI on 3.10 and 3.13)
+## Requirements
 
-## Install
+| Need | Notes |
+|------|--------|
+| **Python 3.10+** | [Download Python](https://www.python.org/downloads/) — on Windows, enable **Add python.exe to PATH** |
+| **Chrome or Edge** | Recommended (Playwright can also use Chromium) |
+| **Internet** | Required for Maps / search / enrichment |
+
+---
+
+## Quick start
 
 ```bash
-git clone <repository-url>
-cd bizscrape
-python -m venv .venv
+git clone https://github.com/mayurnakum07/BizScrape.git
+cd BizScrape
 
+python -m venv .venv
+```
+
+**Activate the virtual environment**
+
+```bash
 # Windows
 .venv\Scripts\activate
 
 # macOS / Linux
 source .venv/bin/activate
+```
 
+**Install**
+
+```bash
 python -m pip install -U pip
 python -m pip install -e .
 python -m playwright install chromium
 ```
 
-You should also have **Google Chrome** or **Microsoft Edge** installed
-(preferred by the browser launcher).
+**Run (interactive wizard)**
 
-> PyPI install is not claimed until a real package release is published.
+```bash
+python -m bizscrape run
+```
 
-## Quick start
-
-Interactive:
+That is the most reliable command on Windows. After the venv is activated you can also use:
 
 ```bash
 bizscrape run
+# or
+python main.py run
 ```
 
-Non-interactive:
+The wizard asks for business type, city, area, and target count, then runs the full pipeline into `data/`.
+
+---
+
+## Usage examples
+
+**Non-interactive full run**
 
 ```bash
-bizscrape run \
+python -m bizscrape run \
   --city surat \
   --niche it \
   --areas "Mota Varachha" \
   --target 50 \
-  --source gmaps \
   --yes
 ```
 
-Preview Maps queries without scraping:
+**Discover only (Google Maps)**
 
 ```bash
-bizscrape discover --city surat --niche cafe --source gmaps --target 20 --dry-run --yes
+python -m bizscrape discover --city mumbai --niche food --target 20 --yes
 ```
 
-Also supported: `python -m bizscrape …` and `python main.py …`.
+**Preview Maps queries without scraping**
+
+```bash
+python -m bizscrape discover --city surat --niche cafe --target 20 --dry-run --yes
+```
+
+**Enrich existing CSV / show stats**
+
+```bash
+python -m bizscrape enrich --concurrency 8
+python -m bizscrape stats --out data/surat_it_2026-09-15.csv
+```
+
+---
 
 ## Commands
 
-| Command | Purpose |
-|---------|---------|
-| `run` | Full pipeline (wizard unless `--yes` / explicit flags) |
-| `discover` | Maps / Justdial only |
+| Command | Description |
+|---------|-------------|
+| `run` | Full pipeline (wizard unless `--yes` or explicit flags) |
+| `discover` | Google Maps discovery only |
 | `websites` | Fill missing websites |
-| `enrich` | Crawl sites for public emails |
+| `enrich` | Crawl company sites for public emails |
 | `export` | Rewrite CSV (`--require email\|phone\|…`) |
-| `stats` | Print counts |
+| `stats` | Print counts for a CSV |
+| `--help` / `--version` | Help and version |
 
-See `bizscrape --help` and `bizscrape <command> --help`.
+```bash
+python -m bizscrape --help
+python -m bizscrape run --help
+```
+
+---
+
+## How it works
+
+```text
+You (niche + city + target)
+        ↓
+  Google Maps discovery
+        ↓
+  Locality filter + dedupe + target cap
+        ↓
+  Missing website lookup (Bing / DDG / Google)
+        ↓
+  Website enrichment (public emails, phones, social)
+        ↓
+  CSV export → data/<city>_<niche>_YYYY-MM-DD.csv
+```
+
+---
 
 ## Output
 
-Default path:
+Default file:
 
 ```text
 data/<city>_<niche>_YYYY-MM-DD.csv
 ```
 
-Override with `--out` / `--output` (or legacy `--db`).
+Override with `--out path/to/file.csv`.
 
-Sample (synthetic) CSV: [docs/example-output.csv](docs/example-output.csv).
+Columns include company name, website, emails, phones, address, area, rating, social links, Maps URL, and timestamps.
 
-Schema details: [docs/DATA_MODEL.md](docs/DATA_MODEL.md).
+Synthetic sample: [`docs/example-output.csv`](docs/example-output.csv)  
+Schema details: [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md)
 
-## Configuration
+---
 
-Normal settings are CLI flags (city, niche, areas, target, sources, concurrency,
-output path). Static defaults (built-in cities/niches, delays, crawl limits) live
-in `src/bizscrape/config.py`. You should not need to edit Python for routine runs.
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `python` not found | Install Python 3.10+, reopen the terminal, confirm `python --version` |
+| `bizscrape` is not recognized | Use `python -m bizscrape …`, or activate `.venv` then reinstall with `pip install -e .` |
+| `No usable browser found` | Install Chrome/Edge, or run `python -m playwright install chromium` |
+| `ModuleNotFoundError: bizscrape` | From the repo root: `python -m pip install -e .` |
+| Permission denied writing CSV | Close the file in Excel and retry |
+
+More help: [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md)
+
+---
 
 ## Responsible use
 
-- Collect only what you need; output stays local by default.
-- Public listing pages and public website contact details are **not** the same
-  as a license to spam, resell, or ignore provider terms or local law.
-- BizScrape does **not** send email, SMS, WhatsApp, or submit contact forms.
-- BizScrape does **not** bypass CAPTCHAs, logins, or paywalls.
-- Emails are extracted as published text — **not** verified deliverable addresses.
-- Prefer modest `--target` values and built-in delays; do not hammer providers.
-- Operators are responsible for complying with website terms, robots rules,
-  privacy law, and anti-spam rules in their jurisdiction.
+BizScrape collects **public** listing and website contact details for personal/research workflows.
+
+- It does **not** send email, SMS, WhatsApp, or submit contact forms
+- It does **not** bypass CAPTCHAs, logins, or paywalls
+- Extracted emails are **not** verified as deliverable
+- “Public data” does **not** mean free to spam, resell, or ignore provider terms
+- You are responsible for complying with Google’s terms, website policies, privacy law, and anti-spam rules in your jurisdiction
+
+Prefer modest `--target` values. Be a good citizen of the public web.
+
+---
 
 ## Limitations
 
-- Provider HTML changes can break scrapers without warning
-- Justdial often blocks automation; Maps-only mode is more reliable
+- Google Maps UI changes can break selectors without notice
 - Website matching and email extraction are best-effort heuristics
-- Enrichment disables TLS verification for broken SME certificates (see SECURITY.md)
-- Result counts are not guaranteed
+- Result counts are **not** guaranteed
+- Enrichment may skip sites with broken TLS / heavy JavaScript
+- Built for local CSV output — not a CRM, dashboard, or outreach tool
+
+---
 
 ## Development
 
@@ -132,20 +211,25 @@ ruff check src tests
 ruff format src tests
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+---
 
 ## Documentation
 
-- [Architecture](docs/ARCHITECTURE.md)
-- [Data model](docs/DATA_MODEL.md)
-- [Sources](docs/SOURCES.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Security policy](SECURITY.md)
-- [Changelog](CHANGELOG.md)
+| Doc | Contents |
+|-----|----------|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module layout and pipeline |
+| [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) | CSV schema and merge rules |
+| [`docs/SOURCES.md`](docs/SOURCES.md) | Provider notes and crawl policy |
+| [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Common failures |
+| [`SECURITY.md`](SECURITY.md) | Vulnerability reporting |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history |
+
+---
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © BizScrape contributors
 
-The software license does **not** grant permission to ignore third-party
-provider terms or applicable law.
+The software license does **not** grant permission to ignore third-party terms or applicable law.

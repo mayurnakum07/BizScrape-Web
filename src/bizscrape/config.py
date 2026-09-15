@@ -306,55 +306,6 @@ MIN_TARGET = 1
 MAX_REDIRECTS = 5
 HTTP_RETRY_ATTEMPTS = 3
 
-# --- Justdial ----------------------------------------------------------------
-
-JUSTDIAL_CATEGORIES: dict[str, list[str]] = {
-    "it": [
-        "Software-Companies",
-        "Website-Designers",
-        "Website-Developers",
-        "Mobile-App-Developers",
-        "Digital-Marketing-Services",
-        "SEO-Services",
-        "Computer-Hardware-Dealers",
-        "IT-Companies",
-        "Software-Developers",
-        "Graphic-Designers",
-    ],
-    "food": [
-        "Restaurants",
-        "Coffee-Shops",
-        "Bakeries",
-        "Caterers",
-        "Sweet-Shops",
-        "Hotels",
-    ],
-    "business": ["Business-Centres", "Consultants", "Exporters"],
-    "textile": [
-        "Textile-Manufacturers",
-        "Saree-Manufacturers",
-        "Garment-Manufacturers",
-        "Embroidery-Job-Works",
-        "Textile-Dealers",
-    ],
-    "diamond": [
-        "Diamond-Jewellery-Manufacturers",
-        "Diamond-Dealers",
-        "Jewellery-Manufacturers",
-    ],
-    "manufacturing": [
-        "Manufacturers",
-        "Engineering-Job-Works",
-        "Plastic-Product-Manufacturers",
-    ],
-    "services": [
-        "Chartered-Accountants",
-        "Advocates",
-        "Architects",
-        "Interior-Designers",
-    ],
-}
-
 # --- crawling behaviour ------------------------------------------------------
 
 MAX_PAGES_PER_SITE = 6
@@ -486,7 +437,6 @@ EMAIL_FAKE_TLDS = {
 # --- pacing ------------------------------------------------------------------
 
 MAPS_DELAY = 1.8
-JUSTDIAL_DELAY = 3.5
 SEARCH_DELAY = 1.5
 ENRICH_CONCURRENCY = 16
 SITE_TIMEOUT = 18

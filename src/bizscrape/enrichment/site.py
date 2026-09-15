@@ -1,7 +1,7 @@
 """
 Email and phone enrichment by crawling each company's own website.
 
-Neither Google Maps nor Justdial publishes email addresses, so this stage is
+Neither Google Maps nor directory listings reliably publish email addresses, so this stage is
 the only real source for them: fetch the homepage, follow the contact/about
 links, and pull out every address and phone number the company publishes.
 """

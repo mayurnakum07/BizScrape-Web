@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Package identity renamed from `suratscraper` to `bizscrape` (product name remains BizScrape)
 - Phone normalization strips leading zeros before country-code handling
+- **Justdial discovery removed** — Google Maps is the only discovery source (no Justdial browser step)
 
 ### Security
 

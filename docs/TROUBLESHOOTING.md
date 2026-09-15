@@ -3,7 +3,6 @@
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | `No usable browser found` | Playwright Chromium missing / no Chrome/Edge | Install Chrome or Edge, or `python -m playwright install chromium` |
-| Justdial opens then stops | Bot / captcha blocking | Use Maps-only (`--source gmaps`); do not add bypass logic |
 | Zero companies after run | Queries too narrow, filters rejecting, provider empty | Try `--dry-run`, broader niche, city-wide areas, check network |
 | Excel garbled text | Opened with wrong encoding | File is UTF-8 BOM; open via Excel’s UTF-8 CSV import |
 | `Permission denied writing CSV` | File open in Excel | Close the CSV and retry |
@@ -11,6 +10,8 @@
 | Enrichment `blocked:` notes | SSRF guard rejected URL | Expected for localhost/private IPs |
 | Hang on Ctrl+C | Rare signal race | Second Ctrl+C; `shutdown` should kill browser tree |
 | `suratscraper` import warning | Deprecated package name | `import bizscrape` / `pip install -e .` |
+| `bizscrape` / `python` not found after clone | venv not activated or package not installed | `cd BizScrape` → activate `.venv` → `pip install -e .` |
+| `ModuleNotFoundError: bizscrape` | Editable install missing | From repo root: `python -m pip install -e .` |
 
 ## Logging
 

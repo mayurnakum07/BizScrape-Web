@@ -66,11 +66,7 @@ async def stage_discover(
     args: argparse.Namespace,
     dash: ui.Dashboard | None = None,
 ) -> None:
-    sources = [s.strip() for s in str(args.source).split(",") if s.strip()]
-    if "gmaps" in sources:
-        await _discover_gmaps(store, args, dash=dash)
-    if "justdial" in sources:
-        await _discover_justdial(store, args, dash=dash)
+    await _discover_gmaps(store, args, dash=dash)
     store.flush()
 
 
@@ -196,105 +192,6 @@ async def _discover_gmaps(
         raise
 
 
-async def _discover_justdial(
-    store: Store,
-    args: argparse.Namespace,
-    dash: ui.Dashboard | None = None,
-) -> None:
-    from .sources.justdial import JustdialScraper
-
-    if store.count() >= args.target:
-        return
-
-    city = getattr(args, "city", config.DEFAULT_CITY)
-    profile = config.resolve_city(city)
-    niche_key = config.niche_slug(args.niche)
-    slugs = config.JUSTDIAL_CATEGORIES.get(niche_key, [])
-    areas = resolve_areas(args) or []
-
-    if not slugs:
-        phrase = str(args.niche).strip().replace(" ", "-").title()
-        slugs = [phrase] if phrase else []
-
-    if not slugs:
-        ui.warn("No Justdial categories for this niche — skipping Justdial")
-        return
-
-    stats = dash.stats if dash else None
-    if stats:
-        stats.stage = "Justdial"
-        dash.refresh()
-
-    ui.rule("Discover — Justdial")
-    ui.info("A real browser window opens (Justdial blocks headless mode).")
-
-    area_for_jd = areas[0] if len(areas) == 1 else ""
-
-    try:
-        async with JustdialScraper(channel=args.jd_channel, verbose=False) as scraper:
-            for index, slug in enumerate(slugs, start=1):
-                hard_stop.check()
-                if store.count() >= args.target:
-                    break
-
-                jd_slug = slug
-                if area_for_jd:
-                    local = area_for_jd.replace(" ", "-")
-                    jd_slug = f"{local}/{slug}"
-
-                if stats:
-                    stats.query = f"Justdial {jd_slug}"
-                    stats.stage = f"Justdial {index}/{len(slugs)}"
-                    dash.refresh()
-
-                try:
-                    records = await scraper.scrape_category(
-                        jd_slug,
-                        city=profile["label"],
-                        max_results=min(args.jd_max, max(30, args.target * 2)),
-                    )
-                except Exception as exc:
-                    hard_stop.check()
-                    ui.warn(f"{jd_slug}: {type(exc).__name__}: {exc}")
-                    continue
-
-                hard_stop.check()
-                expected = area_for_jd
-                added, kept, rejected = ingest(
-                    store,
-                    records,
-                    target=args.target,
-                    expected_area=expected,
-                    city=city,
-                    stats=stats,
-                )
-                store.flush()
-
-                if dash:
-                    dash.log(
-                        f"Justdial [{index}/{len(slugs)}] kept {kept}  "
-                        f"rejected {rejected}  new {added}  total {store.count()}"
-                    )
-                else:
-                    print(
-                        f"  [{index}/{len(slugs)}] {jd_slug[:40]:<40} "
-                        f"kept {kept:>3}  new {added:>3}  total {store.count():>4}",
-                        flush=True,
-                    )
-
-                if store.count() >= args.target:
-                    ui.ok(f"Target of {args.target} reached")
-                    break
-                if scraper.blocked:
-                    ui.warn("Justdial is blocking — stopping Justdial stage")
-                    break
-                await asyncio.sleep(utils.jitter(config.JUSTDIAL_DELAY))
-                hard_stop.check()
-    except Exception as exc:
-        ui.warn(f"Justdial stage failed: {type(exc).__name__}: {exc}")
-        ui.info("Continuing with Google Maps results.")
-
-
 async def stage_websites(
     store: Store,
     args: argparse.Namespace,
@@ -395,7 +292,7 @@ def stage_export(store: Store, args: argparse.Namespace) -> None:
     if stats["total"] == 0:
         ui.warn(
             "No companies in the CSV. Try a broader niche, different area, "
-            "or check that Maps/Justdial returned results."
+            "or check that Google Maps returned results."
         )
     else:
         ui.ok(f"Saved to {args.out}")

@@ -39,7 +39,7 @@ _EPILOG = """
 examples:
   bizscrape run
   bizscrape run --city surat --niche it --areas "Mota Varachha" --target 50 --yes
-  bizscrape discover --city mumbai --niche food --source gmaps --target 20 --yes
+  bizscrape discover --city mumbai --niche food --target 20 --yes
   bizscrape enrich --concurrency 8
   bizscrape stats --out data/surat_it_2026-09-15.csv
 
@@ -92,16 +92,14 @@ def build_parser() -> argparse.ArgumentParser:
             "--source",
             "--sources",
             dest="source",
-            default="gmaps,justdial",
-            help="gmaps, justdial, or gmaps,justdial (default)",
+            default="gmaps",
+            help="Discovery source (only gmaps is supported)",
         )
         sp.add_argument("--areas", default="", help="Comma-separated localities")
         sp.add_argument("--max-queries", type=int, default=0, help="Cap Maps queries (0 = no cap)")
         sp.add_argument("--max-scrolls", type=int, default=40)
         sp.add_argument("--headful", action="store_true", help="Show browser windows")
         sp.add_argument("--redo", action="store_true")
-        sp.add_argument("--jd-channel", default="msedge")
-        sp.add_argument("--jd-max", type=int, default=150)
         sp.add_argument(
             "--dry-run",
             action="store_true",
@@ -136,9 +134,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     discover = sub.add_parser(
         "discover",
-        help="Find companies via Google Maps / Justdial",
+        help="Find companies via Google Maps",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="example:\n  bizscrape discover --city surat --niche cafe --source gmaps --target 20 --yes",
+        epilog="example:\n  bizscrape discover --city surat --niche cafe --target 20 --yes",
     )
     add_discover_flags(discover)
     discover.add_argument("--yes", action="store_true", help="Non-interactive (no prompts)")
@@ -174,7 +172,7 @@ def build_parser() -> argparse.ArgumentParser:
             "examples:\n"
             "  bizscrape run\n"
             '  bizscrape run --city surat --niche it --areas "Mota Varachha" '
-            "--target 50 --source gmaps --yes"
+            "--target 50 --yes"
         ),
     )
     add_discover_flags(run)
@@ -199,13 +197,16 @@ def validate_args(args: argparse.Namespace) -> None:
 
     if hasattr(args, "source") and args.source is not None:
         parts = [s.strip().lower() for s in str(args.source).split(",") if s.strip()]
-        allowed = {"gmaps", "justdial"}
+        # Legacy values that included justdial are coerced to Google Maps only.
+        parts = ["gmaps" if p == "justdial" else p for p in parts]
+        parts = [p for p in parts if p]
+        allowed = {"gmaps"}
         bad = [p for p in parts if p not in allowed]
         if not parts or bad:
             raise UsageError(
-                f"sources must be gmaps, justdial, or gmaps,justdial (got {args.source!r})."
+                f"sources must be gmaps (got {args.source!r}). Justdial is no longer supported."
             )
-        args.source = ",".join(parts)
+        args.source = "gmaps"
 
     if hasattr(args, "concurrency") and args.concurrency is not None:
         if args.concurrency < 1 or args.concurrency > 64:

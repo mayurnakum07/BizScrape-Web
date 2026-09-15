@@ -20,14 +20,14 @@ def test_upsert_dedupe_by_phone(tmp_csv):
                 "name": "Acme Software",
                 "phones": ["+919876543211"],
                 "website": "https://acme.example",
-                "source": "justdial",
+                "source": "gmaps",
             }
         )
         == "updated"
     )
     assert store.count() == 1
     row = store._rows[0]
-    assert "gmaps" in row["sources"] and "justdial" in row["sources"]
+    assert "gmaps" in row["sources"]
     assert row["website"] == "https://acme.example"
     first_seen = row["first_seen"]
     store.upsert({"name": "Acme Soft", "phones": ["+919876543211"], "source": "gmaps"})
