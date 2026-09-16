@@ -32,6 +32,9 @@ dependencies = [
     "httpx>=0.27",
     "beautifulsoup4>=4.12",
     "rich>=13.7",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.7",
 ]
 
 [project.optional-dependencies]
@@ -42,6 +45,10 @@ dev = [
     "mypy>=1.11",
     "types-beautifulsoup4",
 ]
+api = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+]
 
 [project.urls]
 Homepage = "https://github.com/mayurnakum07/BizScrape"
@@ -51,6 +58,7 @@ Changelog = "https://github.com/mayurnakum07/BizScrape/blob/main/CHANGELOG.md"
 
 [project.scripts]
 bizscrape = "bizscrape.cli:main"
+bizscrape-api = "bizscrape.api.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -60,12 +68,12 @@ bizscrape = ["py.typed"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = ["tests"]
+testpaths = ["tests/python"]
 asyncio_mode = "auto"
 markers = [
     "live: tests that hit real external networks (excluded from default CI)",
 ]
-addopts = "-q --strict-markers"
+addopts = "-q --strict-markers -m 'not live'"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]

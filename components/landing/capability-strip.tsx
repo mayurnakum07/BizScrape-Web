@@ -1,0 +1,39 @@
+import { Container } from "@/components/ui/container";
+import { Reveal } from "@/components/landing/reveal";
+
+const capabilities = [
+  "Python powered",
+  "Google Maps discovery",
+  "Website enrichment",
+  "Deduplication",
+  "CSV export",
+  "Open source",
+] as const;
+
+export function CapabilityStrip() {
+  return (
+    <section aria-label="Capabilities" className="border-b border-border-subtle">
+      <Container size="wide" className="py-6 sm:py-7">
+        <Reveal>
+          <ul className="flex flex-wrap items-center gap-x-2 gap-y-2 sm:gap-x-3">
+            {capabilities.map((item, index) => (
+              <li key={item} className="flex items-center gap-2 sm:gap-3">
+                {index > 0 ? (
+                  <span
+                    className="hidden text-border sm:inline"
+                    aria-hidden="true"
+                  >
+                    /
+                  </span>
+                ) : null}
+                <span className="rounded-md border border-border-subtle bg-background-elevated px-2.5 py-1 font-mono text-xs text-muted sm:text-[0.8rem]">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </Container>
+    </section>
+  );
+}

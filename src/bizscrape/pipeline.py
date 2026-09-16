@@ -298,7 +298,16 @@ def stage_export(store: Store, args: argparse.Namespace) -> None:
         ui.ok(f"Saved to {args.out}")
 
 
-async def cmd_run(store: Store, args: argparse.Namespace) -> None:
+async def cmd_run(
+    store: Store,
+    args: argparse.Namespace,
+    dash: Any | None = None,
+) -> None:
+    """Run discover → websites → enrich → export.
+
+    Pass ``dash`` to reuse an external progress sink (API event adapter).
+    When ``dash`` is omitted, a Rich live dashboard is created (CLI default).
+    """
     areas = resolve_areas(args)
     area_label = (
         ", ".join(areas)
@@ -312,9 +321,26 @@ async def cmd_run(store: Store, args: argparse.Namespace) -> None:
         target=args.target,
         stored=store.count(),
     )
-    with ui.Dashboard(stats) as dash:
-        await stage_discover(store, args, dash=dash)
+
+    async def _stages(active: Any) -> None:
+        await stage_discover(store, args, dash=active)
         if not args.skip_websites:
-            await stage_websites(store, args, dash=dash)
-        await stage_enrich(store, args, dash=dash)
+            await stage_websites(store, args, dash=active)
+        await stage_enrich(store, args, dash=active)
+
+    if dash is not None:
+        # Preserve caller-owned sink; sync stats object for stage updates.
+        for field_name in (
+            "city",
+            "niche",
+            "area",
+            "target",
+            "stored",
+            "stage",
+        ):
+            setattr(dash.stats, field_name, getattr(stats, field_name))
+        await _stages(dash)
+    else:
+        with ui.Dashboard(stats) as live:
+            await _stages(live)
     stage_export(store, args)

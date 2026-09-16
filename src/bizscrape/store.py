@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from . import config, utils
+from .csv_safety import neutralize_csv_row
 from .errors import StorageError
 
 
@@ -381,7 +382,7 @@ def _atomic_write_csv(path: str, rows: list[dict[str, Any]]) -> None:
             writer = csv.DictWriter(handle, fieldnames=config.CSV_COLUMNS)
             writer.writeheader()
             for row in rows:
-                writer.writerow(row)
+                writer.writerow(neutralize_csv_row(row))
             handle.flush()
             try:
                 os.fsync(handle.fileno())

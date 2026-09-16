@@ -1,85 +1,116 @@
-# Contributing to BizScrape
+# Contributing
 
-Thanks for helping improve BizScrape. Please keep changes small, tested, and free of real scraped contact data.
+Thanks for helping with **BizScrape Web**.
 
-## Setup
+This repository contains:
+
+1. The **Next.js** web UI
+2. The **FastAPI** job API
+3. The **Python BizScrape engine** (shared with the CLI)
+
+Scraping behavior belongs in `src/bizscrape/`. The UI should stay a thin client over that engine — do not reimplement Maps/enrichment in TypeScript.
+
+## Local setup
+
+Requirements: **Node.js 20.9+**, **Python 3.10+**.
 
 ```bash
-git clone <your-fork-url>
-cd bizscrape
+git clone https://github.com/mayurnakum07/BizScrape.git
+cd BizScrape
+
 python -m venv .venv
+# Windows: .\.venv\Scripts\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+playwright install chromium
 
-# Windows
-.venv\Scripts\activate
-
-# macOS / Linux
-source .venv/bin/activate
-
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-python -m playwright install chromium
+copy .env.example .env.local   # or: cp .env.example .env.local
+npm install
 ```
 
-Supported Python: **3.10+**
-
-## Run locally
+### Develop
 
 ```bash
-bizscrape --help
-python -m bizscrape run --dry-run --city surat --niche it --source gmaps --target 5 --yes
-python main.py --help   # thin compatibility wrapper
+# Terminal A — API (optional if you only need the mock UI)
+python -m bizscrape.api
+
+# Terminal B — frontend
+npm run dev
 ```
+
+- UI: http://localhost:3000  
+- API: http://127.0.0.1:8000  
+
+Leave `NEXT_PUBLIC_API_URL` empty for mock jobs (no Maps).
+
+## Branching
+
+- Branch from `main`
+- Prefer short, focused branches (`fix/…`, `docs/…`, `feat/…`)
+- Keep PRs small enough to review in one sitting
+
+## Code style
+
+- TypeScript: follow existing patterns; run `npm run lint` and `npm run typecheck`
+- Python: `ruff` config in `pyproject.toml`; prefer typed public APIs
+- UI conventions: [docs/CONVENTIONS.md](docs/CONVENTIONS.md) and [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)
+- Do not add UI libraries without a clear need
+- Do not commit `.env*`, `node_modules`, `.next`, scraped CSV, or Playwright artifacts
 
 ## Tests
 
-Default suite is **offline** (no Google Maps / live websites):
+Default suites must not hit live Maps:
 
 ```bash
-pytest
-# or
-pytest -m "not live"
+npm run lint
+npm run typecheck
+npm test
+npm run build
+python -m pytest tests/python -q
+# Optional local E2E (spins production build on port 3001)
+npm run test:e2e
 ```
 
-Live tests (if added later) must be marked `@pytest.mark.live` and are excluded from CI.
-
-## Lint / format / types
+Live scraper tests are **manual**:
 
 ```bash
-ruff check src tests
-ruff format src tests
-mypy src/bizscrape
+# BIZSCRAPE_LIVE_TESTS=1 python -m pytest tests/python/live -m live -q
 ```
 
-## Architecture (where to change what)
-
-| Area | Location |
-|------|----------|
-| CLI / validation | `src/bizscrape/cli.py` |
-| Pipeline stages | `src/bizscrape/pipeline.py` |
-| Google Maps | `src/bizscrape/sources/gmaps.py` |
-| Website search | `src/bizscrape/search/` |
-| Email crawl | `src/bizscrape/enrichment/` |
-| CSV store / dedupe | `src/bizscrape/store.py` |
-| SSRF helpers | `src/bizscrape/security.py` |
-| Cities / niches / defaults | `src/bizscrape/config.py` |
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Adding a source adapter
-
-1. Implement a small scraper module under `sources/`.
-2. Keep HTML selectors inside that module.
-3. Emit dicts compatible with `Store.upsert` (`name`, `phones`, `website`, `address`, `source`, …).
-4. Wire the source in `pipeline.py` behind the existing `--source` flag.
-5. Add offline fixtures/tests; do not depend on live sites in CI.
+See [docs/TESTING.md](docs/TESTING.md).
 
 ## Pull requests
 
-- Prefer focused PRs over large rewrites.
-- Do not add CAPTCHA bypass, login/paywall bypass, email-sending, or telemetry.
-- Do not commit CSVs with real personal data.
-- Update docs when CLI or CSV behavior changes.
+Use the PR template. Include:
+
+- What changed and why
+- How you tested it
+- Screenshots for UI changes
+- Note if docs need follow-up
+
+## Suggested labels
+
+Keep labels few and purposeful:
+
+| Label | Use |
+|-------|-----|
+| `bug` | Defect |
+| `enhancement` | Feature / improvement |
+| `documentation` | Docs only |
+| `scraper` | Source/layout/enrichment breakage |
+| `security` | Only for tracking after private report (never dump exploit details) |
+
+## Screenshots for docs
+
+Real UI captures live under `docs/images/`. To refresh (dev server on `:3000`, mock provider OK):
+
+```bash
+node scripts/capture-docs-screenshots.mjs
+# plus landing/configure waits in the same script family as needed
+```
+
+Do not invent mockups that do not match the running app.
 
 ## Code of conduct
 
-Please follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)

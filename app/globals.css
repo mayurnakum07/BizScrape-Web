@@ -1,0 +1,533 @@
+@import "tailwindcss";
+
+/*
+  BizScrape design system — dark-first.
+  Single source of truth for color, type, space, radius, elevation, motion.
+  Light theme can be added later via [data-theme="light"] without rewriting components.
+*/
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --background: #0b0d10;
+  --background-elevated: #10141a;
+  --surface: #141a22;
+  --surface-hover: #1a222d;
+  --foreground: #e8eaed;
+  --muted: #8b939e;
+  --border: #2a323d;
+  --border-subtle: #1c222b;
+
+  /* Accent — restrained blue */
+  --primary: #4d8ef7;
+  --primary-foreground: #061018;
+  --primary-hover: #6aa0f8;
+  --primary-muted: color-mix(in srgb, var(--primary) 16%, transparent);
+
+  /* Status */
+  --success: #3fa66a;
+  --success-foreground: #06140c;
+  --success-muted: color-mix(in srgb, var(--success) 16%, transparent);
+  --warning: #d4a017;
+  --warning-foreground: #1a1200;
+  --warning-muted: color-mix(in srgb, var(--warning) 16%, transparent);
+  --error: #e05252;
+  --error-foreground: #1a0606;
+  --error-muted: color-mix(in srgb, var(--error) 16%, transparent);
+  --info: #5b9fd4;
+  --info-foreground: #061018;
+  --info-muted: color-mix(in srgb, var(--info) 16%, transparent);
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Radius — restrained */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* Elevation — sparse */
+  --shadow-sm: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  /* Typography */
+  --font-sans: var(--font-ibm-plex-sans), "Segoe UI", sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+
+  /* Layout */
+  --container-narrow: 40rem;
+  --container-default: 64rem;
+  --container-wide: 80rem;
+  --container-pad: clamp(1rem, 3vw, 2rem);
+  --header-height: 3.5rem;
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Control sizes */
+  --control-h-sm: 2rem;
+  --control-h-md: 2.5rem;
+  --control-h-lg: 2.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-muted: var(--success-muted);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-muted: var(--warning-muted);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-muted: var(--error-muted);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-muted: var(--info-muted);
+
+  --font-sans: var(--font-ibm-plex-sans), "Segoe UI", sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --space-6: 1.25rem;
+    --space-8: 1.75rem;
+  }
+
+  .field-group {
+    gap: var(--space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--primary-muted);
+  color: var(--foreground);
+}
+
+/* ——— Typography ——— */
+
+.text-display {
+  font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: var(--leading-tight);
+}
+
+.text-page-heading {
+  font-size: clamp(var(--text-xl), 2.5vw, var(--text-3xl));
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+}
+
+.text-section-heading {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: var(--leading-snug);
+}
+
+.text-body {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--foreground);
+}
+
+.text-small {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+}
+
+.text-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  color: var(--foreground);
+}
+
+.text-code {
+  font-family: var(--font-mono);
+  font-size: 0.925em;
+  font-variant-ligatures: none;
+}
+
+/* ——— Form conventions ——— */
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field-hint {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: var(--leading-normal);
+}
+
+.field-error {
+  font-size: var(--text-sm);
+  color: var(--error);
+  line-height: var(--leading-normal);
+}
+
+.field-optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* ——— Terminal surface ——— */
+
+.terminal {
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #080a0d;
+  color: #c8cdd3;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-2) var(--space-3);
+  color: var(--muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.terminal-body {
+  margin: 0;
+  padding: var(--space-4);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-prompt {
+  color: var(--primary);
+}
+
+.terminal-stage {
+  color: var(--info);
+  letter-spacing: 0.06em;
+}
+
+.terminal-ok {
+  color: var(--success);
+}
+
+.terminal-warn {
+  color: var(--warning);
+}
+
+.terminal-err {
+  color: var(--error);
+}
+
+/* ——— Data table ——— */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.table th {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--background-elevated);
+  color: var(--muted);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr {
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.table tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.table tbody tr[data-selected="true"] {
+  background: var(--primary-muted);
+}
+
+.table-cell-truncate {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-cell-mono {
+  font-family: var(--font-mono);
+  font-size: 0.925em;
+}
+
+/* ——— Motion utilities ——— */
+
+.transition-ui {
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dialog-sheet {
+  margin: auto;
+  width: min(100% - 2rem, 28rem);
+  max-height: min(90dvh, 100%);
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 639px) {
+  .dialog-sheet {
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    width: 100%;
+    max-height: min(92dvh, 100%);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    animation: sheet-in var(--duration-normal) var(--ease-out);
+  }
+
+  .dialog-sheet::backdrop,
+  dialog.dialog-sheet + ::backdrop {
+    background: rgba(0, 0, 0, 0.65);
+  }
+}
+
+/* ——— Landing motion ——— */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-copy {
+  animation: hero-fade-up 480ms var(--ease-out) both;
+}
+
+.hero-panel {
+  opacity: 0;
+  animation: hero-fade-up 480ms var(--ease-out) both;
+}
+
+.hero-panel-1 {
+  animation-delay: 80ms;
+}
+
+.hero-panel-2 {
+  animation-delay: 160ms;
+}
+
+.hero-panel-3 {
+  animation-delay: 240ms;
+}
+
+.hero-panel-4 {
+  animation-delay: 320ms;
+}
+
+.hero-terminal {
+  animation: hero-fade-up 520ms var(--ease-out) 380ms both;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-visible,
+  .hero-copy,
+  .hero-panel,
+  .hero-terminal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+}

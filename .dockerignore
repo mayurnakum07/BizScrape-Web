@@ -1,0 +1,49 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+.turbo/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+coverage/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Generated / scraped data
+data/
+*.csv
+!docs/example-output.csv
+
+# IDE / OS / logs
+.git/
+.github/
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# Frontend-only paths (not needed in Python API image)
+app/
+components/
+public/
+tests/unit/
+vitest.config.mts
+eslint.config.mjs
+postcss.config.mjs
+tsconfig.json
+package.json
+package-lock.json
+
+# Test artifacts
+playwright-report/
+test-results/
+.pytest_cache/

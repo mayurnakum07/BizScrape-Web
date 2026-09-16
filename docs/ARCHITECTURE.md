@@ -1,56 +1,63 @@
 # Architecture
 
-BizScrape is a Python CLI that discovers businesses via Google Maps,
-optionally finds missing websites, crawls those sites for
-public emails/phones/social links, and writes an 18-column CSV.
+BizScrape Web is a Next.js (App Router) front end for the BizScrape Python scraping engine.
 
-## High-level flow
+The **Python engine** (CLI + FastAPI) is the source of truth for scraping, enrichment, and CSV export. The UI does not reimplement that engine in JavaScript.
+
+This repository currently ships **UI + API + engine** together. The CLI (`bizscrape`) and the web job API call the same `engine` boundary.
+
+## Deployment shape
 
 ```text
-CLI (cli.py)
-   ↓
-pipeline stages (pipeline.py)
-   ↓
-sources/gmaps.py
-   ↓
-geo filter + Store upsert/dedupe
-   ↓
-search/websearch.py  (missing websites)
-   ↓
-enrichment/site.py   (emails / social)
-   ↓
-store.export_csv     (atomic write)
+Browser
+  ↓ HTTPS
+Next.js (Vercel or similar)
+  ↓ REST + SSE (NEXT_PUBLIC_API_URL)
+Python FastAPI (VPS / Docker — long-running process)
+  ↓ in-process JobManager
+BizScrape engine
+  ↓ Playwright + httpx
+External sources → CSV on disk (JOB_DATA_DIR)
 ```
 
-## Module ownership
+See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting, [ENVIRONMENT.md](ENVIRONMENT.md) for variables, [DATA_SCHEMA.md](DATA_SCHEMA.md) for CSV fields, and [RESPONSIBLE_USE.md](RESPONSIBLE_USE.md) for usage expectations.
 
-| Module | Owns |
-|--------|------|
-| `cli.py` | argparse, validation, exit codes, wizard trigger |
-| `pipeline.py` | stage orchestration, target ingestion |
-| `config.py` | static defaults (cities, niches, delays, CSV columns) |
-| `models.py` | typed `BusinessRecord` |
-| `store.py` | in-memory rows, dedupe keys, merge, CSV I/O |
-| `geo.py` | locality matching / rejection |
-| `utils.py` | phones, emails, URL helpers |
-| `security.py` | fetch URL / host safety checks |
-| `browser.py` | Playwright launch fallbacks |
-| `shutdown.py` | Ctrl+C hard stop + CSV flush |
-| `sources/gmaps.py` | Google Maps scraping |
-| `search/*` | website lookup engines |
-| `enrichment/*` | company-site crawl |
+## Module ownership (web)
+
+| Area | Owns |
+|------|------|
+| `app/` | Routes, layouts, metadata, error/not-found/loading |
+| `components/ui/` | Design-system primitives (Button, Field, Table, Terminal, …) |
+| `components/layout/` | App shell, header, footer |
+| `components/icons/` | Shared stroke icons |
+| `lib/` | Env, errors, small utilities |
+| `services/` | HTTP / job API clients — transport only |
+| `services/scrape-job/` | Job facade + remote/mock providers |
+| `types/` | Shared TypeScript contracts |
+| `hooks/` | Client-side React hooks |
+
+## Module ownership (Python)
+
+| Area | Owns |
+|------|------|
+| `src/bizscrape/api/` | FastAPI routes, job manager, SSE, validation |
+| `src/bizscrape/engine.py` | Programmatic scrape boundary for CLI + API |
+| `src/bizscrape/sources/` | Maps discovery (Playwright) |
+| `src/bizscrape/enrichment/` | Website contact enrichment (httpx) |
+| `src/bizscrape/store.py` | CSV persistence |
+
+Visual rules: [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md). Job architecture: [`SCRAPE_JOB.md`](SCRAPE_JOB.md). Results: [`SCRAPE_RESULTS.md`](SCRAPE_RESULTS.md). CSV export: [`CSV_EXPORT.md`](CSV_EXPORT.md). Security: [`../SECURITY.md`](../SECURITY.md).
 
 ## Design rules
 
-1. Keep Google Maps selectors inside `sources/gmaps.py`.
-2. Prefer small adapters over a heavy plugin framework.
-3. Keep the public CSV schema stable unless versioned deliberately.
-4. Default tests must not hit live external providers.
-5. Partial failures (one bad site / one query) must not wipe successful rows.
+1. Keep scrape behavior in the Python engine.
+2. Prefer thin services over heavy abstraction layers.
+3. Server Components by default; add `"use client"` only when needed.
+4. Do not commit scraped datasets or secrets.
+5. No database until job persistence genuinely requires it.
 
-## Browser lifecycle
+## Current limitations
 
-Playwright browsers are launched through `browser.launch_browser` (Chrome →
-Edge → Chromium). Discovery stages use async context managers so browsers close
-on success or failure. Ctrl+C uses `shutdown` to flush CSV and kill the browser
-process tree (especially important on Windows).
+- Job state is **in-memory** (lost on API restart).
+- **Single API instance** assumed for SSE and job ownership.
+- CSV files persist on disk under `JOB_DATA_DIR` but job metadata does not survive restarts.

@@ -1,0 +1,20 @@
+name: Documentation
+description: Fix or improve docs
+title: "docs: "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: gap
+    attributes:
+      label: What is wrong or missing?
+    validations:
+      required: true
+  - type: input
+    id: path
+    attributes:
+      label: Doc path (if known)
+      placeholder: README.md, docs/DEPLOYMENT.md, …
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix

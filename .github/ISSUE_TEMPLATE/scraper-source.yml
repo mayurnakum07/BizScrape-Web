@@ -1,0 +1,42 @@
+name: Scraper / source issue
+description: Maps layout change, blocking, empty enrichment, etc.
+title: "scraper: "
+labels: ["scraper"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        External sites change often. Please say whether this is a regression in our code or an environmental block.
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Pipeline stage
+      options:
+        - Discovery (Maps / listings)
+        - Website lookup
+        - Enrichment (company sites)
+        - Deduplication
+        - Export / CSV
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: symptoms
+    attributes:
+      label: Symptoms
+      description: Empty results, timeouts, blocked pages, selector failures, …
+    validations:
+      required: true
+  - type: input
+    id: query
+    attributes:
+      label: Example query (non-sensitive)
+      description: "e.g. niche=cafe city=Surat — no personal data"
+  - type: checkboxes
+    id: live
+    attributes:
+      label: Checks already done
+      options:
+        - label: Reproduced with live API (not only mock UI)
+        - label: Checked docs/RESPONSIBLE_USE.md and known Limitations in README
+        - label: Confirmed site is reachable in a normal browser

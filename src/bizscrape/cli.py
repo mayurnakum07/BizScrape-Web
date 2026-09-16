@@ -197,14 +197,11 @@ def validate_args(args: argparse.Namespace) -> None:
 
     if hasattr(args, "source") and args.source is not None:
         parts = [s.strip().lower() for s in str(args.source).split(",") if s.strip()]
-        # Legacy values that included justdial are coerced to Google Maps only.
-        parts = ["gmaps" if p == "justdial" else p for p in parts]
-        parts = [p for p in parts if p]
         allowed = {"gmaps"}
         bad = [p for p in parts if p not in allowed]
         if not parts or bad:
             raise UsageError(
-                f"sources must be gmaps (got {args.source!r}). Justdial is no longer supported."
+                f"sources must be gmaps (Google Maps only; got {args.source!r})."
             )
         args.source = "gmaps"
 

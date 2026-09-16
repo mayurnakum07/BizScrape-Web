@@ -20,14 +20,25 @@ _store: Any = None
 _hit = 0
 _stopping = False
 _installed = False
+_job_cancel_flag: threading.Event | None = None
 
 # Keep a reference so ctypes does not garbage-collect the callback.
 _win_handler_ref: Any = None
 
 
+class JobCancelled(BaseException):
+    """Cooperative cancel — BaseException so ``except Exception`` cannot swallow it."""
+
+
 def register_store(store: Any) -> None:
     global _store
     _store = store
+
+
+def set_job_cancel_flag(flag: threading.Event | None) -> None:
+    """API jobs: cooperative cancel without killing the server process."""
+    global _job_cancel_flag
+    _job_cancel_flag = flag
 
 
 def is_stopping() -> bool:
@@ -36,6 +47,8 @@ def is_stopping() -> bool:
 
 def check() -> None:
     """Call between scrape steps — exits if Ctrl+C was requested."""
+    if _job_cancel_flag is not None and _job_cancel_flag.is_set():
+        raise JobCancelled("Job cancelled")
     if _stopping:
         force_exit(130)
 

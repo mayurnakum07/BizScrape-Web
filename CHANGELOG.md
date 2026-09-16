@@ -1,37 +1,53 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented here.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+This repository currently ships three surfaces under one version line (`0.1.x`):
 
-## [Unreleased]
+| Surface | What ships |
+|---------|------------|
+| **Web UI** | Next.js App Router application |
+| **API** | FastAPI job service (`python -m bizscrape.api`) |
+| **CLI / engine** | `bizscrape` package and `main.py` |
 
-### Added
+## Versioning
 
-- Nothing yet.
+- **Git tags** — Prefer annotated tags like `v0.1.0` on `main` when cutting a release.
+- **GitHub Releases** — Attach release notes that say which surfaces changed (UI / API / CLI).
+- **npm `package.json` / `pyproject.toml`** — Keep versions aligned unless you deliberately split packages later.
+- Do not invent historical releases that were never tagged.
 
-## [0.1.0] - 2026-09-15
+## Unreleased
 
-### Added
+Nothing yet.
 
-- Packaged CLI as `bizscrape` (`pip install -e .`, `python -m bizscrape`, `bizscrape`)
-- Typed `BusinessRecord` model and explicit pipeline module
-- Source isolation under `sources/`, `search/`, and `enrichment/`
-- SSRF-oriented URL checks for website enrichment
-- Atomic CSV writes (temp + replace)
-- Offline pytest suite, Ruff config, GitHub Actions CI
-- Open-source docs: LICENSE (MIT), CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, architecture docs
-- `--dry-run` query preview, `--version`, target/source validation, exit code 2 for usage errors
-- Compatibility shims for legacy `suratscraper` imports and root `main.py`
+## 0.1.0 — 2026-09-16 (initial public alpha)
 
-### Changed
+See [docs/RELEASE_NOTES_v0.1.0.md](docs/RELEASE_NOTES_v0.1.0.md).
 
-- Package identity renamed from `suratscraper` to `bizscrape` (product name remains BizScrape)
-- Phone normalization strips leading zeros before country-code handling
-- **Justdial discovery removed** — Google Maps is the only discovery source (no Justdial browser step)
+### Web UI
 
-### Security
+- Landing, scrape configuration, live job page (SSE), results review, CSV export
+- Mock provider for UI-only dev; remote provider when `NEXT_PUBLIC_API_URL` is set
+- Responsive layouts and accessibility checks (jest-axe)
 
-- Block enrichment fetches to localhost / private / link-local addresses
-- Sanitize output filename components to reduce path traversal risk
+### API
+
+- FastAPI job routes, SSE event stream, cancel/retry, validation, rate limits, security headers
+- In-memory job manager; CSV on disk under `JOB_DATA_DIR`
+
+### Engine / CLI
+
+- Python BizScrape pipeline (discover → website lookup → enrich → dedupe → export)
+- CLI entry points: `python -m bizscrape`, `bizscrape`, `main.py`
+
+### Testing & docs
+
+- Layered tests: 44 frontend unit, 109 Python, 24 Playwright E2E (mock)
+- Open-source docs: README, CONTRIBUTING, SECURITY, deployment, testing, screenshots
+
+### Known limitations
+
+- Single API instance; job state lost on restart
+- External scraping depends on third-party site availability
+- No user accounts
