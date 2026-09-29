@@ -19,7 +19,26 @@ This repository currently ships three surfaces under one version line (`0.1.x`):
 
 ## Unreleased
 
-Nothing yet.
+### Web UI
+
+- Global design system: electric-lime signal on deep blue-black canvas, sharp radii, tokenized color/type/space/elevation/motion/focus/z-index
+- New UI primitives: tabs, dropdown, tooltip, drawer, toast, loading/error panel states
+- Removed glass/blur header treatment; aligned favicon and global chrome with the new palette
+- Application shell: compact workspace header with active route state, quieter secondary nav, dense footer utility strip, skip-to-content
+- Homepage: product-first landing with workspace hero (scrape → process → dataset), tighter sections, reduced card clutter
+- Scrape config: query-builder workspace with grouped fields, live query summary, sticky Start scrape action
+- Live job screen: extraction workspace with pipeline states, live metrics, capped activity feed, clearer complete/fail/cancel
+- Scrape modal: compact configure → processing flow with smart defaults, inline validation, and terminal states in-panel
+- Results workspace: dense sticky-header table, search/filter/sort, column visibility, density, row selection export, improved pagination
+- Business detail drawer: right-rail desktop / full-screen mobile, sectioned fields, prev/next navigation, verified/missing states
+- History workspace: compact run list with search/status filters, metrics, open/export/retry/delete, status-colored rails
+- Saved datasets: persistent data workspace reusing live results controls, IndexedDB persistence banner, detail drawer
+- Motion pass: fast/subtle transitions for nav, overlays, tables, controls, and state feedback; live loops only for running jobs; prefers-reduced-motion
+- Workflow state system: shared catalog + panels for loading, empty, filtered, validation, scrape/export/IDB/network failures with recovery actions
+- Performance: IndexedDB connection reuse + summary list reads, on-demand history export, deferred/transition filter work, lazy country package, non-blocking CSV serialize for large sets
+- Cross-platform quality pass: a11y focus/keyboard for menus/tabs/dialogs, mobile selection + skeletons, touch targets, safe-area insets, sticky table column, M0 visual cleanup
+- UX polish: full-viewport route loader, wider scrollable Start scrape modal, history name links + custom confirm dialogs, ink-black primary button text and dark selection on lime
+- Flow fixes: scrape submit opens job page (not in-modal processing); closed dialogs no longer paint; CSV above filters; smaller detail drawer; body scroll lock; react-toastify for export/delete
 
 ## 0.1.0 — 2026-09-16 (initial public alpha)
 

@@ -12,8 +12,8 @@ export function TargetField({ value, error, onChange }: TargetFieldProps) {
   return (
     <Field
       id="target"
-      label="Target businesses"
-      hint={`Approximate number of new businesses to collect (${TARGET_MIN}–${TARGET_MAX}).`}
+      label="Target count"
+      hint={`${TARGET_MIN}–${TARGET_MAX} businesses to collect.`}
       error={error}
     >
       <Input

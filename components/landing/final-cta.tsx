@@ -9,24 +9,31 @@ import { cn } from "@/lib/cn";
 
 export function FinalCta() {
   return (
-    <section aria-labelledby="final-cta-heading">
-      <Container size="wide" className="py-16 sm:py-20">
+    <section
+      aria-labelledby="final-cta-heading"
+      className="border-b border-border-subtle bg-surface"
+    >
+      <Container size="wide" className="py-10 sm:py-12">
         <Reveal>
-          <div className="rounded-lg border border-border bg-surface px-6 py-10 text-center shadow-(--shadow-sm) sm:px-10 sm:py-14">
-            <h2 id="final-cta-heading" className="text-page-heading mx-auto max-w-2xl">
-              Give BizScrape a business category and a location.
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-small">
-              Start with a simple query and turn local business discovery into
-              structured data. Configure a job in the scrape workspace and
-              follow live progress through to CSV export.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+            <div className="max-w-xl">
+              <p className="font-mono text-xs tracking-wide text-primary uppercase">
+                Next step
+              </p>
+              <h2 id="final-cta-heading" className="text-page-heading mt-2">
+                Give BizScrape a business category and a location.
+              </h2>
+              <p className="mt-3 text-small">
+                Configure a job in the scrape workspace and follow live progress
+                through to CSV export.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap items-center gap-2.5">
               <Link
                 href={SCRAPE_PATH}
                 className={buttonClassName({ size: "lg" })}
               >
-                Start scraping
+                Start scrape
               </Link>
               <a
                 href={GITHUB_URL}
@@ -39,7 +46,7 @@ export function FinalCta() {
                 )}
               >
                 <IconGithub size={16} />
-                View GitHub
+                GitHub
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </div>

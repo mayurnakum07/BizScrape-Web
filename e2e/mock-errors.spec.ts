@@ -8,8 +8,8 @@ test.describe("error and edge UI states", () => {
     await submitScrapeForm(page);
 
     await expect(page.getByText("Enter a business type.")).toBeVisible();
-    await expect(page.getByText("Enter a city.")).toBeVisible();
-    await expect(page.getByRole("textbox", { name: "Business type" })).toHaveAttribute(
+    await expect(page.getByText("Select a city.")).toBeVisible();
+    await expect(page.getByRole("textbox", { name: "Business category" })).toHaveAttribute(
       "aria-invalid",
       "true",
     );

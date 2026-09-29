@@ -15,6 +15,10 @@ const sizeClasses: Record<ContainerSize, string> = {
   wide: "max-w-[var(--container-wide)]",
 };
 
+/**
+ * Horizontal page frame used by shell chrome and product pages.
+ * Prefer `wide` for workspace surfaces; `narrow` for sparse messaging.
+ */
 export function Container({
   as: Comp = "div",
   size = "default",

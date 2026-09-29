@@ -1,6 +1,25 @@
 import { Reveal } from "@/components/landing/reveal";
 import { Container } from "@/components/ui/container";
 
+const points = [
+  {
+    title: "Discovery",
+    body: "Listing data from configured business sources (for example Google Maps): name, address, phone, rating, and map links when available.",
+  },
+  {
+    title: "Website enrichment",
+    body: "Visits publicly reachable company sites to collect emails, phones, and social links published on those pages.",
+  },
+  {
+    title: "Email origin",
+    body: "Email addresses come from business websites — not directly from Google Maps listings.",
+  },
+  {
+    title: "Coverage",
+    body: "Results depend on what is currently published and reachable. Missing fields are normal when a site does not expose them.",
+  },
+] as const;
+
 export function TransparencySection() {
   return (
     <section
@@ -8,39 +27,26 @@ export function TransparencySection() {
       className="scroll-mt-20 border-b border-border-subtle"
       aria-labelledby="public-data-heading"
     >
-      <Container size="wide" className="py-14 sm:py-16">
+      <Container size="wide" className="py-10 sm:py-12">
         <Reveal>
-          <div className="max-w-3xl rounded-lg border border-border bg-background-elevated p-6 sm:p-8">
-            <p className="font-mono text-sm tracking-wide text-muted uppercase">
-              Transparency
-            </p>
-            <h2 id="public-data-heading" className="text-section-heading mt-2">
-              Where the data comes from
-            </h2>
-            <ul className="mt-4 space-y-3 text-small">
-              <li>
-                <strong className="font-medium text-foreground">
-                  Discovery
-                </strong>{" "}
-                provides listing data from configured business sources (for
-                example Google Maps): name, address, phone, rating, and map
-                links when available.
-              </li>
-              <li>
-                <strong className="font-medium text-foreground">
-                  Website enrichment
-                </strong>{" "}
-                visits publicly reachable company sites to collect emails,
-                phones, and social links published on those pages.
-              </li>
-              <li>
-                Email addresses come from business websites — not directly from
-                Google Maps listings.
-              </li>
-              <li>
-                Results depend on what is currently published and reachable.
-                Missing fields are normal when a site does not expose them.
-              </li>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-12">
+            <div>
+              <p className="font-mono text-xs tracking-wide text-muted uppercase">
+                Transparency
+              </p>
+              <h2 id="public-data-heading" className="text-section-heading mt-2">
+                Where the data comes from
+              </h2>
+            </div>
+            <ul className="space-y-4 border-l border-border pl-4 sm:pl-5">
+              {points.map((point) => (
+                <li key={point.title}>
+                  <p className="text-sm font-medium text-foreground">
+                    {point.title}
+                  </p>
+                  <p className="mt-1 text-small">{point.body}</p>
+                </li>
+              ))}
             </ul>
           </div>
         </Reveal>

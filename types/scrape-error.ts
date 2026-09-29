@@ -70,15 +70,37 @@ export function titleForErrorCode(code: string): string {
     case "EXPORT_FAILED":
     case "CSV_EXPORT_FAILED":
     case "CSV_DOWNLOAD_UNAVAILABLE":
+    case "CSV_UNAVAILABLE":
       return "CSV could not be generated";
+    case "CSV_EMPTY_DATASET":
+      return "No records available for CSV";
+    case "CSV_NOT_READY":
+      return "CSV is not ready yet";
     case "API_NETWORK":
     case "SERVICE_UNAVAILABLE":
     case "API_URL_MISSING":
       return "Scraper service unavailable";
+    case "API_TIMEOUT":
+    case "API_REQUEST_FAILED":
+    case "HTTP_ERROR":
+      return "Could not reach the scrape service";
     case "CLIENT_CONNECTION_LOST":
       return "Unable to reconnect to live updates";
     case "JOB_RETRY_LIMIT":
       return "Retry limit reached";
+    case "JOB_NOT_FOUND":
+      return "This scrape job is unavailable";
+    case "JOB_NOT_RETRYABLE":
+    case "JOB_ALREADY_TERMINAL":
+      return "This job cannot be retried";
+    case "JOB_CAPACITY":
+      return "Scraper is at capacity";
+    case "INVALID_CONFIGURATION":
+    case "VALIDATION_ERROR":
+      return "Some fields need attention";
+    case "INTERNAL_ERROR":
+    case "APP_ERROR":
+      return "Something went wrong in the app";
     default:
       return "Scraping couldn't complete";
   }

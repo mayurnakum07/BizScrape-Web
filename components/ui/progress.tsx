@@ -25,9 +25,7 @@ export function Progress({
         <div className="flex items-center justify-between gap-3 text-sm">
           {label ? <span className="text-muted">{label}</span> : <span />}
           {showValue ? (
-            <span className="font-mono text-foreground tabular-nums">
-              {percent}%
-            </span>
+            <span className="text-metric text-foreground">{percent}%</span>
           ) : null}
         </div>
       )}
@@ -38,10 +36,10 @@ export function Progress({
         aria-valuenow={clamped}
         aria-label={label ?? "Progress"}
         aria-valuetext={`${percent}%`}
-        className="h-1.5 w-full overflow-hidden rounded-full bg-border-subtle"
+        className="h-1.5 w-full overflow-hidden rounded-sm bg-border-subtle"
       >
         <div
-          className="h-full rounded-full bg-primary transition-[width] duration-[var(--duration-normal)] ease-[var(--ease-out)]"
+          className="h-full rounded-sm bg-primary transition-[width] duration-[var(--duration-normal)] ease-[var(--ease-out)]"
           style={{ width: `${percent}%` }}
         />
       </div>

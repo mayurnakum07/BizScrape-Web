@@ -66,7 +66,7 @@ export function JobFailureState({ job }: JobFailureStateProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="motion-state-enter flex flex-col gap-4">
       <ErrorState
         error={scrapeError}
         actions={

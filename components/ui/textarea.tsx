@@ -22,7 +22,7 @@ export function Textarea({
       className={cn(
         "flex min-h-24 w-full resize-y rounded-md border bg-surface px-3 py-2 text-sm text-foreground transition-ui",
         "placeholder:text-muted",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
         "disabled:cursor-not-allowed disabled:opacity-50",
         isInvalid
           ? "border-error focus-visible:outline-error"

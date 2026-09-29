@@ -23,6 +23,7 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
   const router = useRouter();
   const results = useScrapeResults(job.id);
   const [retrying, setRetrying] = useState(false);
+  const [retryError, setRetryError] = useState<string | null>(null);
   const collected =
     results.records.length || job.targetProgress.collected || 0;
 
@@ -31,6 +32,7 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
       return;
     }
     setRetrying(true);
+    setRetryError(null);
     try {
       if (isRemoteApiConfigured()) {
         const fresh = await retryScrapeJob(job.id);
@@ -41,7 +43,7 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
       router.push(`${SCRAPE_PATH}/job/${fresh.id}`);
     } catch (error) {
       setRetrying(false);
-      window.alert(getErrorMessage(error, "Could not start a new job."));
+      setRetryError(getErrorMessage(error, "Could not start a new job."));
     }
   }
 
@@ -61,6 +63,11 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
           recordsCollected: collected,
         }}
         title="Scraping cancelled"
+        description={
+          collected > 0
+            ? `The run was stopped after ${collected} businesses. Export or open results, or start again with the same query.`
+            : "The run was stopped before any businesses were collected. Start again or edit the query."
+        }
         actions={
           <>
             <RetryAction
@@ -85,6 +92,12 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
           </>
         }
       />
+
+      {retryError ? (
+        <p className="text-sm text-error" role="alert">
+          {retryError} — check your connection, then try Start a new search again.
+        </p>
+      ) : null}
 
       {results.records.length > 0 ? (
         <ResultsExportActions

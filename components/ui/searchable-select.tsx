@@ -56,7 +56,9 @@ export function SearchableSelect({
   "aria-errormessage": ariaErrorMessage,
   onChange,
 }: SearchableSelectProps) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const listboxId = useId();
+  const optionIdPrefix = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -107,9 +109,18 @@ export function SearchableSelect({
       onChange(option.value);
       setOpen(false);
       setQuery("");
+      triggerRef.current?.focus();
     },
     [onChange],
   );
+
+  function closeList(restoreFocus = false) {
+    setOpen(false);
+    setQuery("");
+    if (restoreFocus) {
+      triggerRef.current?.focus();
+    }
+  }
 
   function onTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     if (disabled) {
@@ -124,8 +135,7 @@ export function SearchableSelect({
   function onSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") {
       event.preventDefault();
-      setOpen(false);
-      setQuery("");
+      closeList(true);
       return;
     }
     if (event.key === "ArrowDown") {
@@ -155,12 +165,14 @@ export function SearchableSelect({
         <input type="hidden" name={name} value={value} required={required} />
       ) : null}
       <button
+        ref={triggerRef}
         id={id}
         type="button"
         disabled={disabled || loading}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listboxId}
+        aria-busy={loading || undefined}
         aria-invalid={invalid || ariaInvalid === true || ariaInvalid === "true" || undefined}
         aria-required={required || undefined}
         aria-describedby={ariaDescribedBy}
@@ -173,7 +185,7 @@ export function SearchableSelect({
         onKeyDown={onTriggerKeyDown}
         className={cn(
           "flex h-[var(--control-h-md)] w-full items-center justify-between gap-2 rounded-md border bg-surface px-3 text-left text-sm transition-ui",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+          "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
           "disabled:cursor-not-allowed disabled:opacity-50",
           invalid ? "border-error" : "border-border hover:border-border",
           !selected && "text-muted",
@@ -188,7 +200,7 @@ export function SearchableSelect({
       </button>
 
       {open ? (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-border bg-background-elevated shadow-md">
+        <div className="absolute z-[var(--z-dropdown)] mt-1 w-full overflow-hidden rounded-md border border-border bg-elevated shadow-md motion-menu-in">
           <div className="border-b border-border-subtle p-2">
             <input
               ref={inputRef}
@@ -197,9 +209,14 @@ export function SearchableSelect({
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={onSearchKeyDown}
               placeholder={searchPlaceholder}
-              className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary"
               aria-autocomplete="list"
               aria-controls={listboxId}
+              aria-activedescendant={
+                filtered[activeIndex]
+                  ? `${optionIdPrefix}-option-${filtered[activeIndex]!.value}`
+                  : undefined
+              }
             />
           </div>
           <ul
@@ -217,11 +234,13 @@ export function SearchableSelect({
                 return (
                   <li key={option.value} role="presentation">
                     <button
+                      id={`${optionIdPrefix}-option-${option.value}`}
                       type="button"
                       role="option"
                       aria-selected={chosen}
                       className={cn(
-                        "flex w-full px-3 py-2 text-left text-sm transition-ui",
+                        "flex w-full px-3 py-2.5 text-left text-sm transition-ui",
+                        "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
                         active || chosen
                           ? "bg-primary-muted text-foreground"
                           : "text-foreground hover:bg-surface-hover",

@@ -13,8 +13,9 @@ export const BREAKPOINTS = {
 export type BreakpointKey = keyof typeof BREAKPOINTS;
 
 /** Responsive presentation classes shared by results views. */
-export const RESULTS_TABLE_CLASSES = "hidden overflow-hidden rounded-lg border border-border md:block";
-export const RESULTS_CARDS_CLASSES = "grid gap-3 md:hidden";
+export const RESULTS_TABLE_CLASSES = "results-table-shell hidden md:block";
+export const RESULTS_CARDS_CLASSES =
+  "grid gap-2 border-t border-border-subtle p-3 md:hidden";
 
 export function matchesMinWidth(width: number, breakpoint: BreakpointKey): boolean {
   return width >= BREAKPOINTS[breakpoint];

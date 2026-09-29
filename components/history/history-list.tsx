@@ -1,63 +1,96 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
+import { HistoryRunItem } from "@/components/history/history-run-item";
+import { HistoryToolbar } from "@/components/history/history-toolbar";
+import {
+  filterHistoryRuns,
+  type HistoryStatusFilter,
+} from "@/components/history/history-run-utils";
 import { Button, buttonClassName } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EmptyState } from "@/components/ui/empty-state";
-import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { WorkflowStatePanel } from "@/components/workflow/workflow-state-panel";
 import { useScrapeHistoryList } from "@/hooks/use-scrape-history";
 import { SCRAPE_PATH } from "@/lib/constants";
-import { formatLocationLabel } from "@/types/scrape";
-import { exportAndDownloadCsv } from "@/services/export/csv";
 
-function formatSavedAt(iso: string): string {
-  try {
-    return new Intl.DateTimeFormat(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
+function HistoryLoadingRows() {
+  return (
+    <ul className="divide-y divide-border-subtle" aria-hidden="true">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <li key={index} className="px-3 py-3 sm:px-4">
+          <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.9fr)_auto] lg:items-center lg:gap-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-48" />
+              <Skeleton className="h-3 w-36" />
+              <Skeleton className="h-3 w-40" />
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export function HistoryList() {
   const { items, loading, error, remove, refresh } = useScrapeHistoryList();
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<HistoryStatusFilter>("all");
+  const deferredQuery = useDeferredValue(query);
+
+  const filtered = useMemo(
+    () => filterHistoryRuns(items, deferredQuery, status),
+    [items, deferredQuery, status],
+  );
 
   if (loading) {
     return (
-      <div className="py-16">
-        <Spinner label="Loading scrape history…" />
-      </div>
+      <section
+        aria-label="Scrape runs"
+        className="history-workspace overflow-hidden border border-border bg-surface"
+      >
+        <div className="border-b border-border-subtle px-3 py-3 sm:px-4">
+          <Skeleton className="h-9 w-full max-w-md" />
+        </div>
+        <HistoryLoadingRows />
+        <span className="sr-only">Loading scrape history…</span>
+      </section>
     );
   }
 
   if (error) {
     return (
-      <Card padding="lg">
-        <CardHeader>
-          <CardTitle>Could not load history</CardTitle>
-          <p className="text-small">{error}</p>
-        </CardHeader>
-        <CardContent>
-          <Button type="button" onClick={() => void refresh()}>
+      <WorkflowStatePanel
+        kind="idb_read_failed"
+        variant="panel"
+        copy={{ description: error }}
+        actions={
+          <Button type="button" size="sm" onClick={() => void refresh()}>
             Try again
           </Button>
-        </CardContent>
-      </Card>
+        }
+      />
     );
   }
 
   if (items.length === 0) {
     return (
-      <EmptyState
-        title="No saved scrapes yet"
-        description="When a scrape finishes, BizScrape stores the result set in this browser so you can reopen or download it later."
-        action={
+      <WorkflowStatePanel
+        kind="empty_history"
+        actions={
           <Link href={SCRAPE_PATH} className={buttonClassName()}>
             Start a scrape
           </Link>
@@ -67,85 +100,57 @@ export function HistoryList() {
   }
 
   return (
-    <ul className="flex flex-col gap-3">
-      {items.map((item) => {
-        const location = formatLocationLabel(item.config);
-        return (
-          <li key={item.id}>
-            <Card padding="md" className="transition-ui hover:bg-surface-hover/40">
-              <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-base font-medium text-foreground">
-                      {item.config.businessType}
-                    </h2>
-                    <Badge
-                      variant={
-                        item.status === "completed"
-                          ? "success"
-                          : item.status === "cancelled"
-                            ? "warning"
-                            : "info"
-                      }
-                    >
-                      {item.status}
-                    </Badge>
-                  </div>
-                  <p className="mt-1 text-sm text-muted">{location}</p>
-                  <p className="mt-2 font-mono text-xs text-muted">
-                    {item.summary.businesses} businesses · saved{" "}
-                    {formatSavedAt(item.savedAt)}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2 shrink-0">
-                  <Link
-                    href={`${SCRAPE_PATH}/history/${item.id}`}
-                    className={buttonClassName({ variant: "secondary", size: "sm" })}
-                  >
-                    View
-                  </Link>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    disabled={busyId === item.id || item.records.length === 0}
-                    onClick={() => {
-                      exportAndDownloadCsv({
-                        records: item.records,
-                        config: {
-                          city: item.config.city,
-                          businessType: item.config.businessType,
-                        },
-                      });
-                    }}
-                  >
-                    Download CSV
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    loading={busyId === item.id}
-                    onClick={() => {
-                      if (
-                        !window.confirm(
-                          "Delete this saved scrape from this browser?",
-                        )
-                      ) {
-                        return;
-                      }
-                      setBusyId(item.id);
-                      void remove(item.id).finally(() => setBusyId(null));
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </li>
-        );
-      })}
-    </ul>
+    <section
+      aria-label="Scrape runs"
+      className="history-workspace overflow-hidden border border-border bg-surface"
+    >
+      <HistoryToolbar
+        query={query}
+        status={status}
+        total={items.length}
+        visible={filtered.length}
+        onQueryChange={setQuery}
+        onStatusChange={setStatus}
+      />
+
+      {filtered.length === 0 ? (
+        <WorkflowStatePanel
+          kind="filtered_history"
+          variant="empty"
+          className="m-3 border-0 bg-transparent sm:m-4"
+          actions={
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setQuery("");
+                setStatus("all");
+              }}
+            >
+              Clear filters
+            </Button>
+          }
+        />
+      ) : (
+        <ul>
+          {filtered.map((item) => (
+            <HistoryRunItem
+              key={item.id}
+              item={item}
+              busy={busyId === item.id}
+              onDelete={async (id) => {
+                setBusyId(id);
+                try {
+                  await remove(id);
+                } finally {
+                  setBusyId(null);
+                }
+              }}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

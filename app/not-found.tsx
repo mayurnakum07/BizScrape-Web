@@ -1,23 +1,29 @@
 import Link from "next/link";
 
+import { WorkflowStatePanel } from "@/components/workflow/workflow-state-panel";
 import { buttonClassName } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { SCRAPE_PATH } from "@/lib/constants";
 
 export default function NotFoundPage() {
   return (
     <Container className="flex flex-col justify-center py-16 sm:py-24">
-      <p className="font-mono text-sm tracking-wide text-muted uppercase">
-        404
-      </p>
-      <h1 className="text-page-heading mt-3">Page not found</h1>
-      <p className="mt-4 max-w-lg text-small">
-        The page you requested does not exist or has been moved.
-      </p>
-      <div className="mt-6">
-        <Link href="/" className={buttonClassName()}>
-          Back to home
-        </Link>
-      </div>
+      <WorkflowStatePanel
+        kind="not_found"
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Link href="/" className={buttonClassName()}>
+              Back to home
+            </Link>
+            <Link
+              href={SCRAPE_PATH}
+              className={buttonClassName({ variant: "outline" })}
+            >
+              Start a scrape
+            </Link>
+          </div>
+        }
+      />
     </Container>
   );
 }

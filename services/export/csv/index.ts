@@ -1,6 +1,9 @@
 import { AppError } from "@/lib/errors";
 import { buildCsvFilename } from "@/services/export/csv/filename";
-import { serializeRecordsToCsv } from "@/services/export/csv/serialize";
+import {
+  serializeRecordsToCsv,
+  serializeRecordsToCsvAsync,
+} from "@/services/export/csv/serialize";
 import type { BusinessRecord } from "@/types/business-record";
 import type { ScrapeConfig } from "@/types/scrape";
 
@@ -55,6 +58,44 @@ export function generateCsv(request: CsvExportRequest): CsvExportResult {
   }
 }
 
+/** Async variant — yields during serialize for large datasets. */
+export async function generateCsvAsync(
+  request: CsvExportRequest,
+): Promise<CsvExportResult> {
+  if (request.records.length === 0) {
+    throw new AppError("No data available for export.", {
+      code: "CSV_EMPTY_DATASET",
+      status: 400,
+    });
+  }
+
+  try {
+    const csv = await serializeRecordsToCsvAsync(request.records, {
+      withBom: true,
+    });
+    const filename = buildCsvFilename({
+      city: request.config.city,
+      niche: request.config.businessType,
+      date: request.date,
+    });
+
+    return {
+      filename,
+      csv,
+      recordCount: request.records.length,
+      mimeType: "text/csv;charset=utf-8",
+    };
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw new AppError("CSV export failed.", {
+      code: "CSV_EXPORT_FAILED",
+      status: 500,
+    });
+  }
+}
+
 /**
  * Trigger a browser download for a generated CSV.
  * Transport-agnostic: later can swap Blob for a backend URL/stream.
@@ -85,6 +126,15 @@ export function downloadCsv(exportResult: CsvExportResult): void {
  */
 export function exportAndDownloadCsv(request: CsvExportRequest): CsvExportResult {
   const result = generateCsv(request);
+  downloadCsv(result);
+  return result;
+}
+
+/** Async convenience — preferred for UI export buttons. */
+export async function exportAndDownloadCsvAsync(
+  request: CsvExportRequest,
+): Promise<CsvExportResult> {
+  const result = await generateCsvAsync(request);
   downloadCsv(result);
   return result;
 }

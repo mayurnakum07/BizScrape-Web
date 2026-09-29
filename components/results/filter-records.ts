@@ -84,7 +84,8 @@ export function filterAndSortRecords(
     filtered.push(record);
   }
 
-  return [...filtered].sort((a, b) => compareSort(a, b, filters.sort));
+  filtered.sort((a, b) => compareSort(a, b, filters.sort));
+  return filtered;
 }
 
 export function uniqueSorted(values: string[]): string[] {

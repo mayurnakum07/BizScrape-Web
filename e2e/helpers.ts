@@ -28,7 +28,7 @@ export async function fillScrapeForm(
   },
 ): Promise<void> {
   const form = scrapeForm(page);
-  await form.getByRole("textbox", { name: "Business type" }).fill(input.businessType);
+  await form.getByRole("textbox", { name: "Business category" }).fill(input.businessType);
 
   await pickSearchable(page, form, "country", input.country ?? "India");
   await pickSearchable(page, form, "state", input.state ?? "Gujarat");
@@ -36,11 +36,17 @@ export async function fillScrapeForm(
 
   if (input.target !== undefined) {
     await form
-      .getByRole("spinbutton", { name: "Target businesses" })
+      .getByRole("spinbutton", { name: "Target count" })
       .fill(input.target);
   }
 }
 
 export async function submitScrapeForm(page: Page): Promise<void> {
-  await scrapeForm(page).getByRole("button", { name: "Start scraping" }).click();
+  await page.getByRole("button", { name: "Start scrape" }).click();
+}
+
+/** After modal submit, open the full job workspace (dev tools / deep job UI). */
+export async function openFullJobWorkspace(page: Page): Promise<void> {
+  await page.getByRole("link", { name: "Open full workspace" }).click();
+  await page.waitForURL(/\/scrape\/job\//);
 }

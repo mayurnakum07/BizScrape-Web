@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { SCRAPE_SOURCES } from "@/lib/scrape/constants";
 import type { ScrapeSourceId } from "@/types/scrape";
 
@@ -27,16 +28,16 @@ export function SourceSelector({ value, error }: SourceSelectorProps) {
       aria-describedby={describedBy}
       aria-invalid={error ? true : undefined}
     >
-      <legend className="text-label">Sources</legend>
+      <legend className="text-label">Discovery source</legend>
       <p id={hintId} className="field-hint mt-1">
-        Discovery uses Google Maps. Enrichment still uses public business
-        websites after listings are found.
+        Listings come from Google Maps. Contact enrichment still uses public
+        business websites after discovery.
       </p>
 
-      <div className="mt-3 grid gap-2">
+      <div className="mt-3">
         <label
           htmlFor={inputId}
-          className="flex cursor-default gap-3 rounded-md border border-primary/40 bg-primary-muted px-3 py-3"
+          className="flex cursor-default items-start gap-3 border border-border bg-elevated px-3 py-2.5"
         >
           <input
             id={inputId}
@@ -44,12 +45,22 @@ export function SourceSelector({ value, error }: SourceSelectorProps) {
             name="sources"
             value={source.id}
             checked={checked}
-            disabled
+            readOnly
+            aria-disabled="true"
             className="mt-0.5 size-4 shrink-0 accent-primary"
+            onClick={(event) => event.preventDefault()}
+            onKeyDown={(event) => {
+              if (event.key === " " || event.key === "Enter") {
+                event.preventDefault();
+              }
+            }}
           />
-          <span className="min-w-0">
-            <span className="block text-sm font-medium text-foreground">
-              {source.label}
+          <span className="min-w-0 flex-1">
+            <span className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-medium text-foreground">
+                {source.label}
+              </span>
+              <Badge variant="primary">Required</Badge>
             </span>
             <span className="mt-0.5 block text-sm text-muted">
               {source.description}

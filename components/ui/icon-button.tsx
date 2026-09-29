@@ -18,7 +18,7 @@ const variantClasses = {
 };
 
 const sizeClasses = {
-  sm: "size-8",
+  sm: "size-8 max-md:size-10",
   md: "size-10",
 };
 
@@ -42,8 +42,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         aria-label={label}
         title={label}
         className={cn(
-          "inline-flex items-center justify-center rounded-md text-foreground transition-ui",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+          "inline-flex items-center justify-center rounded-md text-foreground control-press",
+          "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
           "disabled:pointer-events-none disabled:opacity-50",
           variantClasses[variant],
           sizeClasses[size],

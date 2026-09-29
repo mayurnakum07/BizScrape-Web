@@ -7,7 +7,7 @@ import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
 
 import { CancellationDialog } from "@/components/errors/cancellation-dialog";
-import { ResultDetailsDialog } from "@/components/results/result-details-dialog";
+import { ResultDetailsDrawer } from "@/components/results/result-details-drawer";
 import { ResultsExportActions } from "@/components/results/results-export-actions";
 import { SourceSelector } from "@/components/scrape/source-selector";
 import type { BusinessRecord } from "@/types/business-record";
@@ -35,12 +35,14 @@ const sampleRecord: BusinessRecord = {
 };
 
 describe("accessibility regressions", () => {
-  it("moves focus into dialogs when they open", async () => {
-    render(<ResultDetailsDialog record={sampleRecord} onClose={() => {}} />);
+  it("moves focus into detail drawers when they open", async () => {
+    render(<ResultDetailsDrawer record={sampleRecord} onClose={() => {}} />);
 
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Close dialog" })).toHaveFocus(),
-    );
+    await waitFor(() => {
+      const dialog = screen.getByRole("dialog");
+      expect(dialog.contains(document.activeElement)).toBe(true);
+      expect(document.activeElement).not.toBe(document.body);
+    });
   });
 
   it("announces accessible source selection and has no axe violations", async () => {
@@ -48,7 +50,7 @@ describe("accessibility regressions", () => {
       <SourceSelector value={["gmaps"]} onChange={() => {}} />,
     );
 
-    expect(screen.getByText("Sources")).toBeInTheDocument();
+    expect(screen.getByText("Discovery source")).toBeInTheDocument();
     expect((await axe(container)).violations).toHaveLength(0);
   });
 
@@ -78,7 +80,7 @@ describe("accessibility regressions", () => {
       />,
     );
 
-    const stop = screen.getByRole("button", { name: "Stop scraping" });
+    const stop = screen.getByRole("button", { name: "Stop scrape" });
     const keepRunning = screen.getByRole("button", { name: "Keep running" });
 
     expect(stop).toBeInTheDocument();

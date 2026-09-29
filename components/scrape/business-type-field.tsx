@@ -15,8 +15,8 @@ export function BusinessTypeField({
   return (
     <Field
       id="business-type"
-      label="Business type"
-      hint="What kind of businesses are you looking for?"
+      label="Business category"
+      hint="Category or niche to discover (cafe, dentist, IT services…)."
       error={error}
     >
       <Input

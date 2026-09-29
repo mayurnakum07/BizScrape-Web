@@ -60,6 +60,7 @@ export function LocationFields({
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
+  const [locationLoadError, setLocationLoadError] = useState<string | null>(null);
 
   const selectedCountry = useMemo(
     () => countries.find((row) => row.name === country) ?? null,
@@ -77,11 +78,15 @@ export function LocationFields({
       .then((rows) => {
         if (!cancelled) {
           setCountries(rows);
+          setLocationLoadError(null);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setCountries([]);
+          setLocationLoadError(
+            "Country lists failed to load. Refresh the page or check your network, then try again.",
+          );
         }
       })
       .finally(() => {
@@ -166,11 +171,19 @@ export function LocationFields({
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
+      {locationLoadError ? (
+        <p
+          className="sm:col-span-2 border border-warning/40 bg-warning-muted px-3 py-2 text-xs text-warning"
+          role="status"
+        >
+          {locationLoadError}
+        </p>
+      ) : null}
       <div className="sm:col-span-2">
         <Field
           id="country"
           label="Country"
-          hint="Search and select a country."
+          hint="Required. Search by name or ISO code."
           error={countryError}
         >
           <SearchableSelect
@@ -197,8 +210,8 @@ export function LocationFields({
         label="State / region"
         hint={
           country
-            ? "Search within the selected country."
-            : "Choose a country first."
+            ? "Required. Filter by state within the selected country."
+            : "Select a country first."
         }
         error={stateError}
       >
@@ -224,7 +237,9 @@ export function LocationFields({
         id="city"
         label="City"
         hint={
-          state ? "Search within the selected state." : "Choose a state first."
+          state
+            ? "Required. Discovery centers on this city."
+            : "Select a state first."
         }
         error={cityError}
       >
@@ -248,7 +263,7 @@ export function LocationFields({
           id="area"
           label="Area / locality"
           optional
-          hint="Optional neighbourhood within the city (e.g. Adajan)."
+          hint="Optional neighbourhood filter (e.g. Adajan). Leave blank for city-wide."
         >
           <Input
             name="area"

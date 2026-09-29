@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
-import { DialogDemo } from "@/components/design-system/dialog-demo";
+import {
+  DialogDemo,
+  DrawerDemo,
+} from "@/components/design-system/dialog-demo";
 import { IconAlert, IconCheck, IconInfo } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +17,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Container } from "@/components/ui/container";
 import { Divider } from "@/components/ui/divider";
+import { Dropdown } from "@/components/ui/dropdown";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorBlock, LoadingState } from "@/components/ui/feedback-states";
 import { Field } from "@/components/ui/field";
 import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +36,12 @@ import {
   TableHeaderCell,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Terminal } from "@/components/ui/terminal";
 import { Textarea } from "@/components/ui/textarea";
+import { ToastDemoList } from "@/components/ui/toast";
+import { Tooltip } from "@/components/ui/tooltip";
+import { colors } from "@/lib/design-tokens";
 
 export const metadata: Metadata = {
   title: "Design system",
@@ -66,10 +75,12 @@ function Swatch({
   name,
   variable,
   className,
+  hex,
 }: {
   name: string;
   variable: string;
   className: string;
+  hex?: string;
 }) {
   return (
     <div className="flex items-center gap-3">
@@ -80,6 +91,7 @@ function Swatch({
       <div className="min-w-0">
         <p className="text-sm font-medium text-foreground">{name}</p>
         <p className="font-mono text-xs text-muted">{variable}</p>
+        {hex ? <p className="font-mono text-xs text-muted">{hex}</p> : null}
       </div>
     </div>
   );
@@ -94,8 +106,9 @@ export default function DesignSystemPage() {
         </p>
         <h1 className="text-page-heading mt-2">Design system</h1>
         <p className="mt-3 text-small">
-          Visual and component reference for BizScrape Web. Dark-first,
-          restrained, developer-focused. Not a public marketing page.
+          Visual foundation for BizScrape Web. Green-black canvas (#0B0D0C), electric
+          lime signal, sharp geometry. No gradients, glass, or glow. Not a
+          public marketing page.
         </p>
       </header>
 
@@ -106,9 +119,11 @@ export default function DesignSystemPage() {
         {[
           ["colors", "Colors"],
           ["typography", "Typography"],
+          ["tokens", "Tokens"],
           ["buttons", "Buttons"],
           ["forms", "Forms"],
           ["feedback", "Feedback"],
+          ["overlays", "Overlays"],
           ["data", "Data"],
           ["terminal", "Terminal"],
         ].map(([href, label]) => (
@@ -125,21 +140,66 @@ export default function DesignSystemPage() {
       <div className="mt-14 flex flex-col gap-16">
         <Section id="colors" title="Colors">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Swatch name="Background" variable="--background" className="bg-background" />
+            <Swatch
+              name="Canvas"
+              variable="--background"
+              className="bg-background"
+              hex={colors.canvas}
+            />
+            <Swatch
+              name="Surface"
+              variable="--surface"
+              className="bg-surface"
+              hex={colors.surface}
+            />
             <Swatch
               name="Elevated"
-              variable="--background-elevated"
-              className="bg-background-elevated"
+              variable="--elevated"
+              className="bg-elevated"
+              hex={colors.elevated}
             />
-            <Swatch name="Surface" variable="--surface" className="bg-surface" />
-            <Swatch name="Foreground" variable="--foreground" className="bg-foreground" />
-            <Swatch name="Muted" variable="--muted" className="bg-muted" />
-            <Swatch name="Border" variable="--border" className="bg-border" />
-            <Swatch name="Primary" variable="--primary" className="bg-primary" />
-            <Swatch name="Success" variable="--success" className="bg-success" />
-            <Swatch name="Warning" variable="--warning" className="bg-warning" />
-            <Swatch name="Error" variable="--error" className="bg-error" />
-            <Swatch name="Info" variable="--info" className="bg-info" />
+            <Swatch
+              name="Border"
+              variable="--border"
+              className="bg-border"
+              hex={colors.border}
+            />
+            <Swatch
+              name="Foreground"
+              variable="--foreground"
+              className="bg-foreground"
+              hex={colors.foreground}
+            />
+            <Swatch
+              name="Muted"
+              variable="--muted"
+              className="bg-muted"
+              hex={colors.muted}
+            />
+            <Swatch
+              name="Signal"
+              variable="--primary"
+              className="bg-primary"
+              hex={colors.signal}
+            />
+            <Swatch
+              name="Success"
+              variable="--success"
+              className="bg-success"
+              hex={colors.success}
+            />
+            <Swatch
+              name="Warning"
+              variable="--warning"
+              className="bg-warning"
+              hex={colors.warning}
+            />
+            <Swatch
+              name="Error"
+              variable="--error"
+              className="bg-error"
+              hex={colors.error}
+            />
           </div>
         </Section>
 
@@ -149,15 +209,44 @@ export default function DesignSystemPage() {
             <p className="text-page-heading">Page heading</p>
             <p className="text-section-heading">Section heading</p>
             <p className="text-body">
-              Body text for interface copy. IBM Plex Sans for UI, IBM Plex Mono
-              for commands and metadata.
+              Body text for interface copy. IBM Plex Sans for UI; IBM Plex Mono
+              for metrics, logs, IDs, and scraped data.
             </p>
             <p className="text-small">Small text for hints and secondary detail.</p>
             <p className="text-label">Field label</p>
+            <p className="text-metric text-primary">42 enriched · 3 failed</p>
             <p className="text-code text-muted">
               $ bizscrape run --city surat --niche cafe
             </p>
           </div>
+        </Section>
+
+        <Section id="tokens" title="Spacing, radius, elevation">
+          <ul className="space-y-2 text-small">
+            <li>
+              Spacing scale:{" "}
+              <code className="text-code text-foreground">--space-1</code> …
+              <code className="text-code text-foreground">--space-24</code>
+            </li>
+            <li>
+              Radii stay minimal: sm 2px · md 4px · lg 6px · xl 8px
+            </li>
+            <li>
+              Shadows are flat elevation only (
+              <code className="text-code text-foreground">--shadow-sm</code> /{" "}
+              <code className="text-code text-foreground">--shadow-md</code>)
+            </li>
+            <li>
+              Z-index layers: sticky · dropdown · overlay · modal · toast ·
+              tooltip
+            </li>
+            <li>
+              Focus:{" "}
+              <code className="text-code text-foreground">
+                --focus-ring-width / offset / color
+              </code>
+            </li>
+          </ul>
         </Section>
 
         <Section id="buttons" title="Buttons">
@@ -172,11 +261,25 @@ export default function DesignSystemPage() {
             <IconButton label="Confirm">
               <IconCheck size={16} />
             </IconButton>
+            <Tooltip content="Copy job ID">
+              <IconButton label="Copy" size="sm" variant="outline">
+                <IconInfo size={14} />
+              </IconButton>
+            </Tooltip>
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Button size="sm">Small</Button>
             <Button size="md">Medium</Button>
             <Button size="lg">Large</Button>
+            <Dropdown
+              label="Actions"
+              align="start"
+              items={[
+                { id: "export", label: "Export CSV" },
+                { id: "retry", label: "Retry failed" },
+                { id: "cancel", label: "Cancel job", destructive: true },
+              ]}
+            />
           </div>
         </Section>
 
@@ -261,13 +364,68 @@ export default function DesignSystemPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <EmptyState
-              icon={<IconInfo size={20} />}
-              title="No results yet"
-              description="Run a scrape to populate business rows. CSV export appears when the job completes."
-              action={<Button size="sm">Start a scrape</Button>}
+          <div className="mt-6">
+            <Tabs defaultValue="empty">
+              <TabsList>
+                <TabsTrigger value="empty">Empty</TabsTrigger>
+                <TabsTrigger value="loading">Loading</TabsTrigger>
+                <TabsTrigger value="error">Error</TabsTrigger>
+              </TabsList>
+              <TabsContent value="empty">
+                <EmptyState
+                  icon={<IconInfo size={20} />}
+                  title="No results yet"
+                  description="Run a scrape to populate business rows. CSV export appears when the job completes."
+                  action={<Button size="sm">Start a scrape</Button>}
+                />
+              </TabsContent>
+              <TabsContent value="loading">
+                <LoadingState
+                  title="Loading results"
+                  description="Fetching the latest enriched rows."
+                />
+              </TabsContent>
+              <TabsContent value="error">
+                <ErrorBlock
+                  title="Could not load results"
+                  description="The job snapshot is unavailable. Retry or return to history."
+                  action={<Button size="sm">Retry</Button>}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <div className="mt-6">
+            <ToastDemoList
+              items={[
+                {
+                  title: "Export ready",
+                  description: "surat_cafe.csv downloaded.",
+                  tone: "success",
+                },
+                {
+                  title: "Rate limited",
+                  description: "Wait a moment before starting another job.",
+                  tone: "warning",
+                },
+                {
+                  title: "Job failed",
+                  description: "Enrichment stopped after repeated errors.",
+                  tone: "error",
+                },
+              ]}
             />
+          </div>
+
+          <Divider className="my-8" label="Dividers" />
+          <p className="text-small inline-flex items-center gap-2">
+            <IconAlert size={16} className="text-warning" />
+            Prefer status color + copy over decorative alerts.
+          </p>
+        </Section>
+
+        <Section id="overlays" title="Dialogs & drawers">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Dialog</CardTitle>
@@ -277,13 +435,16 @@ export default function DesignSystemPage() {
                 <DialogDemo />
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Drawer</CardTitle>
+                <CardDescription>Side panel overlay.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DrawerDemo />
+              </CardContent>
+            </Card>
           </div>
-
-          <Divider className="my-8" label="Dividers" />
-          <p className="text-small inline-flex items-center gap-2">
-            <IconAlert size={16} className="text-warning" />
-            Prefer status color + copy over decorative alerts.
-          </p>
         </Section>
 
         <Section id="data" title="Data table">
@@ -328,7 +489,7 @@ export default function DesignSystemPage() {
           </Table>
           <p className="mt-3 text-small">
             Horizontal overflow on narrow viewports. Long URLs and emails use
-            mono + truncate. Selected rows use a muted primary wash.
+            mono + truncate. Selected rows use a muted signal wash.
           </p>
         </Section>
 

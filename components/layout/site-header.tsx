@@ -1,37 +1,52 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
+import {
+  githubNav,
+  isWorkspaceNavActive,
+  secondaryNav,
+  workspaceNav,
+} from "@/components/layout/nav-config";
 import { IconGithub, IconMenu, IconX } from "@/components/icons";
 import { buttonClassName } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { IconButton } from "@/components/ui/icon-button";
-import {
-  APP_NAME,
-  GITHUB_URL,
-  SCRAPE_PATH,
-} from "@/lib/constants";
+import { APP_NAME, SCRAPE_PATH } from "@/lib/constants";
 import { cn } from "@/lib/cn";
-
-const navLinks = [
-  { href: "/scrape/history", label: "History" },
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/#open-source", label: "Open source" },
-] as const;
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+function navItemClass(active: boolean, tone: "workspace" | "secondary" = "workspace") {
+  return cn(
+    "relative inline-flex items-center px-2.5 py-1.5 text-sm transition-ui",
+    "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
+    tone === "workspace" && "nav-underline",
+    tone === "workspace" &&
+      (active
+        ? "font-medium text-foreground"
+        : "text-muted hover:bg-surface hover:text-foreground"),
+    tone === "secondary" && "text-muted hover:text-foreground",
+  );
+}
+
 /**
- * Product header: brand, in-page anchors, GitHub, and Start scraping CTA.
- * Mobile menu collapses cleanly without a heavy nav pattern.
+ * Compact workspace chrome: brand, product nav with route state, secondary
+ * anchors, GitHub, and lime primary CTA.
  */
 export function SiteHeader() {
+  const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const menuId = useId();
   const menuRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) {
@@ -44,13 +59,18 @@ export function SiteHeader() {
         return;
       }
 
-      if (event.key !== "Tab" || !menuRef.current) {
+      if (event.key !== "Tab") {
         return;
       }
 
-      const focusables = Array.from(
-        menuRef.current.querySelectorAll<HTMLElement>(FOCUSABLE),
+      const menuFocusables = Array.from(
+        menuRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [],
       );
+      const toggle = menuButtonRef.current;
+      const focusables = [
+        ...(toggle ? [toggle] : []),
+        ...menuFocusables,
+      ];
       if (focusables.length === 0) {
         return;
       }
@@ -95,49 +115,87 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border-subtle bg-background/90 backdrop-blur-sm">
-      <Container className="flex h-[var(--header-height)] items-center justify-between gap-4">
+    <header className="sticky top-0 z-[var(--z-sticky)] border-b border-border bg-surface">
+      <Container
+        size="wide"
+        className="flex h-[var(--header-height)] items-center gap-3 sm:gap-4"
+      >
         <Link
           href="/"
-          className="font-mono text-sm font-medium tracking-wide text-foreground transition-ui hover:text-primary"
+          className={cn(
+            "group inline-flex shrink-0 items-center gap-2 font-mono text-sm font-medium tracking-wide text-foreground transition-ui",
+            "hover:text-primary",
+            "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
+          )}
           onClick={() => setOpen(false)}
         >
+          <span
+            className="size-2 shrink-0 bg-primary transition-ui group-hover:opacity-90"
+            aria-hidden="true"
+          />
           {APP_NAME}
         </Link>
 
         <nav
-          aria-label="Primary"
-          className="hidden items-center gap-1 md:flex"
+          aria-label="Workspace"
+          className="hidden min-w-0 items-center md:flex"
         >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-1.5 text-sm text-muted transition-ui hover:bg-surface hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open BizScrape GitHub repository in a new tab"
-            className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-muted transition-ui hover:bg-surface hover:text-foreground"
-          >
-            <IconGithub size={15} />
-            GitHub
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
-          <Link
-            href={SCRAPE_PATH}
-            className={cn(buttonClassName({ size: "sm" }), "ml-2")}
-          >
-            Start scraping
-          </Link>
+          <div className="flex items-center gap-0.5 border-l border-border-subtle pl-3">
+            {workspaceNav.map((link) => {
+              const active = isWorkspaceNavActive(link.href, pathname);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  data-active={active ? "true" : undefined}
+                  className={navItemClass(active)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="ml-auto hidden items-center gap-1 md:flex">
+          <nav aria-label="Secondary" className="flex items-center gap-0.5">
+            {secondaryNav.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={navItemClass(false, "secondary")}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href={githubNav.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open BizScrape GitHub repository in a new tab"
+              className={cn(
+                navItemClass(false, "secondary"),
+                "inline-flex items-center gap-1.5",
+              )}
+            >
+              <IconGithub size={14} />
+              {githubNav.label}
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </nav>
+
+          <div className="ml-2 border-l border-border-subtle pl-3">
+            <Link
+              href={SCRAPE_PATH}
+              className={buttonClassName({ size: "sm" })}
+            >
+              Start scraping
+            </Link>
+          </div>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2 md:hidden">
           <Link
             href={SCRAPE_PATH}
             className={buttonClassName({ size: "sm" })}
@@ -149,6 +207,7 @@ export function SiteHeader() {
             ref={menuButtonRef}
             label={open ? "Close menu" : "Open menu"}
             size="sm"
+            variant="outline"
             className="max-md:min-h-11 max-md:min-w-11"
             aria-expanded={open}
             aria-controls={menuId}
@@ -164,7 +223,7 @@ export function SiteHeader() {
           type="button"
           tabIndex={-1}
           aria-hidden="true"
-          className="fixed inset-0 top-[var(--header-height)] z-30 bg-black/50 md:hidden"
+          className="drawer-backdrop fixed inset-0 top-[var(--header-height)] z-[calc(var(--z-sticky)-10)] bg-black/55 md:hidden"
           onClick={() => setOpen(false)}
         />
       ) : null}
@@ -175,33 +234,67 @@ export function SiteHeader() {
         aria-label="Mobile"
         hidden={!open}
         className={cn(
-          "relative z-40 border-t border-border-subtle bg-background md:hidden",
-          open && "block",
+          "relative z-[var(--z-sticky)] border-t border-border bg-elevated md:hidden",
+          open && "motion-panel-in block",
         )}
       >
-        <Container className="flex flex-col gap-1 py-3">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-3 text-sm text-foreground transition-ui hover:bg-surface"
-              onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open BizScrape GitHub repository in a new tab"
-            className="inline-flex items-center gap-2 rounded-md px-3 py-3 text-sm text-foreground transition-ui hover:bg-surface"
-            onClick={() => setOpen(false)}
-          >
-            <IconGithub size={15} />
-            GitHub
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
+        <Container size="wide" className="flex flex-col gap-4 py-4">
+          <div>
+            <p className="px-2.5 font-mono text-xs tracking-wide text-muted uppercase">
+              Workspace
+            </p>
+            <div className="mt-1 flex flex-col">
+              {workspaceNav.map((link) => {
+                const active = isWorkspaceNavActive(link.href, pathname);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "rounded-sm px-2.5 py-2.5 text-sm transition-ui",
+                      active
+                        ? "bg-primary-muted font-medium text-foreground"
+                        : "text-foreground hover:bg-surface",
+                    )}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="border-t border-border-subtle pt-3">
+            <p className="px-2.5 font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+              Resources
+            </p>
+            <div className="mt-1 flex flex-col">
+              {secondaryNav.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-sm px-2.5 py-2.5 text-sm text-muted transition-ui hover:bg-surface hover:text-foreground"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <a
+                href={githubNav.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open BizScrape GitHub repository in a new tab"
+                className="inline-flex items-center gap-2 rounded-sm px-2.5 py-2.5 text-sm text-muted transition-ui hover:bg-surface hover:text-foreground"
+                onClick={() => setOpen(false)}
+              >
+                <IconGithub size={15} />
+                {githubNav.label}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </div>
+          </div>
         </Container>
       </nav>
     </header>

@@ -34,7 +34,7 @@ export function CancellationDialog({
           className="w-full sm:w-auto"
           onClick={onConfirmStop}
         >
-          Stop scraping
+          Stop scrape
         </Button>
         <Button
           variant="ghost"

@@ -2,36 +2,46 @@ import type { JobStats } from "@/types/scrape-job";
 
 type JobStatsPanelProps = {
   stats: JobStats;
+  processed: number;
 };
 
-const rows: Array<{ key: keyof JobStats; label: string }> = [
-  { key: "businessesFound", label: "Businesses found" },
-  { key: "localMatches", label: "Local matches" },
-  { key: "websitesResolved", label: "Websites resolved" },
-  { key: "emailsFound", label: "Emails found" },
-  { key: "phonesFound", label: "Phones found" },
-  { key: "duplicatesRemoved", label: "Duplicates removed" },
+const rows: Array<{
+  key: keyof JobStats | "processed";
+  label: string;
+  hint: string;
+}> = [
+  { key: "businessesFound", label: "Discovered", hint: "Listings found" },
+  { key: "localMatches", label: "Local matches", hint: "In scope" },
+  { key: "websitesResolved", label: "Websites", hint: "Resolved" },
+  { key: "phonesFound", label: "Phones", hint: "Extracted" },
+  { key: "emailsFound", label: "Emails", hint: "Extracted" },
+  { key: "duplicatesRemoved", label: "Duplicates", hint: "Removed" },
+  { key: "processed", label: "Processed", hint: "Collected" },
 ];
 
-export function JobStatsPanel({ stats }: JobStatsPanelProps) {
+export function JobStatsPanel({ stats, processed }: JobStatsPanelProps) {
   return (
-    <section
-      aria-label="Statistics"
-      className="rounded-lg border border-border bg-surface p-4"
-    >
-      <h2 className="text-sm font-medium text-foreground">Statistics</h2>
-      <dl className="mt-4 grid grid-cols-2 gap-3">
-        {rows.map((row) => (
-          <div
-            key={row.key}
-            className="rounded-md border border-border-subtle bg-background-elevated px-3 py-2"
-          >
-            <dt className="text-xs text-muted">{row.label}</dt>
-            <dd className="mt-1 font-mono text-lg tabular-nums text-foreground">
-              {stats[row.key]}
-            </dd>
-          </div>
-        ))}
+    <section aria-label="Live metrics" className="border border-border bg-surface">
+      <div className="border-b border-border-subtle px-4 py-2.5">
+        <h2 className="font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+          Live metrics
+        </h2>
+      </div>
+      <dl className="grid grid-cols-2 gap-px bg-border sm:grid-cols-3 lg:grid-cols-4">
+        {rows.map((row) => {
+          const value = row.key === "processed" ? processed : stats[row.key];
+          return (
+            <div key={row.key} className="bg-surface px-4 py-3">
+              <dt className="text-xs text-muted">{row.label}</dt>
+              <dd className="job-metric-value mt-1 font-mono text-xl text-foreground">
+                {value}
+              </dd>
+              <p className="mt-0.5 font-mono text-[0.65rem] text-muted">
+                {row.hint}
+              </p>
+            </div>
+          );
+        })}
       </dl>
     </section>
   );

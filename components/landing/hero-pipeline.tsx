@@ -1,147 +1,141 @@
-import { Badge } from "@/components/ui/badge";
+import {
+  EXAMPLE_CSV_COLUMNS,
+  EXAMPLE_CSV_ROWS,
+} from "@/components/landing/example-data";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 import { cn } from "@/lib/cn";
 
-type PipelinePanelProps = {
-  title: string;
-  children: React.ReactNode;
-  className?: string;
-  delayClass?: string;
-  showConnector?: boolean;
-};
+const stages = [
+  {
+    id: "01",
+    label: "Input",
+    detail: "cafe · Surat · target 50",
+    accent: false,
+  },
+  {
+    id: "02",
+    label: "Discover",
+    detail: "84 found · 61 local",
+    accent: false,
+  },
+  {
+    id: "03",
+    label: "Enrich",
+    detail: "48 sites · 37 emails",
+    accent: false,
+  },
+  {
+    id: "04",
+    label: "Dataset",
+    detail: "61 rows · surat_cafe.csv",
+    accent: true,
+  },
+] as const;
 
-function PipelinePanel({
-  title,
-  children,
-  className,
-  delayClass,
-  showConnector,
-}: PipelinePanelProps) {
-  return (
-    <div className="relative">
-      {showConnector ? (
-        <span
-          className="absolute -top-3 left-1/2 hidden -translate-x-1/2 text-border sm:block xl:hidden"
-          aria-hidden="true"
-        >
-          ↓
-        </span>
-      ) : null}
-      <div
-        className={cn(
-          "hero-panel rounded-lg border border-border bg-surface p-3 shadow-[var(--shadow-sm)]",
-          delayClass,
-          className,
-        )}
-      >
-        <p className="mb-2 font-mono text-[0.65rem] tracking-wide text-muted uppercase">
-          {title}
-        </p>
-        {children}
-      </div>
-    </div>
-  );
-}
+const previewColumns = [
+  "company_name",
+  "phone_primary",
+  "email_primary",
+  "website",
+] as const satisfies ReadonlyArray<(typeof EXAMPLE_CSV_COLUMNS)[number]>;
 
 /**
- * Product-shaped hero visual: input → discovery → enrichment → CSV.
+ * Product-shaped hero visual: one workspace showing scrape → process → dataset.
  * Static example data only — not a live scrape.
  */
 export function HeroPipeline() {
   return (
     <aside
-      className="relative w-full min-w-0"
+      className="hero-panel relative w-full min-w-0 border border-border bg-surface"
       aria-label="Example BizScrape pipeline preview"
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <Badge variant="info">Example run</Badge>
-        <StatusIndicator status="success" label="Sample output" />
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <PipelinePanel title="Input" delayClass="hero-panel-1">
-          <dl className="space-y-1.5 font-mono text-xs text-foreground">
-            <div className="flex justify-between gap-2">
-              <dt className="text-muted">niche</dt>
-              <dd>cafe</dd>
-            </div>
-            <div className="flex justify-between gap-2">
-              <dt className="text-muted">city</dt>
-              <dd>Surat</dd>
-            </div>
-            <div className="flex justify-between gap-2">
-              <dt className="text-muted">area</dt>
-              <dd>Mota Varachha</dd>
-            </div>
-            <div className="flex justify-between gap-2">
-              <dt className="text-muted">target</dt>
-              <dd>50</dd>
-            </div>
-          </dl>
-        </PipelinePanel>
-
-        <PipelinePanel title="Discovery" delayClass="hero-panel-2" showConnector>
-          <ul className="space-y-1.5 font-mono text-xs">
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">found</span>
-              <span>84</span>
-            </li>
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">local matches</span>
-              <span className="text-success">61</span>
-            </li>
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">source</span>
-              <span>gmaps</span>
-            </li>
-          </ul>
-        </PipelinePanel>
-
-        <PipelinePanel title="Enrichment" delayClass="hero-panel-3" showConnector>
-          <ul className="space-y-1.5 font-mono text-xs">
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">websites</span>
-              <span>48</span>
-            </li>
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">emails</span>
-              <span className="text-success">37</span>
-            </li>
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">phones</span>
-              <span>52</span>
-            </li>
-          </ul>
-        </PipelinePanel>
-
-        <PipelinePanel title="CSV" delayClass="hero-panel-4" showConnector>
-          <ul className="space-y-1.5 font-mono text-xs">
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">records</span>
-              <span className="text-primary">61</span>
-            </li>
-            <li className="flex justify-between gap-2">
-              <span className="text-muted">deduped</span>
-              <span>yes</span>
-            </li>
-            <li className="truncate text-muted">surat_cafe.csv</li>
-          </ul>
-        </PipelinePanel>
-      </div>
-
-      <div className="mt-3 overflow-hidden rounded-lg border border-border-subtle bg-[#080a0d]">
-        <div className="border-b border-border-subtle px-3 py-1.5 font-mono text-[0.65rem] tracking-wide text-muted uppercase">
-          pipeline
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle px-3 py-2.5 sm:px-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="size-1.5 shrink-0 bg-primary" aria-hidden="true" />
+          <p className="truncate font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+            Example job · cafe / Surat
+          </p>
         </div>
-        <pre className="overflow-x-auto p-3 font-mono text-[0.7rem] leading-relaxed break-anywhere text-[#c8cdd3] hero-terminal">
+        <StatusIndicator status="success" label="Sample complete" />
+      </div>
+
+      <ol className="grid grid-cols-2 border-b border-border-subtle lg:grid-cols-4">
+        {stages.map((stage, index) => (
+          <li
+            key={stage.id}
+            className={cn(
+              "hero-panel relative px-3 py-3 sm:px-4",
+              `hero-panel-${index + 1}`,
+              index % 2 === 0 && "border-r border-border-subtle lg:border-r-0",
+              index < 2 && "border-b border-border-subtle lg:border-b-0",
+              index < stages.length - 1 && "lg:border-r lg:border-border-subtle",
+            )}
+          >
+            <p className="font-mono text-[0.65rem] tracking-wide text-primary">
+              {stage.id} {stage.label}
+            </p>
+            <p
+              className={cn(
+                "mt-1.5 font-mono text-xs leading-snug",
+                stage.accent ? "text-primary" : "text-foreground",
+              )}
+            >
+              {stage.detail}
+            </p>
+          </li>
+        ))}
+      </ol>
+
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[28rem] border-collapse text-left text-xs">
+          <thead>
+            <tr className="border-b border-border-subtle bg-elevated">
+              {previewColumns.map((column) => (
+                <th
+                  key={column}
+                  className="px-3 py-2 font-mono text-[0.65rem] font-medium tracking-wide text-muted uppercase sm:px-4"
+                >
+                  {column}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {EXAMPLE_CSV_ROWS.map((row) => (
+              <tr
+                key={row.company_name}
+                className="border-b border-border-subtle last:border-b-0"
+              >
+                {previewColumns.map((column) => (
+                  <td
+                    key={column}
+                    className={cn(
+                      "max-w-[10rem] truncate px-3 py-2 sm:px-4",
+                      column === "company_name"
+                        ? "font-medium text-foreground"
+                        : "font-mono text-terminal-fg",
+                    )}
+                  >
+                    {row[column]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="border-t border-border-subtle bg-terminal">
+        <pre className="overflow-x-auto px-3 py-2.5 font-mono text-[0.7rem] leading-relaxed text-terminal-fg hero-terminal sm:px-4">
           <span className="terminal-prompt">$</span> bizscrape run --city surat
-          --niche cafe --area &quot;mota varachha&quot; --target 50{"\n"}
+          --niche cafe --target 50
+          {"\n"}
           <span className="terminal-stage">DISCOVER</span>
-          {"  "}84 listings · 61 local matches{"\n"}
-          <span className="terminal-stage">RESOLVE</span>
-          {"   "}48 websites found{"\n"}
+          {"  "}61 local matches
+          {"\n"}
           <span className="terminal-stage">ENRICH</span>
-          {"    "}37 public emails · social links{"\n"}
+          {"    "}37 public emails
+          {"\n"}
           <span className="terminal-ok">EXPORT</span>
           {"    "}wrote data/surat_cafe.csv
         </pre>

@@ -16,16 +16,22 @@ import {
 
 type JobActionsProps = {
   job: ScrapeJobSnapshot;
+  /** Header placement: stop control only. */
+  stopOnly?: boolean;
+  /** Footer placement: mock provider tools only. */
+  devOnly?: boolean;
 };
 
-export function JobActions({ job }: JobActionsProps) {
+export function JobActions({
+  job,
+  stopOnly = false,
+  devOnly = false,
+}: JobActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
   const canCancel =
-    !isTerminalJobStatus(job.status) && job.status === "cancelling"
-      ? false
-      : !isTerminalJobStatus(job.status) && job.status !== "cancelling";
+    !isTerminalJobStatus(job.status) && job.status !== "cancelling";
 
   const isCancelling = cancelling || job.status === "cancelling";
 
@@ -38,34 +44,65 @@ export function JobActions({ job }: JobActionsProps) {
     try {
       await cancelScrapeJob(job.id);
     } finally {
-      // Keep loading until backend confirms cancelled (status drives UI).
       setCancelling(false);
     }
   }
 
+  if (devOnly) {
+    if (job.provider !== "mock") {
+      return null;
+    }
+    return (
+      <div className="border border-border-subtle bg-elevated p-3">
+        <p className="font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+          Dev controls · mock only
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isTerminalJobStatus(job.status)}
+            onClick={() => simulateJobConnectionInterrupt(job.id)}
+          >
+            Simulate disconnect
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isTerminalJobStatus(job.status)}
+            onClick={() => simulateJobFailure(job.id)}
+          >
+            Simulate failure
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2 sm:justify-end">
         {canCancel ? (
           <Button
             variant="destructive"
+            size={stopOnly ? "md" : "lg"}
             loading={isCancelling}
             onClick={() => setConfirmOpen(true)}
           >
-            Stop scraping
+            Stop scrape
           </Button>
         ) : null}
         {job.status === "cancelling" ? (
-          <p className="text-sm text-muted" role="status">
-            Stopping scraper… Cleaning up the running browser process.
+          <p className="text-sm text-warning" role="status">
+            Stopping… cleaning up the browser process.
           </p>
         ) : null}
       </div>
 
-      {job.provider === "mock" ? (
-        <div className="rounded-md border border-border-subtle bg-background-elevated p-3">
-          <p className="text-xs font-medium text-muted">
-            Development controls (mock provider only)
+      {!stopOnly && job.provider === "mock" ? (
+        <div className="border border-border-subtle bg-elevated p-3">
+          <p className="font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+            Dev controls · mock only
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Button

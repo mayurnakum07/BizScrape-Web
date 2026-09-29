@@ -35,7 +35,7 @@ export function Checkbox({
         disabled={disabled}
         className={cn(
           "mt-0.5 size-4 shrink-0 rounded-sm border border-border bg-surface text-primary accent-primary",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+          "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
         )}
         {...props}
       />

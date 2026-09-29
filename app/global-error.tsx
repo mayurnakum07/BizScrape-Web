@@ -10,6 +10,7 @@ type GlobalErrorProps = {
 /**
  * Root-level fallback when the root layout itself fails.
  * Must define its own html/body because it replaces the root layout.
+ * Colors mirror design tokens (inline — globals.css is unavailable here).
  */
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
@@ -27,8 +28,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           justifyContent: "center",
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
-          background: "#0b0d10",
-          color: "#e8eaed",
+          background: "#0B0D0C",
+          color: "#E7EAE4",
         }}
       >
         <div style={{ maxWidth: "28rem", padding: "1.5rem" }}>
@@ -38,7 +39,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               fontSize: "0.875rem",
               letterSpacing: "0.04em",
               textTransform: "uppercase",
-              color: "#e05252",
+              color: "#FF7568",
               fontFamily: "ui-monospace, monospace",
             }}
           >
@@ -47,7 +48,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           <h1 style={{ margin: "0.75rem 0 0", fontSize: "1.5rem" }}>
             Application error
           </h1>
-          <p style={{ margin: "0.75rem 0 0", color: "#8b939e" }}>
+          <p style={{ margin: "0.75rem 0 0", color: "#89918A" }}>
             The application failed to load. Please try again.
           </p>
           <button
@@ -57,9 +58,9 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               marginTop: "1.5rem",
               padding: "0.5rem 1rem",
               border: "none",
-              borderRadius: "0.375rem",
-              background: "#4d8ef7",
-              color: "#061018",
+              borderRadius: "0.25rem",
+              background: "#C8F04A",
+              color: "#0B0D0C",
               cursor: "pointer",
               fontSize: "0.875rem",
               fontWeight: 600,

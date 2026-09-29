@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:api": "python -m bizscrape.api",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -22,7 +23,8 @@
     "next": "^16.3.5",
     "react": "^19.3.0",
     "react-country-state-city": "^1.1.13",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "react-toastify": "^11.1.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.1",

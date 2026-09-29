@@ -1,19 +1,26 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { upsertScrapeFromJob } from "@/services/scrape-history/idb";
 import type { ScrapeJobSnapshot } from "@/types/scrape-job";
 import type { ScrapeResultsSnapshot } from "@/types/scrape-results";
 
+export type PersistScrapeHistoryState = {
+  persistError: string | null;
+  dismissPersistError: () => void;
+};
+
 /**
  * Persist completed / cancelled job result sets into IndexedDB once records exist.
+ * Surfaces write failures without breaking the job UI.
  */
 export function usePersistScrapeHistory(
   job: ScrapeJobSnapshot | null,
   results: ScrapeResultsSnapshot,
-): void {
+): PersistScrapeHistoryState {
   const savedSignature = useRef<string>("");
+  const [persistError, setPersistError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!job) {
@@ -58,8 +65,21 @@ export function usePersistScrapeHistory(
       records: results.records,
       summary: results.summary,
       status,
-    }).catch(() => {
-      // History is best-effort; never break the job UI.
-    });
+    })
+      .then(() => {
+        setPersistError(null);
+      })
+      .catch((error) => {
+        setPersistError(
+          error instanceof Error
+            ? error.message
+            : "IndexedDB could not save this run.",
+        );
+      });
   }, [job, results]);
+
+  return {
+    persistError,
+    dismissPersistError: () => setPersistError(null),
+  };
 }

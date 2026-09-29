@@ -7,12 +7,20 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
 await page.goto("http://localhost:3000/scrape", { waitUntil: "networkidle" });
-await page.getByRole("textbox", { name: "Business type" }).fill("cafe");
-await page.getByRole("combobox", { name: "City" }).fill("Surat");
-await page.getByRole("spinbutton", { name: "Target businesses" }).fill("10");
-await page.locator("form").first().getByRole("button", { name: "Start scraping" }).click();
+await page.getByRole("textbox", { name: "Business category" }).fill("cafe");
+// Country defaults to India in the modal; pick state + city.
+await page.locator("#state").click();
+await page.locator('input[type="search"]').last().fill("Gujarat");
+await page.getByRole("option", { name: "Gujarat", exact: true }).click();
+await page.locator("#city").click();
+await page.locator('input[type="search"]').last().fill("Surat");
+await page.getByRole("option", { name: "Surat", exact: true }).click();
+await page.getByRole("spinbutton", { name: "Target count" }).fill("10");
+await page.locator("form").first().getByRole("button", { name: "Start scrape" }).click();
 
 try {
+  await page.waitForURL(/\/scrape\?job=/, { timeout: 15_000 });
+  await page.getByRole("link", { name: "Open full workspace" }).click();
   await page.waitForURL(/\/scrape\/job\//, { timeout: 15_000 });
   console.log("job url", page.url());
   await page.waitForTimeout(2200);
@@ -26,7 +34,7 @@ try {
   await page.waitForTimeout(1200);
   await page.screenshot({ path: "docs/images/04-results.png" });
 
-  // Export section is on the results page — crop-friendly full viewport is enough.
+  // Results workspace — table is the primary viewport focus.
   console.log("captured job + results");
 } catch (error) {
   console.error("capture failed:", error instanceof Error ? error.message : error);

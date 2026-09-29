@@ -46,7 +46,11 @@ export function JobView({ job }: JobViewProps) {
       lastStatusRef.current = job.status;
     }
 
-    if (!nextAnnouncement && job.currentStage !== lastStageRef.current && job.currentStage) {
+    if (
+      !nextAnnouncement &&
+      job.currentStage !== lastStageRef.current &&
+      job.currentStage
+    ) {
       const stageName = job.currentStage.replaceAll("_", " ");
       nextAnnouncement = `${stageName[0]?.toUpperCase() ?? ""}${stageName.slice(1)} started.`;
       lastStageRef.current = job.currentStage;
@@ -68,7 +72,7 @@ export function JobView({ job }: JobViewProps) {
   }, [job.currentStage, job.status, job.targetProgress.collected]);
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8">
+    <div className="flex flex-col gap-5">
       <JobHeader job={job} />
       <JobConnectionBanner jobId={job.id} connection={job.connection} />
 
@@ -76,23 +80,20 @@ export function JobView({ job }: JobViewProps) {
       {job.status === "failed" ? <JobFailureState job={job} /> : null}
       {job.status === "cancelled" ? <JobCancelledState job={job} /> : null}
 
-      <div className="flex flex-col gap-6 sm:gap-8">
-        <div className="order-1">
-          <JobProgressPanel job={job} />
-        </div>
-        <div className="order-2">
-          <JobPipeline job={job} />
-        </div>
-      </div>
+      <JobPipeline job={job} />
+      <JobProgressPanel job={job} />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <JobStatsPanel stats={job.stats} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <JobStatsPanel
+          stats={job.stats}
+          processed={job.targetProgress.collected}
+        />
         <JobActivityLog entries={job.activity} />
       </div>
 
       <JobLatestResults jobId={job.id} />
 
-      <JobActions job={job} />
+      <JobActions job={job} devOnly />
 
       <p className="sr-only" role="status" aria-live="polite">
         {announcement}

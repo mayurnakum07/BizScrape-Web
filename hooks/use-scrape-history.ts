@@ -5,12 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 import {
   deleteStoredScrape,
   getStoredScrape,
-  listStoredScrapes,
+  listStoredScrapeSummaries,
   type StoredScrape,
+  type StoredScrapeSummary,
 } from "@/services/scrape-history/idb";
 
 export function useScrapeHistoryList() {
-  const [items, setItems] = useState<StoredScrape[]>([]);
+  const [items, setItems] = useState<StoredScrapeSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +19,7 @@ export function useScrapeHistoryList() {
     setLoading(true);
     setError(null);
     try {
-      const rows = await listStoredScrapes();
+      const rows = await listStoredScrapeSummaries();
       setItems(rows);
     } catch (err) {
       setError(
@@ -33,13 +34,10 @@ export function useScrapeHistoryList() {
     void refresh();
   }, [refresh]);
 
-  const remove = useCallback(
-    async (id: string) => {
-      await deleteStoredScrape(id);
-      setItems((current) => current.filter((row) => row.id !== id));
-    },
-    [],
-  );
+  const remove = useCallback(async (id: string) => {
+    await deleteStoredScrape(id);
+    setItems((current) => current.filter((row) => row.id !== id));
+  }, []);
 
   return { items, loading, error, refresh, remove };
 }

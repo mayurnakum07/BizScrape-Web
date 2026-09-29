@@ -45,6 +45,36 @@ export function serializeRecordsToCsv(
   return withBom ? `${CSV_UTF8_BOM}${body}` : body;
 }
 
+const CSV_YIELD_EVERY = 250;
+
+function yieldToMain(): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
+}
+
+/**
+ * Async CSV serialize that yields to the event loop so large exports
+ * do not freeze the UI for hundreds of ms.
+ */
+export async function serializeRecordsToCsvAsync(
+  records: BusinessRecord[],
+  options?: { withBom?: boolean },
+): Promise<string> {
+  const withBom = options?.withBom ?? true;
+  const parts: string[] = [CSV_COLUMNS.join(",")];
+
+  for (let index = 0; index < records.length; index += 1) {
+    parts.push(recordToCsvRow(records[index]!));
+    if (index > 0 && index % CSV_YIELD_EVERY === 0) {
+      await yieldToMain();
+    }
+  }
+
+  const body = `${parts.join("\r\n")}\r\n`;
+  return withBom ? `${CSV_UTF8_BOM}${body}` : body;
+}
+
 export type CsvInspection = {
   hasBom: boolean;
   header: string[];

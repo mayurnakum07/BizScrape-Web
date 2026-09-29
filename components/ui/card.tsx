@@ -20,7 +20,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-surface text-foreground shadow-[var(--shadow-sm)]",
+        "rounded-md border border-border bg-surface text-foreground shadow-sm",
         paddingClasses[padding],
         className,
       )}

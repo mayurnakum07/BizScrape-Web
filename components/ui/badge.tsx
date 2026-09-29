@@ -16,11 +16,11 @@ export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 
 const variantClasses: Record<BadgeVariant, string> = {
   default: "border-border bg-surface text-muted",
-  primary: "border-primary/25 bg-primary-muted text-primary",
-  success: "border-success/25 bg-success-muted text-success",
-  warning: "border-warning/25 bg-warning-muted text-warning",
-  error: "border-error/25 bg-error-muted text-error",
-  info: "border-info/25 bg-info-muted text-info",
+  primary: "border-primary/30 bg-primary-muted text-primary",
+  success: "border-success/30 bg-success-muted text-success",
+  warning: "border-warning/30 bg-warning-muted text-warning",
+  error: "border-error/30 bg-error-muted text-error",
+  info: "border-info/30 bg-info-muted text-info",
 };
 
 export function Badge({
@@ -31,7 +31,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium transition-ui",
         variantClasses[variant],
         className,
       )}

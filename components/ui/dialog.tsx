@@ -12,22 +12,38 @@ import { IconX } from "@/components/icons";
 import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/lib/cn";
 
+export type DialogSize = "md" | "lg" | "xl";
+
 export type DialogProps = {
   open: boolean;
   onClose: () => void;
   title: string;
   description?: string;
   children: ReactNode;
+  footer?: ReactNode;
   className?: string;
   /** Bottom sheet on narrow viewports (default true). */
   mobileSheet?: boolean;
+  size?: DialogSize;
+  /**
+   * When true (default), backdrop click does not close — use Close / Cancel.
+   * Escape still closes via the native dialog unless prevented by the caller.
+   */
+  disableBackdropClose?: boolean;
 };
 
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+const sizeClasses: Record<DialogSize, string> = {
+  md: "w-[min(100%-2rem,28rem)]",
+  lg: "w-[min(100%-1.5rem,40rem)]",
+  xl: "w-[min(100%-1rem,52rem)]",
+};
+
 /**
  * Accessible modal using the native <dialog> element.
+ * Header/footer stay fixed; the body scrolls when content overflows.
  */
 export function Dialog({
   open,
@@ -35,11 +51,15 @@ export function Dialog({
   title,
   description,
   children,
+  footer,
   className,
   mobileSheet = true,
+  size = "md",
+  disableBackdropClose = true,
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -52,15 +72,27 @@ export function Dialog({
 
     if (open && !node.open) {
       lastFocusedRef.current =
-        document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+      document.body.style.overflow = "hidden";
       node.showModal();
       requestAnimationFrame(() => {
-        const focusables = panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
-        focusables?.[0]?.focus();
+        const bodyFocusables =
+          bodyRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
+        const panelFocusables =
+          panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
+        const target = bodyFocusables?.[0] ?? panelFocusables?.[0];
+        target?.focus();
       });
     } else if (!open && node.open) {
       node.close();
+      document.body.style.overflow = "";
     }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   useEffect(() => {
@@ -105,7 +137,11 @@ export function Dialog({
 
   const handleClose = useCallback(() => {
     onClose();
-    lastFocusedRef.current?.focus();
+  }, [onClose]);
+
+  const handleNativeClose = useCallback(() => {
+    document.body.style.overflow = "";
+    onClose();
   }, [onClose]);
 
   return (
@@ -115,21 +151,28 @@ export function Dialog({
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       className={cn(
-        "border border-border bg-surface p-0 text-foreground shadow-[var(--shadow-md)]",
+        "dialog-root z-[var(--z-modal)] border border-border bg-surface p-0 text-foreground shadow-md",
         "backdrop:bg-black/60",
-        "open:animate-[dialog-in_var(--duration-normal)_var(--ease-out)]",
-        mobileSheet ? "dialog-sheet" : "m-auto w-[min(100%-2rem,28rem)] rounded-lg",
+        "open:animate-[dialog-in_var(--duration-fast)_var(--ease-out)]",
+        mobileSheet
+          ? cn("dialog-sheet", size !== "md" && "dialog-sheet-wide")
+          : cn("m-auto", sizeClasses[size]),
+        size === "lg" && mobileSheet && "sm:w-[min(100%-1.5rem,40rem)]",
+        size === "xl" && mobileSheet && "sm:w-[min(100%-1rem,52rem)]",
         className,
       )}
-      onClose={handleClose}
+      onClose={handleNativeClose}
       onClick={(event) => {
+        if (disableBackdropClose) {
+          return;
+        }
         if (event.target === ref.current) {
           handleClose();
         }
       }}
     >
-      <div ref={panelRef} className="flex max-h-[inherit] flex-col">
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-border-subtle px-5 py-4">
+      <div ref={panelRef} className="dialog-panel">
+        <div className="dialog-header flex shrink-0 items-start justify-between gap-4 border-b border-border-subtle px-4 py-3 sm:px-5">
           <div className="min-w-0">
             <h2 id={titleId} className="text-section-heading break-anywhere">
               {title}
@@ -149,7 +192,14 @@ export function Dialog({
             <IconX size={16} />
           </IconButton>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
+        <div ref={bodyRef} className="dialog-body px-4 py-4 sm:px-5">
+          {children}
+        </div>
+        {footer ? (
+          <div className="dialog-footer shrink-0 border-t border-border-subtle px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </dialog>
   );

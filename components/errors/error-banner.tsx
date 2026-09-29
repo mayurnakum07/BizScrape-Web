@@ -5,10 +5,10 @@ import { cn } from "@/lib/cn";
 export type ErrorSeverity = "info" | "warning" | "error" | "success";
 
 const severityClass: Record<ErrorSeverity, string> = {
-  info: "border-border bg-background-elevated text-foreground",
-  warning: "border-warning/40 bg-warning-muted/20 text-warning",
-  error: "border-error/40 bg-error-muted/15 text-error",
-  success: "border-success/40 bg-success-muted/20 text-success",
+  info: "border-border bg-elevated text-foreground",
+  warning: "border-warning/40 bg-warning-muted text-warning",
+  error: "border-error/40 bg-error-muted text-error",
+  success: "border-success/40 bg-success-muted text-success",
 };
 
 type ErrorBannerProps = {
@@ -30,7 +30,7 @@ export function ErrorBanner({
     <div
       role="status"
       className={cn(
-        "rounded-lg border px-4 py-3 text-sm",
+        "motion-state-enter rounded-md border px-4 py-3 text-sm",
         severityClass[severity],
         className,
       )}

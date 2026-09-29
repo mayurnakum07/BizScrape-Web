@@ -5,17 +5,18 @@ import { useState, type FormEvent } from "react";
 
 import { AdvancedOptions } from "@/components/scrape/advanced-options";
 import { BusinessTypeField } from "@/components/scrape/business-type-field";
-import { LocationFields } from "@/components/scrape/location-fields";
+import { FormSection } from "@/components/scrape/form-section";
+import { LocationFields } from "@/components/scrape/location-fields-lazy";
 import { ScrapeSummary } from "@/components/scrape/scrape-summary";
 import { SourceSelector } from "@/components/scrape/source-selector";
 import { TargetField } from "@/components/scrape/target-field";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DEFAULT_SCRAPE_CONFIG } from "@/lib/scrape/constants";
 import {
   validateScrapeConfig,
   type ScrapeFieldErrors,
 } from "@/lib/scrape/validation";
+import { validationSummaryCopy } from "@/lib/workflow-state";
 import type { ScrapeSourceId } from "@/types/scrape";
 import { SCRAPE_PATH } from "@/lib/constants";
 import { createScrapeJob } from "@/services/scrape-job";
@@ -99,67 +100,69 @@ export function ScrapeForm() {
     }
   }
 
+  const errorCount = Object.keys(errors).length;
+
   return (
-    <div className="grid items-start gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(17rem,0.8fr)] lg:gap-8">
-      <Card padding="lg" className="border-border/80">
-        <CardHeader className="space-y-2">
-          <CardTitle>Scrape configuration</CardTitle>
-          <p className="text-small">
-            Pick what to find and where. Discovery runs on Google Maps through
-            the local Python API.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form className="flex flex-col gap-8" onSubmit={handleSubmit} noValidate>
-            <section aria-labelledby="section-search" className="space-y-4">
-              <div className="border-b border-border-subtle pb-2">
-                <h3
-                  id="section-search"
-                  className="font-mono text-xs tracking-wide text-muted uppercase"
-                >
-                  What to find
-                </h3>
-              </div>
-              <BusinessTypeField
-                value={form.businessType}
-                error={errors.businessType}
-                onChange={(value) => update("businessType", value)}
-              />
-            </section>
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(16.5rem,0.75fr)] lg:gap-6">
+      <div className="min-w-0 border border-border bg-surface">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle px-4 py-3 sm:px-5">
+          <div>
+            <p className="font-mono text-[0.65rem] tracking-wide text-muted uppercase">
+              Query builder
+            </p>
+            <p className="mt-0.5 text-sm text-muted">
+              Category, location, target, and source for this job.
+            </p>
+          </div>
+          {errorCount > 0 ? (
+            <p className="max-w-xs text-right font-mono text-xs text-error" role="status">
+              {validationSummaryCopy(errorCount).title}
+            </p>
+          ) : null}
+        </div>
 
-            <section aria-labelledby="section-location" className="space-y-4">
-              <div className="border-b border-border-subtle pb-2">
-                <h3
-                  id="section-location"
-                  className="font-mono text-xs tracking-wide text-muted uppercase"
-                >
-                  Where to search
-                </h3>
-              </div>
-              <LocationFields
-                country={form.country}
-                state={form.state}
-                city={form.city}
-                area={form.area}
-                countryError={errors.country}
-                stateError={errors.state}
-                cityError={errors.city}
-                onCountryChange={(value) => update("country", value)}
-                onStateChange={(value) => update("state", value)}
-                onCityChange={(value) => update("city", value)}
-                onAreaChange={(value) => update("area", value)}
-              />
-            </section>
+        <form onSubmit={handleSubmit} noValidate>
+          <FormSection
+            id="section-category"
+            title="Category"
+            description="What kind of businesses should the scrape collect?"
+            className="border-b border-border-subtle"
+          >
+            <BusinessTypeField
+              value={form.businessType}
+              error={errors.businessType}
+              onChange={(value) => update("businessType", value)}
+            />
+          </FormSection>
 
-            <section aria-labelledby="section-collection" className="space-y-4">
-              <div className="border-b border-border-subtle pb-2">
-                <h3
-                  id="section-collection"
-                  className="font-mono text-xs tracking-wide text-muted uppercase"
-                >
-                  How many
-                </h3>
-              </div>
+          <FormSection
+            id="section-location"
+            title="Location"
+            description="Country, state, and city are required. Area narrows discovery inside the city."
+            className="border-b border-border-subtle"
+          >
+            <LocationFields
+              country={form.country}
+              state={form.state}
+              city={form.city}
+              area={form.area}
+              countryError={errors.country}
+              stateError={errors.state}
+              cityError={errors.city}
+              onCountryChange={(value) => update("country", value)}
+              onStateChange={(value) => update("state", value)}
+              onCityChange={(value) => update("city", value)}
+              onAreaChange={(value) => update("area", value)}
+            />
+          </FormSection>
+
+          <FormSection
+            id="section-collection"
+            title="Target & source"
+            description="How many businesses to aim for, and which discovery source to use."
+            className="border-b border-border-subtle"
+          >
+            <div className="grid gap-5 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] sm:items-start">
               <TargetField
                 value={form.target}
                 error={errors.target}
@@ -170,31 +173,33 @@ export function ScrapeForm() {
                 error={errors.sources}
                 onChange={(value) => update("sources", value)}
               />
-            </section>
+            </div>
+          </FormSection>
 
+          <div className="border-b border-border-subtle px-4 py-4 sm:px-5">
             <AdvancedOptions
               searchAllLocalities={form.searchAllLocalities}
               onSearchAllLocalitiesChange={(value) =>
                 update("searchAllLocalities", value)
               }
             />
+          </div>
 
-            <div className="flex flex-col gap-3 border-t border-border-subtle pt-5 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
-              <p className="text-xs text-muted">
-                Results are saved in this browser after each scrape.
-              </p>
-              <Button
-                type="submit"
-                size="lg"
-                loading={submitting}
-                className="w-full sm:ml-auto sm:w-auto"
-              >
-                {submitting ? "Starting…" : "Start scraping"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+          <div className="sticky bottom-0 z-10 flex flex-col gap-3 border-t border-border bg-surface px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <p className="text-xs text-muted">
+              Finished result sets are saved in this browser under History.
+            </p>
+            <Button
+              type="submit"
+              size="lg"
+              loading={submitting}
+              className="w-full shrink-0 sm:w-auto"
+            >
+              {submitting ? "Starting…" : "Start scrape"}
+            </Button>
+          </div>
+        </form>
+      </div>
 
       <ScrapeSummary
         businessType={form.businessType}
@@ -205,6 +210,7 @@ export function ScrapeForm() {
         target={form.target}
         sources={form.sources}
         searchAllLocalities={form.searchAllLocalities}
+        className="order-first lg:order-none"
       />
     </div>
   );

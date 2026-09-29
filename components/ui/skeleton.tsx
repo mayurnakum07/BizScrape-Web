@@ -9,7 +9,7 @@ export type SkeletonProps = HTMLAttributes<HTMLDivElement> & {
 const roundedClasses = {
   sm: "rounded-sm",
   md: "rounded-md",
-  lg: "rounded-lg",
+  lg: "rounded-md",
   full: "rounded-full",
 };
 
@@ -22,7 +22,7 @@ export function Skeleton({
     <div
       aria-hidden="true"
       className={cn(
-        "animate-pulse bg-surface-hover",
+        "animate-pulse motion-skeleton bg-surface-hover",
         roundedClasses[rounded],
         className,
       )}

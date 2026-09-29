@@ -19,7 +19,7 @@ const statusConfig: Record<
   },
   running: {
     label: "Running",
-    dot: "bg-primary animate-pulse",
+    dot: "bg-primary motion-live-dot",
     text: "text-primary",
   },
   success: {
@@ -50,7 +50,7 @@ export function StatusIndicator({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 text-sm font-medium",
+        "inline-flex items-center gap-2 text-sm font-medium transition-ui",
         config.text,
         className,
       )}
