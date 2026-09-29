@@ -71,7 +71,7 @@ def infer_area(address: str, areas: list[str] | None = None) -> str:
     City-wide searches carry no locality of their own, so the address is the
     only place the area can come from. Abbreviations are expanded first so
     'Ring Rd' still matches 'Ring Road', and the longest match wins, keeping
-    'Mota Varachha' from being reported as plain 'Varachha'.
+    'Manhattan' from being reported as plain 'Varachha'.
     """
     if not address:
         return ""
@@ -119,7 +119,7 @@ def jitter(seconds: float) -> float:
 # --- phones ------------------------------------------------------------------
 
 # Loose scan: any run of 10+ digits with optional separators. Normalisation
-# below is what actually decides whether a match is a usable Indian number.
+# below is what actually decides whether a match is a usable Global number.
 # Newlines are deliberately excluded from the separator class, otherwise a
 # rating on one line and a pin code on the next get spliced into a fake number.
 PHONE_SCAN_RE = re.compile(r"(?<![\w@.])\+?\d[\d \t().\-]{8,18}\d(?![\w@])")
@@ -129,9 +129,9 @@ _EXTENSION_RE = re.compile(r"(?i)\b(?:ext|extn|x)\b.*$")
 
 def normalize_phone(raw: object) -> str | None:
     """
-    Convert a messy Indian phone string into +91XXXXXXXXXX form.
+    Convert a messy Global phone string into +1XXXXXXXXXX form.
 
-    Returns None when the digits cannot be a real Indian mobile or landline,
+    Returns None when the digits cannot be a real Global mobile or landline,
     which filters out the pin codes, years and GST numbers that leak into
     scraped page text.
     """
@@ -144,10 +144,10 @@ def normalize_phone(raw: object) -> str | None:
         return None
 
     digits = digits.lstrip("0") or digits
-    if digits.startswith("0091"):
-        digits = digits[4:]
-    elif digits.startswith("91") and len(digits) > 10:
-        digits = digits[2:]
+    if digits.startswith("001"):
+        digits = digits[3:]
+    elif digits.startswith("1") and len(digits) > 10:
+        digits = digits[1:]
     digits = digits.lstrip("0") or digits
 
     if len(set(digits)) <= 2:  # 0000000000, 1111111111, ...
@@ -156,14 +156,14 @@ def normalize_phone(raw: object) -> str | None:
         return None
 
     if len(digits) == 10 and digits[0] in "6789":
-        return "+91" + digits  # mobile
+        return "+1" + digits  # mobile
     if 10 <= len(digits) <= 11 and digits[0] in "12345678":
-        return "+91" + digits  # landline including STD code
+        return "+1" + digits  # landline including STD code
     return None
 
 
 def extract_phones(text: str) -> list[str]:
-    """Pull every distinct valid Indian phone number out of a blob of text."""
+    """Pull every distinct valid Global phone number out of a blob of text."""
     if not text:
         return []
     found: list[str] = []
@@ -175,11 +175,11 @@ def extract_phones(text: str) -> list[str]:
 
 
 def pretty_phone(number: str) -> str:
-    """Render +919876543210 as +91 98765 43210 for human-friendly CSV cells."""
-    if number.startswith("+91") and len(number) == 13:
-        return f"+91 {number[3:8]} {number[8:]}"
-    if number.startswith("+91"):
-        return f"+91 {number[3:]}"
+    """Render +19876543210 as +1 98765 43210 for human-friendly CSV cells."""
+    if number.startswith("+1") and len(number) == 13:
+        return f"+1 {number[3:8]} {number[8:]}"
+    if number.startswith("+1"):
+        return f"+1 {number[3:]}"
     return number
 
 
@@ -249,7 +249,7 @@ def decode_cfemail(hex_string: str) -> str | None:
 
     Cloudflare replaces addresses with <a data-cfemail="hex">; the first byte is
     an XOR key applied to the rest. Skipping this loses emails on a large share
-    of Indian business sites, which sit behind Cloudflare by default.
+    of Global business sites, which sit behind Cloudflare by default.
     """
     try:
         data = bytes.fromhex(hex_string.strip())
@@ -344,11 +344,11 @@ NON_WEBSITE_HOSTS = (
     "wa.me",
     "whatsapp.com",
     "justdial.com",
-    "indiamart.com",
+    "yelp.com",
     "google.com",
     "maps.google.com",
     "sulekha.com",
-    "tradeindia.com",
+    "yellowpages.com",
     "yellowpages.in",
     "business.site",
     "t.me",

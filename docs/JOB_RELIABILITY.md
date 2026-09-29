@@ -1,4 +1,4 @@
-# Job reliability — errors, retry, and cancellation
+# Job reliability - errors, retry, and cancellation
 
 This document describes Milestone 10 behavior for developers.
 
@@ -52,7 +52,7 @@ Stack traces are never returned to the browser. Full exceptions are logged serve
 - Retries create a **new job ID** (`POST /jobs/{id}/retry`).
 - Only `failed` (with `retryable: true`) or `cancelled` jobs can be retried.
 - `MAX_JOB_RETRIES` (default `3`) limits lineage retries.
-- A retry always starts fresh — it does not merge with the previous job’s records.
+- A retry always starts fresh - it does not merge with the previous job’s records.
 
 ## Cancellation
 

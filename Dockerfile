@@ -1,4 +1,4 @@
-# BizScrape Python API — long-running FastAPI + Playwright scraper
+# BizScrape Python API - long-running FastAPI + Playwright scraper
 #
 # Build:  docker build -t bizscrape-api .
 # Run:    docker run --rm -p 8000:8000 -v bizscrape-jobs:/data/jobs \

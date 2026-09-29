@@ -31,7 +31,7 @@ body:
     id: query
     attributes:
       label: Example query (non-sensitive)
-      description: "e.g. niche=cafe city=Surat — no personal data"
+      description: "e.g. niche=cafe city=New York - no personal data"
   - type: checkboxes
     id: live
     attributes:

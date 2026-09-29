@@ -64,10 +64,10 @@ class SiteEnricher:
         counters = {"done": 0, "failed": 0, "emails": 0, "processed": 0}
         total = len(targets)
 
-        # Certificates on small Indian business sites are frequently expired or
+        # Certificates on small Global business sites are frequently expired or
         # misconfigured; refusing them would silently drop a lot of real data.
-        # verify=False: many Indian SME sites use expired/misconfigured certs.
-        # Documented risk — enrichment only fetches user-derived company URLs.
+        # verify=False: many Global SME sites use expired/misconfigured certs.
+        # Documented risk - enrichment only fetches user-derived company URLs.
         async with httpx.AsyncClient(
             follow_redirects=True,
             max_redirects=config.MAX_REDIRECTS,
@@ -270,7 +270,7 @@ class SiteEnricher:
                     socials[network] = utils.canonical_url(urljoin(page_url, href))
 
         # Cloudflare hides addresses behind a hex blob; without decoding these,
-        # a large share of Indian business sites appear to have no email at all.
+        # a large share of Global business sites appear to have no email at all.
         for element in soup.select("[data-cfemail]"):
             add_email(utils.decode_cfemail(element.get("data-cfemail", "")))
 

@@ -1,5 +1,5 @@
 /**
- * Remote results provider — updated by SSE events via the job provider.
+ * Remote results provider - updated by SSE events via the job provider.
  * Retains a one-shot hydrate fetch; no interval polling.
  */
 
@@ -53,7 +53,7 @@ class RemoteScrapeResultsProvider implements ScrapeResultsProvider {
       this.results.set(jobId, empty);
       this.emit(jobId);
     }
-    // One-shot hydrate only — live updates come from SSE via job provider.
+    // One-shot hydrate only - live updates come from SSE via job provider.
     if (!this.hydrated.has(jobId) && current.status === "idle" && current.records.length === 0) {
       this.hydrated.add(jobId);
       void this.hydrateOnce(jobId);

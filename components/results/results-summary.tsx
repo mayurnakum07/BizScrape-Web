@@ -13,7 +13,7 @@ const metrics: Array<{ key: keyof ResultSummary; label: string }> = [
 ];
 
 /**
- * Compact metric strip — keeps the dataset table as the visual focus.
+ * Compact metric strip - keeps the dataset table as the visual focus.
  */
 export function ResultsSummary({ summary }: ResultsSummaryProps) {
   return (

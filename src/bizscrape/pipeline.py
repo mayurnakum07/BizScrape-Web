@@ -96,7 +96,7 @@ async def _discover_gmaps(
             stats.area = ", ".join(areas) if isinstance(areas, list) else "all localities"
         dash.refresh()
 
-    ui.rule("Discover — Google Maps")
+    ui.rule("Discover - Google Maps")
     ui.info(f"{profile['label']} · {len(queries)} queries · target {args.target}")
 
     max_scrolls = args.max_scrolls
@@ -208,7 +208,7 @@ async def stage_websites(
     if dash:
         dash.stats.stage = "Websites"
         dash.refresh()
-    ui.rule(f"Websites — {len(rows)} lookups via {args.engine}")
+    ui.rule(f"Websites - {len(rows)} lookups via {args.engine}")
 
     found = 0
     if args.engine == "google":
@@ -235,7 +235,7 @@ async def stage_websites(
                     dash.stats.stage = f"Websites {index}/{len(rows)}"
                     dash.refresh()
                 if getattr(searcher, "blocked", False):
-                    ui.warn("Search engine blocking — stopping early")
+                    ui.warn("Search engine blocking - stopping early")
                     break
                 hard_stop.check()
     except RuntimeError as exc:
@@ -259,7 +259,7 @@ async def stage_enrich(
     if dash:
         dash.stats.stage = "Enrich emails"
         dash.refresh()
-    ui.rule(f"Enrich — {len(rows)} sites ({args.concurrency} parallel)")
+    ui.rule(f"Enrich - {len(rows)} sites ({args.concurrency} parallel)")
 
     def on_result(company_id: int, result: dict) -> None:
         store.save_enrichment(company_id, result)

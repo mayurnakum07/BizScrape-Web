@@ -102,16 +102,21 @@ export function HistoryList() {
   return (
     <section
       aria-label="Scrape runs"
-      className="history-workspace overflow-hidden border border-border bg-surface"
+      className="history-workspace relative overflow-hidden border border-primary/30 shadow-[0_0_30px_rgba(200,240,74,0.05)] bg-black/95 rounded-xl group"
     >
-      <HistoryToolbar
-        query={query}
-        status={status}
-        total={items.length}
-        visible={filtered.length}
-        onQueryChange={setQuery}
-        onStatusChange={setStatus}
-      />
+      {/* Animated scanline */}
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_0%,rgba(200,240,74,0.03)_50%,transparent_100%)] h-full w-full bg-[length:100%_4px] bg-repeat-y animate-[motion-live-dot_2s_linear_infinite]" />
+      
+      <div className="relative z-10 bg-[#111513]/90 backdrop-blur-md border-b border-primary/20">
+        <HistoryToolbar
+          query={query}
+          status={status}
+          total={items.length}
+          visible={filtered.length}
+          onQueryChange={setQuery}
+          onStatusChange={setStatus}
+        />
+      </div>
 
       {filtered.length === 0 ? (
         <WorkflowStatePanel

@@ -1,5 +1,5 @@
 """
-Live integration tests — hit real external networks.
+Live integration tests - hit real external networks.
 
 NOT run in default CI. Requires:
 
@@ -38,8 +38,8 @@ async def test_live_tiny_scrape_target_two() -> None:
 
     cfg = ScrapeRunConfig(
         business_type="cafe",
-        city="surat",
-        area="Vesu",
+        city="newyork",
+        area="Brooklyn",
         target=2,
         sources=["gmaps"],
         out="data/live-test/results.csv",

@@ -18,13 +18,11 @@ import {
   ResultsLoadingRows,
 } from "@/components/results/results-empty";
 import { ResultsPagination } from "@/components/results/results-pagination";
-import { ResultsSelectionBar } from "@/components/results/results-selection-bar";
+
 import {
-  DEFAULT_DENSITY,
   DEFAULT_PAGE_SIZE,
   DEFAULT_VISIBLE_COLUMNS,
   type ResultsColumnId,
-  type ResultsDensity,
   type ResultsPageSize,
 } from "@/components/results/results-columns";
 import {
@@ -72,7 +70,7 @@ function collectFacets(records: BusinessRecord[]): {
 }
 
 /**
- * Shared M6 data workspace — search, filters, sort, columns, density,
+ * Shared M6 data workspace - search, filters, sort, columns, density,
  * selection, pagination, and the M7 detail drawer.
  */
 function DatasetWorkspaceComponent({
@@ -95,11 +93,9 @@ function DatasetWorkspaceComponent({
   });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<ResultsPageSize>(DEFAULT_PAGE_SIZE);
-  const [density, setDensity] = useState<ResultsDensity>(DEFAULT_DENSITY);
   const [visibleColumns, setVisibleColumns] = useState<ResultsColumnId[]>(
     () => [...DEFAULT_VISIBLE_COLUMNS],
   );
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [selected, setSelected] = useState<BusinessRecord | null>(null);
   const deferredQuery = useDeferredValue(filters.query);
   const derivedFilters = useMemo(
@@ -124,13 +120,6 @@ function DatasetWorkspaceComponent({
   const paged = filtered.slice(pageStart, pageStart + pageSize);
   const rangeFrom = filtered.length === 0 ? 0 : pageStart + 1;
   const rangeTo = Math.min(pageStart + pageSize, filtered.length);
-
-  const selectedRecords = useMemo(
-    () => records.filter((record) => selectedIds.has(record.id)),
-    [records, selectedIds],
-  );
-  const pageSelected =
-    paged.length > 0 && paged.every((record) => selectedIds.has(record.id));
 
   const showLoadingSkeleton =
     collectionStatus === "collecting" && records.length === 0;
@@ -162,49 +151,6 @@ function DatasetWorkspaceComponent({
     setSelected(null);
   }, []);
 
-  const handleToggleSelect = useCallback((id: string) => {
-    setSelectedIds((current) => {
-      const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleToggleSelectAllPage = useCallback(() => {
-    setSelectedIds((current) => {
-      const next = new Set(current);
-      const allSelected = paged.every((record) => next.has(record.id));
-      if (allSelected) {
-        for (const record of paged) {
-          next.delete(record.id);
-        }
-      } else {
-        for (const record of paged) {
-          next.add(record.id);
-        }
-      }
-      return next;
-    });
-  }, [paged]);
-
-  const handleClearSelection = useCallback(() => {
-    setSelectedIds(new Set());
-  }, []);
-
-  const handleSelectPage = useCallback(() => {
-    setSelectedIds((current) => {
-      const next = new Set(current);
-      for (const record of paged) {
-        next.add(record.id);
-      }
-      return next;
-    });
-  }, [paged]);
-
   return (
     <>
       <section
@@ -218,24 +164,12 @@ function DatasetWorkspaceComponent({
           total={totalCount}
           visible={visibleCount}
           onChange={handleFiltersChange}
-          density={density}
-          onDensityChange={setDensity}
           visibleColumns={visibleColumns}
           onVisibleColumnsChange={setVisibleColumns}
           exportRecords={records}
           exportConfig={config}
           filteredCount={visibleCount}
           filteredHint={exportFilteredHint}
-        />
-
-        <ResultsSelectionBar
-          selectedCount={selectedIds.size}
-          selectedRecords={selectedRecords}
-          config={config}
-          onClear={handleClearSelection}
-          onSelectPage={handleSelectPage}
-          pageCount={paged.length}
-          pageSelected={pageSelected}
         />
 
         {showLoadingSkeleton ? <ResultsLoadingRows /> : null}
@@ -275,20 +209,14 @@ function DatasetWorkspaceComponent({
             <ResultsTable
               records={paged}
               onSelect={handleSelect}
-              density={density}
               visibleColumns={visibleColumns}
               sort={filters.sort}
               onSortChange={handleSortChange}
-              selectedIds={selectedIds}
-              onToggleSelect={handleToggleSelect}
-              onToggleSelectAllPage={handleToggleSelectAllPage}
               activeRecordId={selected?.id ?? null}
             />
             <ResultsCards
               records={paged}
               onSelect={handleSelect}
-              selectedIds={selectedIds}
-              onToggleSelect={handleToggleSelect}
             />
           </>
         ) : null}

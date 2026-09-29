@@ -26,19 +26,21 @@ export function Spinner({
       role="status"
       aria-live="polite"
     >
-      <span
-        className={cn(
-          "animate-spin rounded-full border-border border-t-primary",
-          sizeClasses[size],
-        )}
+      <img 
+        src="/assets/Logo-Short.png" 
+        alt="" 
         aria-hidden="true"
+        className={cn(
+          "animate-pulse object-contain",
+          size === "sm" ? "h-4" : size === "lg" ? "h-8" : "h-6"
+        )} 
       />
-      <span className={labelHidden ? "sr-only" : undefined}>{label}</span>
+      <span className={labelHidden ? "sr-only" : "font-mono font-bold tracking-widest text-primary animate-pulse"}>{label}</span>
     </span>
   );
 }
 
-/** @deprecated Prefer Spinner — kept for Milestone 01 compatibility. */
+/** @deprecated Prefer Spinner - kept for Milestone 01 compatibility. */
 export function LoadingIndicator(props: SpinnerProps) {
   return <Spinner {...props} />;
 }

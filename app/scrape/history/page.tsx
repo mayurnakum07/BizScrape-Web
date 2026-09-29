@@ -8,7 +8,7 @@ import { SCRAPE_PATH } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Scrape history",
   description:
-    "Manage scrapes saved in this browser — open, export, retry, or delete past runs.",
+    "Manage scrapes saved in this browser - open, export, retry, or delete past runs.",
   robots: { index: false, follow: false },
 };
 

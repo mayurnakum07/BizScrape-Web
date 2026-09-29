@@ -1,5 +1,5 @@
 /**
- * BizScrape design tokens — TypeScript mirror of `app/globals.css` `:root`.
+ * BizScrape design tokens - TypeScript mirror of `app/globals.css` `:root`.
  * Prefer CSS variables / Tailwind theme classes in components.
  * Use this module for docs, tests, and non-CSS consumers.
  */
@@ -52,7 +52,7 @@ export const spacing = {
   24: "6rem",
 } as const;
 
-/** Sharp, controlled geometry — keep radii minimal. */
+/** Sharp, controlled geometry - keep radii minimal. */
 export const radii = {
   none: "0",
   sm: "0.125rem",

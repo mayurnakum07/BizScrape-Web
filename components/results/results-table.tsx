@@ -4,6 +4,15 @@ import { memo, type ReactNode } from "react";
 
 import { CopyButton } from "@/components/results/copy-button";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
   RESULTS_COLUMNS,
   type ResultsColumnId,
   type ResultsDensity,
@@ -21,6 +30,7 @@ import {
   websiteHostname,
   type BusinessRecord,
 } from "@/types/business-record";
+import { type } from "os";
 
 type ResultsTableProps = {
   records: BusinessRecord[];
@@ -29,16 +39,13 @@ type ResultsTableProps = {
   visibleColumns?: ResultsColumnId[];
   sort?: ResultsSortKey;
   onSortChange?: (sort: ResultsSortKey) => void;
-  selectedIds?: ReadonlySet<string>;
-  onToggleSelect?: (id: string) => void;
-  onToggleSelectAllPage?: () => void;
   activeRecordId?: string | null;
 };
 
 function Missing() {
   return (
     <span className="text-muted" aria-label="Missing">
-      —
+      -
     </span>
   );
 }
@@ -106,32 +113,20 @@ export const ResultsTable = memo(function ResultsTable({
   visibleColumns,
   sort = "company_name",
   onSortChange,
-  selectedIds,
-  onToggleSelect,
-  onToggleSelectAllPage,
   activeRecordId = null,
 }: ResultsTableProps) {
-  const selectionEnabled = Boolean(onToggleSelect && selectedIds);
   const columns = RESULTS_COLUMNS.filter((column) =>
     visibleColumns
       ? visibleColumns.includes(column.id)
       : column.defaultVisible,
   );
 
-  const pageSelectedCount = selectionEnabled
-    ? records.filter((record) => selectedIds!.has(record.id)).length
-    : 0;
-  const allPageSelected =
-    selectionEnabled && records.length > 0 && pageSelectedCount === records.length;
-  const somePageSelected =
-    selectionEnabled && pageSelectedCount > 0 && !allPageSelected;
-
   return (
     <div className={RESULTS_TABLE_CLASSES}>
       <div className="results-table-scroll">
-        <table
+        <Table
           className={cn(
-            "results-data-table w-full min-w-[44rem] border-collapse text-left",
+            "results-data-table w-full min-w-[44rem] text-left",
             density === "compact"
               ? "results-data-table-compact"
               : "results-data-table-comfortable",
@@ -141,33 +136,8 @@ export const ResultsTable = memo(function ResultsTable({
             Scraped business results with contact details, location, rating, and
             coverage.
           </caption>
-          <thead>
-            <tr>
-              {selectionEnabled ? (
-                <th
-                  scope="col"
-                  className="results-th results-th-select w-10"
-                >
-                  <label className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center">
-                    <input
-                      type="checkbox"
-                      className="size-4 accent-primary"
-                      checked={allPageSelected}
-                      ref={(node) => {
-                        if (node) {
-                          node.indeterminate = somePageSelected;
-                        }
-                      }}
-                      onChange={() => onToggleSelectAllPage?.()}
-                      aria-label={
-                        allPageSelected
-                          ? "Deselect all rows on this page"
-                          : "Select all rows on this page"
-                      }
-                    />
-                  </label>
-                </th>
-              ) : null}
+          <TableHeader>
+            <TableRow>
               {columns.map((column) => {
                 const sortKey = column.sortable ? columnSortKey(column.id) : null;
                 const isActive = Boolean(sortKey && sort === sortKey);
@@ -183,7 +153,7 @@ export const ResultsTable = memo(function ResultsTable({
                       : undefined;
 
                 return (
-                  <th
+                  <TableHead
                     key={column.id}
                     scope="col"
                     aria-sort={
@@ -218,38 +188,21 @@ export const ResultsTable = memo(function ResultsTable({
                           : undefined
                       }
                     />
-                  </th>
+                  </TableHead>
                 );
               })}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {records.map((record) => {
               const email = primaryEmail(record);
               const host = websiteHostname(record.website);
-              const selected = selectedIds?.has(record.id) ?? false;
-              const active = activeRecordId === record.id;
 
               return (
-                <tr
+                <TableRow
                   key={record.id}
-                  data-selected={selected || active ? "true" : undefined}
-                  className="results-tr"
+                  className="results-tr hover:bg-muted/50 cursor-pointer"
                 >
-                  {selectionEnabled ? (
-                    <td className="results-td results-td-select">
-                      <label className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center">
-                        <input
-                          type="checkbox"
-                          className="size-4 accent-primary"
-                          checked={selected}
-                          onChange={() => onToggleSelect?.(record.id)}
-                          aria-label={`Select ${record.company_name}`}
-                        />
-                      </label>
-                    </td>
-                  ) : null}
-
                   {columns.map((column) => {
                     const hideClass =
                       column.hideBelow === "lg"
@@ -259,7 +212,7 @@ export const ResultsTable = memo(function ResultsTable({
                           : undefined;
 
                     return (
-                      <td
+                      <TableCell
                         key={column.id}
                         className={cn(
                           "results-td",
@@ -413,14 +366,14 @@ export const ResultsTable = memo(function ResultsTable({
                             <Missing />
                           )
                         ) : null}
-                      </td>
+                      </TableCell>
                     );
                   })}
-                </tr>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

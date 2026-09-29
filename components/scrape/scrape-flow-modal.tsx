@@ -3,13 +3,20 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type FormEvent } from "react";
 
-import { AdvancedOptions } from "@/components/scrape/advanced-options";
+
 import { BusinessTypeField } from "@/components/scrape/business-type-field";
 import { LocationFields } from "@/components/scrape/location-fields-lazy";
 import { SCRAPE_FLOW_DEFAULTS } from "@/components/scrape/scrape-flow-defaults";
 import { TargetField } from "@/components/scrape/target-field";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { SCRAPE_PATH } from "@/lib/constants";
 import {
@@ -94,14 +101,6 @@ function ConfigureBody({
         />
       </div>
 
-      <div className="border-t border-border-subtle pt-5">
-        <AdvancedOptions
-          searchAllLocalities={form.searchAllLocalities}
-          onSearchAllLocalitiesChange={(value) =>
-            onUpdate("searchAllLocalities", value)
-          }
-        />
-      </div>
     </form>
   );
 }
@@ -112,9 +111,8 @@ type ScrapeFlowModalProps = {
   initialJobId?: string | null;
 };
 
-/**
- * Configure-only scrape modal. Submit navigates to the live job page.
- */
+// ...
+
 export function ScrapeFlowModal({
   open,
   onClose,
@@ -197,39 +195,51 @@ export function ScrapeFlowModal({
   const formId = "scrape-flow-form";
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      title="Start scrape"
-      description="Set category and location, then start. Advanced filters stay optional."
-      size="xl"
-      footer={
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted">
-            Results save in this browser under History.
-          </p>
+    <Dialog open={open} onOpenChange={(val) => !val && onClose()}>
+      <DialogContent 
+        className="sm:max-w-2xl p-0 border border-primary/30 shadow-[0_0_40px_rgba(200,240,74,0.1)] bg-black/95 overflow-hidden gap-0"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_0%,rgba(200,240,74,0.03)_50%,transparent_100%)] h-full w-full bg-[length:100%_4px] bg-repeat-y animate-[motion-live-dot_2s_linear_infinite]" />
+
+        <DialogHeader className="bg-[#111513]/90 backdrop-blur-md px-6 py-4 border-b border-primary/20 relative z-10 flex flex-row items-center justify-between space-y-0">
+          <div>
+            <DialogTitle className="text-primary font-mono drop-shadow-[0_0_8px_rgba(200,240,74,0.3)]">
+              Start scrape_job
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground mt-1">
+              Set category and location, then start. Advanced filters stay
+              optional.
+            </DialogDescription>
+          </div>
+        </DialogHeader>
+
+        <div className="py-6 px-6 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/20 relative z-10">
+          <ConfigureBody
+            formId={formId}
+            form={form}
+            errors={errors}
+            errorCount={Object.keys(errors).length}
+            onUpdate={update}
+            onSubmit={(event) => {
+              void handleSubmit(event);
+            }}
+          />
+        </div>
+
+        <DialogFooter className="px-6 py-4 border-t border-primary/20 bg-[#080A09]/90 relative z-10 sm:justify-between items-center gap-2">
+          <p className="text-xs font-mono text-primary/50 w-full sm:w-auto text-left"></p>
           <Button
             type="submit"
             form={formId}
             size="lg"
             loading={submitting}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-primary-foreground shadow-[0_0_15px_rgba(200,240,74,0.4)]"
           >
-            {submitting ? "Starting…" : "Start scrape"}
+            {submitting ? "INITIALIZING…" : "SCRAPE"}
           </Button>
-        </div>
-      }
-    >
-      <ConfigureBody
-        formId={formId}
-        form={form}
-        errors={errors}
-        errorCount={Object.keys(errors).length}
-        onUpdate={update}
-        onSubmit={(event) => {
-          void handleSubmit(event);
-        }}
-      />
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

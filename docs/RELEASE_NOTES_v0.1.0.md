@@ -1,13 +1,13 @@
 # BizScrape Web v0.1.0
 
-**Status:** Initial public alpha — web UI + API + Python engine in one repository.
+**Status:** Initial public alpha - web UI + API + Python engine in one repository.
 
 ## What exists
 
-- **Next.js web UI** — landing, scrape configuration, live job progress (SSE), results table, CSV download
-- **FastAPI job service** — create/cancel/retry jobs, SSE events, results + server CSV export
-- **Python BizScrape engine** — Maps discovery, website lookup, enrichment, deduplication, CSV (same as CLI)
-- **Mock job provider** — local UI development and Playwright E2E when `NEXT_PUBLIC_API_URL` is unset
+- **Next.js web UI** - landing, scrape configuration, live job progress (SSE), results table, CSV download
+- **FastAPI job service** - create/cancel/retry jobs, SSE events, results + server CSV export
+- **Python BizScrape engine** - Maps discovery, website lookup, enrichment, deduplication, CSV (same as CLI)
+- **Mock job provider** - local UI development and Playwright E2E when `NEXT_PUBLIC_API_URL` is unset
 
 ## Install (summary)
 
@@ -28,16 +28,16 @@ Full guide: [README.md](../README.md)
 ## Architecture notes
 
 - Frontend talks to Python API via REST + SSE (`NEXT_PUBLIC_API_URL`)
-- Job state is **in-memory** per API process — restart loses job metadata
+- Job state is **in-memory** per API process - restart loses job metadata
 - CSV files persist under `JOB_DATA_DIR` on disk
 - Designed for **single API instance** with long-running Playwright jobs
 
 ## Known limitations (honest)
 
 - External sources (Google Maps, websites) can block, rate-limit, or change layout
-- Emails come from company websites — often empty
-- No user authentication — protect the API at the network layer
-- In-process rate limits — not suitable for multi-instance without shared store
+- Emails come from company websites - often empty
+- No user authentication - protect the API at the network layer
+- In-process rate limits - not suitable for multi-instance without shared store
 - `0.1.0` is **not** a 1.0 stability promise
 
 ## Test coverage at release

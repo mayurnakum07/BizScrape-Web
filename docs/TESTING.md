@@ -12,7 +12,7 @@ BizScrape Web uses layered tests so each layer has a clear purpose. **Default CI
 | **Frontend** | `tests/unit/*.tsx` | Components, a11y (jest-axe), responsive helpers | No |
 | **E2E** | `e2e/` | Browser flow against production Next.js build + mock provider | No |
 | **Smoke** | `tests/python/integration/test_smoke.py`, [SMOKE_TEST.md](SMOKE_TEST.md) | Minimal post-deploy acceptance | No (automated) |
-| **Live** | `tests/python/live/` | Real Playwright scrape | **Yes — manual only** |
+| **Live** | `tests/python/live/` | Real Playwright scrape | **Yes - manual only** |
 
 ```text
 Browser → Next.js → Python API → Engine → External sources
@@ -33,7 +33,7 @@ npm run test:e2e
 # Python unit + integration (excludes live)
 python -m pytest tests/python -q
 
-# Live scraper (manual — needs Maps/network)
+# Live scraper (manual - needs Maps/network)
 BIZSCRAPE_LIVE_TESTS=1 python -m pytest tests/python/live -m live -q
 
 # Full local quality gate (no E2E)
@@ -63,7 +63,7 @@ npm run lint && npm run typecheck && npm test && npm run build && python -m pyte
 
 ## Backend integration tests
 
-Uses `tests/python/helpers.py` fake scrapers — **no Playwright in default integration suite**.
+Uses `tests/python/helpers.py` fake scrapers - **no Playwright in default integration suite**.
 
 Coverage includes:
 
@@ -95,7 +95,7 @@ playwright install chromium
 BIZSCRAPE_LIVE_TESTS=1 python -m pytest tests/python/live -m live -q
 ```
 
-External sites may be rate-limited, restyled, or unavailable — failures are environmental, not necessarily regressions.
+External sites may be rate-limited, restyled, or unavailable - failures are environmental, not necessarily regressions.
 
 ---
 
@@ -132,7 +132,7 @@ Re-run these after refactors touching validation, CORS, CSV, or UI interaction.
 
 ## Performance regression
 
-`tests/unit/results-performance.test.ts` — large dataset filter/summary paths (Milestone 12).
+`tests/unit/results-performance.test.ts` - large dataset filter/summary paths (Milestone 12).
 
 ---
 

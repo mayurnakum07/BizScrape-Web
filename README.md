@@ -7,7 +7,7 @@ A web interface for the open-source BizScrape Python business-discovery and enri
 [![Node.js](https://img.shields.io/badge/Node.js-20.9%2B-339933)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)](https://www.python.org/)
 
-Configure a scrape in the browser, watch a live job, inspect results, and download an Excel-friendly CSV. Scraping itself still runs in Python — this repo does not reimplement the engine in JavaScript.
+Configure a scrape in the browser, watch a live job, inspect results, and download an Excel-friendly CSV. Scraping itself still runs in Python - this repo does not reimplement the engine in JavaScript.
 
 ## What this is (and is not)
 
@@ -22,7 +22,7 @@ Project home: [github.com/mayurnakum07/BizScrape](https://github.com/mayurnakum0
 
 ## Why it exists
 
-The CLI is solid for developers who live in a terminal. Operators who want a form, live progress, and a results table need a UI. BizScrape Web is that UI — thin on the frontend, honest about what the Python pipeline can and cannot do.
+The CLI is solid for developers who live in a terminal. Operators who want a form, live progress, and a results table need a UI. BizScrape Web is that UI - thin on the frontend, honest about what the Python pipeline can and cannot do.
 
 ## Features
 
@@ -150,11 +150,11 @@ Pipeline stages (same as the CLI):
 Discover → Website lookup → Enrich → Deduplicate → Export
 ```
 
-1. **Discover** — Playwright searches configured sources (Google Maps today) for listings matching business type + location.
-2. **Website lookup** — Fill missing website URLs when listings omit them.
-3. **Enrich** — Fetch public company websites and extract emails, phones, social links when present.
-4. **Deduplicate** — Collapse near-duplicates.
-5. **Export** — Write the 18-column CSV.
+1. **Discover** - Playwright searches configured sources (Google Maps today) for listings matching business type + location.
+2. **Website lookup** - Fill missing website URLs when listings omit them.
+3. **Enrich** - Fetch public company websites and extract emails, phones, social links when present.
+4. **Deduplicate** - Collapse near-duplicates.
+5. **Export** - Write the 18-column CSV.
 
 Emails come from **company websites**, not from Maps listing fields. Empty emails are normal when a site does not publish one.
 
@@ -165,11 +165,11 @@ Schema: [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) · Pipeline notes: [docs/SCRA
 After `pip install -e ".[dev]"` with the venv activated:
 
 ```bash
-python -m bizscrape run --city surat --niche cafe --areas "Mota Varachha" --target 20 --yes
+python -m bizscrape run --city newyork --niche cafe --areas "Manhattan" --target 20 --yes
 # or
-bizscrape run --city surat --niche cafe --target 20 --yes
+bizscrape run --city newyork --niche cafe --target 20 --yes
 # or
-python main.py run --city surat --niche cafe --target 20 --yes
+python main.py run --city newyork --niche cafe --target 20 --yes
 ```
 
 ```bash
@@ -254,13 +254,13 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and [docs/SMOKE_TEST.md](docs/SMOKE
 
 Be specific about what breaks:
 
-- Source sites can **block**, rate-limit, or change layout — scrapes fail or return fewer rows.
+- Source sites can **block**, rate-limit, or change layout - scrapes fail or return fewer rows.
 - Website enrichment often finds **no email**; that is expected for many SMEs.
-- Job state is **in-memory** — API restart loses active/completed job metadata (CSV files on disk may remain).
+- Job state is **in-memory** - API restart loses active/completed job metadata (CSV files on disk may remain).
 - Designed for a **single API process**; no multi-instance sticky session story yet.
 - Browser automation needs Chromium (or configured Chrome/Edge) and enough RAM/CPU for long jobs.
 - Free-tier hosts that **sleep** will kill in-flight scrapes.
-- No user accounts yet — anyone who can reach the API can create jobs unless you restrict the network.
+- No user accounts yet - anyone who can reach the API can create jobs unless you restrict the network.
 
 ## Responsible use
 
@@ -278,12 +278,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Please read [CODE_OF_CONDUCT.md](CODE_OF
 
 ## Security
 
-Report vulnerabilities privately — see [SECURITY.md](SECURITY.md). Do not file public issues with credentials or scraped personal datasets.
+Report vulnerabilities privately - see [SECURITY.md](SECURITY.md). Do not file public issues with credentials or scraped personal datasets.
 
 ## Releases
 
-Versioning and tags: [CHANGELOG.md](CHANGELOG.md). Web UI and Python package currently share this repository; release notes should call out which surface changed (UI, API, CLI/engine). Git tags (`v0.1.0`) map to GitHub Releases — do not invent a history that was never tagged.
+Versioning and tags: [CHANGELOG.md](CHANGELOG.md). Web UI and Python package currently share this repository; release notes should call out which surface changed (UI, API, CLI/engine). Git tags (`v0.1.0`) map to GitHub Releases - do not invent a history that was never tagged.
 
 ## License
 
-[MIT](LICENSE) — Copyright (c) 2026 BizScrape Contributors.
+[MIT](LICENSE) - Copyright (c) 2026 BizScrape Contributors.

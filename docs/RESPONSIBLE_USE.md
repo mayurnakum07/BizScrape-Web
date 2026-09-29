@@ -6,7 +6,7 @@ BizScrape discovers **public** business listings and enriches contact details fr
 
 - Collect publicly available business information for legitimate research, sales ops, or personal tooling.
 - Keep scrape targets modest (`MAX_API_TARGET` exists for a reason).
-- Expect incomplete rows — missing emails and websites are common.
+- Expect incomplete rows - missing emails and websites are common.
 - Store and share exported CSV in line with applicable privacy and marketing laws in your jurisdiction.
 
 ## Do not
@@ -20,7 +20,7 @@ BizScrape discovers **public** business listings and enriches contact details fr
 ## Practical realities
 
 - Google Maps and other sources may rate-limit or block automated access.
-- Source HTML/layout changes without notice — scrapers break.
+- Source HTML/layout changes without notice - scrapers break.
 - Website enrichment uses HTTP fetches with SSRF guards; many SME TLS setups are messy; some sites still fail.
 - Results vary by city, niche, and day.
 

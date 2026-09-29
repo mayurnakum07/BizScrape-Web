@@ -6,7 +6,7 @@ export const APP_DESCRIPTION =
 
 export const APP_TAGLINE = "Find local businesses. Get structured data.";
 
-/** Public GitHub — BizScrape (web UI + API + Python engine). */
+/** Public GitHub - BizScrape (web UI + API + Python engine). */
 export const GITHUB_URL = "https://github.com/mayurnakum07/BizScrape";
 
 /** Scrape configuration workspace. */

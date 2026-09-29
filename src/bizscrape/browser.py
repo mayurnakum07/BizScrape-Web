@@ -20,7 +20,7 @@ INSTALL_HINT = (
     "    2) python -m playwright install chromium"
 )
 
-# Prefer system browsers — they do not need the Playwright download cache.
+# Prefer system browsers - they do not need the Playwright download cache.
 _CHANNEL_ORDER = ("chrome", "msedge", "chromium")
 
 

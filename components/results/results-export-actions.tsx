@@ -99,7 +99,7 @@ export function ResultsExportActions({
     <div className={cn("flex flex-col gap-1.5", className)}>
       {partial ? (
         <p className="text-sm text-muted">
-          Partial results — export includes businesses collected before the job
+          Partial results - export includes businesses collected before the job
           stopped.
         </p>
       ) : null}
@@ -123,7 +123,7 @@ export function ResultsExportActions({
           aria-label={
             canExport
               ? `Download CSV for ${records.length} businesses`
-              : "Download CSV unavailable — no records"
+              : "Download CSV unavailable - no records"
           }
           aria-describedby={helpId}
         >

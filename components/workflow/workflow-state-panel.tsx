@@ -22,7 +22,7 @@ type WorkflowStatePanelProps = {
 };
 
 /**
- * Consistent workflow state surface — title, explanation, next step, actions.
+ * Consistent workflow state surface - title, explanation, next step, actions.
  */
 export function WorkflowStatePanel({
   kind,

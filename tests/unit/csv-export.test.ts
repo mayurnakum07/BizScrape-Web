@@ -163,14 +163,14 @@ describe("generateCsv", () => {
     expect(() =>
       generateCsv({
         records: [],
-        config: { city: "Surat", businessType: "Cafe" },
+        config: { city: "New York", businessType: "Cafe" },
       }),
     ).toThrow(AppError);
 
     try {
       generateCsv({
         records: [],
-        config: { city: "Surat", businessType: "Cafe" },
+        config: { city: "New York", businessType: "Cafe" },
       });
     } catch (error) {
       expect(error).toBeInstanceOf(AppError);
@@ -182,11 +182,11 @@ describe("generateCsv", () => {
   it("returns filename and record count for a valid dataset", () => {
     const result = generateCsv({
       records: [record({ company_name: "Cafe" })],
-      config: { city: "Surat", businessType: "Cafe" },
+      config: { city: "New York", businessType: "Cafe" },
       date: new Date(2026, 8, 16),
     });
     expect(result.recordCount).toBe(1);
-    expect(result.filename).toBe("surat_cafe_2026-09-16.csv");
+    expect(result.filename).toBe("new-york_cafe_2026-09-16.csv");
     expect(result.csv.startsWith("\uFEFF")).toBe(true);
   });
 });

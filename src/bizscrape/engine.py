@@ -25,7 +25,7 @@ EventCallback = Callable[[dict[str, Any]], None]
 
 @dataclass
 class ScrapeRunConfig:
-    """Typed scrape request — not CLI argv strings."""
+    """Typed scrape request - not CLI argv strings."""
 
     business_type: str
     city: str
@@ -225,7 +225,7 @@ def config_to_namespace(cfg: ScrapeRunConfig) -> argparse.Namespace:
 def store_rows_as_records(store: Store) -> list[dict[str, Any]]:
     """Serialize store rows into the public 18-column API/CSV shape."""
     records: list[dict[str, Any]] = []
-    for index, row in enumerate(store._rows):  # noqa: SLF001 — intentional read for API
+    for index, row in enumerate(store._rows):  # noqa: SLF001 - intentional read for API
         emails = list(row.get("emails") or [])
         phones = list(row.get("phones") or [])
         from . import utils

@@ -1,6 +1,6 @@
 /**
  * IndexedDB persistence for completed scrape result sets.
- * Browser-only — never imported from server components without a client boundary.
+ * Browser-only - never imported from server components without a client boundary.
  *
  * Connection is cached; list views use a cursor so full record arrays are not
  * retained for every row in the history workspace.
@@ -28,7 +28,7 @@ export type StoredScrape = {
   durationMs?: number | null;
 };
 
-/** Lightweight list row — no `records` payload. */
+/** Lightweight list row - no `records` payload. */
 export type StoredScrapeSummary = Omit<StoredScrape, "records"> & {
   recordCount: number;
 };
@@ -133,14 +133,14 @@ export async function saveStoredScrape(
   return entry;
 }
 
-/** Full payloads — prefer `listStoredScrapeSummaries` for history lists. */
+/** Full payloads - prefer `listStoredScrapeSummaries` for history lists. */
 export async function listStoredScrapes(): Promise<StoredScrape[]> {
   const rows = await withStore("readonly", (store) => store.getAll());
   return [...rows].sort((a, b) => b.savedAt.localeCompare(a.savedAt));
 }
 
 /**
- * History workspace list — cursor walk keeps only metadata in the result array.
+ * History workspace list - cursor walk keeps only metadata in the result array.
  */
 export async function listStoredScrapeSummaries(): Promise<StoredScrapeSummary[]> {
   const db = await openDb();

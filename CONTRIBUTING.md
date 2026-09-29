@@ -8,7 +8,7 @@ This repository contains:
 2. The **FastAPI** job API
 3. The **Python BizScrape engine** (shared with the CLI)
 
-Scraping behavior belongs in `src/bizscrape/`. The UI should stay a thin client over that engine — do not reimplement Maps/enrichment in TypeScript.
+Scraping behavior belongs in `src/bizscrape/`. The UI should stay a thin client over that engine - do not reimplement Maps/enrichment in TypeScript.
 
 ## Local setup
 
@@ -31,10 +31,10 @@ npm install
 ### Develop
 
 ```bash
-# Terminal A — API (optional if you only need the mock UI)
+# Terminal A - API (optional if you only need the mock UI)
 python -m bizscrape.api
 
-# Terminal B — frontend
+# Terminal B - frontend
 npm run dev
 ```
 

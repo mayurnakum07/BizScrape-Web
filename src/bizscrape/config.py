@@ -3,7 +3,7 @@ Tunable settings for BizScrape.
 
 Static defaults (cities, niches, timeouts, crawl limits) live here.
 Per-run user settings (city, niche, target, sources, output, concurrency)
-come from the CLI / interactive wizard — you should not need to edit Python
+come from the CLI / interactive wizard - you should not need to edit Python
 for normal use.
 """
 
@@ -18,154 +18,104 @@ from typing import Any
 # --- cities ------------------------------------------------------------------
 
 CITIES: dict[str, dict[str, Any]] = {
-    "surat": {
-        "label": "Surat",
-        "center": (21.1702, 72.8311),
+    "newyork": {
+        "label": "New York",
+        "center": (40.7128, -74.0060),
         "zoom": 12,
         "areas": [
-            "Adajan",
-            "Vesu",
-            "Piplod",
-            "Athwa",
-            "Athwalines",
-            "Ghod Dod Road",
-            "City Light",
-            "Pal",
-            "Palanpur",
-            "Jahangirpura",
-            "Rander",
-            "Katargam",
-            "Varachha",
-            "Nana Varachha",
-            "Mota Varachha",
-            "Kapodra",
-            "Sarthana",
-            "Udhna",
-            "Pandesara",
-            "Dindoli",
-            "Limbayat",
-            "Bhatar",
-            "Majura Gate",
-            "Ring Road",
-            "Bhestan",
-            "Amroli",
-            "Utran",
-            "Sachin GIDC",
-            "Hazira",
-            "Kamrej",
-            "Althan",
-            "Magdalla",
-            "Dumas Road",
-            "Bhimrad",
-            "Parvat Patiya",
-            "Punagam",
-            "Nanpura",
-            "Gopipura",
-            "Chowk Bazar",
-            "Salabatpura",
-            "Begampura",
-            "Sagrampura",
-            "Navsari Bazar",
-            "Station Road",
-            "Lal Darwaja",
-            "Delhi Gate",
-            "Sumul Dairy Road",
-            "Olpad",
-            "Icchhapore",
-            "Anand Mahal Road",
-            "New Textile Market",
+            "Manhattan",
+            "Brooklyn",
+            "Queens",
+            "Bronx",
+            "Staten Island",
+            "Harlem",
+            "Upper East Side",
+            "Upper West Side",
+            "Chelsea",
+            "Greenwich Village",
+            "SoHo",
+            "Tribeca",
+            "Chinatown",
+            "Financial District",
+            "Williamsburg",
+            "DUMBO",
+            "Astoria",
+            "Flushing",
+            "Long Island City",
+            "Jamaica",
         ],
     },
-    "mumbai": {
-        "label": "Mumbai",
-        "center": (19.0760, 72.8777),
+    "toronto": {
+        "label": "Toronto",
+        "center": (43.6510, -79.3470),
         "zoom": 11,
         "areas": [
-            "Andheri",
-            "Bandra",
-            "Powai",
-            "Lower Parel",
-            "Worli",
-            "Dadar",
-            "Goregaon",
-            "Malad",
-            "Borivali",
-            "Kandivali",
-            "BKC",
-            "Navi Mumbai",
-            "Thane",
-            "Vashi",
-            "Chembur",
-            "Ghatkopar",
-            "Kurla",
-            "Santacruz",
-            "Juhu",
-            "Colaba",
-            "Fort",
-            "Nariman Point",
-            "Parel",
-            "Sion",
+            "Downtown",
+            "North York",
+            "Scarborough",
+            "Etobicoke",
+            "York",
+            "East York",
+            "Mississauga",
+            "Brampton",
+            "Markham",
+            "Vaughan",
+            "Richmond Hill",
+            "Oakville",
+            "Burlington",
+            "Milton",
         ],
     },
-    "pune": {
-        "label": "Pune",
-        "center": (18.5204, 73.8567),
+    "london": {
+        "label": "London",
+        "center": (51.5072, -0.1276),
         "zoom": 12,
         "areas": [
-            "Hinjewadi",
-            "Baner",
-            "Aundh",
-            "Kothrud",
-            "Wakad",
-            "Kharadi",
-            "Viman Nagar",
-            "Hadapsar",
-            "Magarpatta",
-            "Shivaji Nagar",
-            "Deccan",
-            "Camp",
-            "Pimple Saudagar",
-            "Bavdhan",
-            "Kalyani Nagar",
-            "Swargate",
-            "Katraj",
-            "Warje",
+            "City of London",
+            "Westminster",
+            "Kensington",
+            "Chelsea",
+            "Camden",
+            "Islington",
+            "Hackney",
+            "Tower Hamlets",
+            "Greenwich",
+            "Lewisham",
+            "Southwark",
+            "Lambeth",
+            "Wandsworth",
+            "Hammersmith",
+            "Fulham",
         ],
     },
-    "ahmedabad": {
-        "label": "Ahmedabad",
-        "center": (23.0225, 72.5714),
+    "sydney": {
+        "label": "Sydney",
+        "center": (-33.8688, 151.2093),
         "zoom": 12,
         "areas": [
-            "SG Highway",
-            "Satellite",
-            "Prahlad Nagar",
-            "Bodakdev",
-            "Vastrapur",
-            "Navrangpura",
-            "CG Road",
-            "Ashram Road",
-            "Maninagar",
-            "Iscon",
-            "Thaltej",
-            "Gota",
-            "Chandkheda",
-            "Naroda",
-            "Odhav",
-            "Vatva",
-            "Science City",
-            "Bopal",
-            "Ambli",
-            "Ellis Bridge",
+            "CBD",
+            "North Sydney",
+            "Parramatta",
+            "Chatswood",
+            "Bondi",
+            "Manly",
+            "Newtown",
+            "Surry Hills",
+            "Darlinghurst",
+            "Paddington",
+            "Glebe",
+            "Balmain",
+            "Coogee",
+            "Cronulla",
         ],
     },
 }
 
-DEFAULT_CITY = "surat"
+DEFAULT_CITY = "newyork"
 
 # Back-compat aliases used by older modules / docs.
-SURAT_CENTER = CITIES["surat"]["center"]
-SURAT_AREAS = CITIES["surat"]["areas"]
+NEWYORK_CENTER = CITIES["newyork"]["center"]
+NEWYORK_AREAS = CITIES["newyork"]["areas"]
 MAPS_ZOOM = 12
 
 # --- niches ------------------------------------------------------------------
@@ -452,7 +402,7 @@ USER_AGENTS = [
 
 DATA_DIR = "data"
 SCRAPED_DIR = "data"  # CSVs live in data/ (no separate folder, no .db)
-DB_PATH = ""  # unused — store is CSV-backed
+DB_PATH = ""  # unused - store is CSV-backed
 DEFAULT_CSV = os.path.join(DATA_DIR, "companies.csv")
 
 CSV_COLUMNS = [
@@ -503,7 +453,7 @@ def safe_filename_component(value: str) -> str:
 def resolve_city(city: str) -> dict[str, Any]:
     """
     Return a city profile. Unknown cities get a sensible default center in
-    India and an empty area list (city-wide searches only).
+    the USA and an empty area list (city-wide searches only).
     """
     key = slugify(city)
     if key in CITIES:
@@ -515,7 +465,7 @@ def resolve_city(city: str) -> dict[str, Any]:
     return {
         "key": key or "custom",
         "label": label,
-        "center": (20.5937, 78.9629),  # India centroid fallback
+        "center": (37.0902, -95.7129),  # USA centroid fallback
         "zoom": 11,
         "areas": [],
     }
@@ -591,7 +541,7 @@ def output_csv_path(
     """
     Unique CSV under data/ (or *output_dir*):
 
-        data/surat_it_2026-09-15.csv
+        data/newyork_it_2026-09-15.csv
     """
     directory = Path(output_dir) if output_dir else Path(DATA_DIR)
     directory.mkdir(parents=True, exist_ok=True)

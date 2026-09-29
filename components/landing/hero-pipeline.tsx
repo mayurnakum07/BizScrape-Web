@@ -9,7 +9,7 @@ const stages = [
   {
     id: "01",
     label: "Input",
-    detail: "cafe · Surat · target 50",
+    detail: "cafe · New York · target 50",
     accent: false,
   },
   {
@@ -27,7 +27,7 @@ const stages = [
   {
     id: "04",
     label: "Dataset",
-    detail: "61 rows · surat_cafe.csv",
+    detail: "61 rows · newyork_cafe.csv",
     accent: true,
   },
 ] as const;
@@ -41,7 +41,7 @@ const previewColumns = [
 
 /**
  * Product-shaped hero visual: one workspace showing scrape → process → dataset.
- * Static example data only — not a live scrape.
+ * Static example data only - not a live scrape.
  */
 export function HeroPipeline() {
   return (
@@ -53,7 +53,7 @@ export function HeroPipeline() {
         <div className="flex min-w-0 items-center gap-2">
           <span className="size-1.5 shrink-0 bg-primary" aria-hidden="true" />
           <p className="truncate font-mono text-[0.65rem] tracking-wide text-muted uppercase">
-            Example job · cafe / Surat
+            Example job · cafe / New York
           </p>
         </div>
         <StatusIndicator status="success" label="Sample complete" />
@@ -127,7 +127,7 @@ export function HeroPipeline() {
 
       <div className="border-t border-border-subtle bg-terminal">
         <pre className="overflow-x-auto px-3 py-2.5 font-mono text-[0.7rem] leading-relaxed text-terminal-fg hero-terminal sm:px-4">
-          <span className="terminal-prompt">$</span> bizscrape run --city surat
+          <span className="terminal-prompt">$</span> bizscrape run --city newyork
           --niche cafe --target 50
           {"\n"}
           <span className="terminal-stage">DISCOVER</span>
@@ -137,7 +137,7 @@ export function HeroPipeline() {
           {"    "}37 public emails
           {"\n"}
           <span className="terminal-ok">EXPORT</span>
-          {"    "}wrote data/surat_cafe.csv
+          {"    "}wrote data/newyork_cafe.csv
         </pre>
       </div>
     </aside>

@@ -7,7 +7,7 @@ import { isTerminalJobStatus } from "@/types/scrape-job";
 
 /**
  * Ensures the job's live SSE stream (or mock driver) is attached for `jobId`.
- * Prefer `useScrapeJob` for reading snapshot state — this hook is the
+ * Prefer `useScrapeJob` for reading snapshot state - this hook is the
  * connection lifecycle helper.
  */
 export function useScrapeEvents(jobId: string): void {

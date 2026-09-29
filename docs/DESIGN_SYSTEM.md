@@ -6,10 +6,10 @@ BizScrape Web uses a **dark-first**, restrained, developer-focused visual langua
 
 ## Principles
 
-1. Hierarchy from spacing, typography, contrast, and borders — not glow or heavy shadow.
+1. Hierarchy from spacing, typography, contrast, and borders - not glow or heavy shadow.
 2. One interaction/data signal (electric lime); success / warning / error used sparingly.
 3. IBM Plex Sans for UI copy; IBM Plex Mono for metrics, logs, IDs, and scraped data.
-4. Motion only for state change, loading, and feedback — respect `prefers-reduced-motion`.
+4. Motion only for state change, loading, and feedback - respect `prefers-reduced-motion`.
 5. Tokens live in `app/globals.css` (CSS) and `lib/design-tokens.ts` (TS mirror). Components consume semantic classes / CSS variables.
 
 ## Color palette
@@ -35,8 +35,8 @@ BizScrape Web uses a **dark-first**, restrained, developer-focused visual langua
 | Typography | `--font-sans`, `--font-mono`, size / leading scales; utilities `.text-display`, `.text-metric`, `.text-code` |
 | Spacing | `--space-1` … `--space-24` |
 | Borders | `--border`, `--border-subtle`, `--border-width` |
-| Radii | `--radius-sm` (2px) … `--radius-xl` (8px) — keep minimal |
-| Shadows | `--shadow-sm`, `--shadow-md` — flat elevation only |
+| Radii | `--radius-sm` (2px) … `--radius-xl` (8px) - keep minimal |
+| Shadows | `--shadow-sm`, `--shadow-md` - flat elevation only |
 | Transitions | `--duration-fast|normal|slow`, `--ease-out`; utility `.transition-ui` |
 | Z-index | `--z-sticky` → `--z-tooltip` |
 | Focus | `--focus-ring-width`, `--focus-ring-offset`, `--focus-ring-color` |
@@ -62,7 +62,7 @@ Internal page: [`/design-system`](/design-system)
 
 ## Icons
 
-Stroke icons in `components/icons` — geometric, 1.75 stroke. Do not mix icon libraries.
+Stroke icons in `components/icons` - geometric, 1.75 stroke. Do not mix icon libraries.
 
 ## Deferred
 

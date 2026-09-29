@@ -5,7 +5,7 @@ const e2eBaseUrl = `http://127.0.0.1:${e2ePort}`;
 
 /**
  * E2E suite uses the mock job provider (NEXT_PUBLIC_API_URL unset).
- * Runs against a production Next.js build — no live Python API or Maps required.
+ * Runs against a production Next.js build - no live Python API or Maps required.
  */
 export default defineConfig({
   testDir: "./e2e",

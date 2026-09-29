@@ -1,4 +1,4 @@
-"""BizScrape: discover Indian city businesses and enrich public contacts into CSV."""
+"""BizScrape: discover Global city businesses and enrich public contacts into CSV."""
 
 from __future__ import annotations
 

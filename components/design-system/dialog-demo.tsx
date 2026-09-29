@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Drawer } from "@/components/ui/drawer";
 
 export function DialogDemo() {
@@ -14,9 +14,10 @@ export function DialogDemo() {
       <Button variant="secondary" onClick={() => setOpen(true)}>
         Open dialog
       </Button>
-      <Dialog
+      <ConfirmDialog
         open={open}
         onClose={() => setOpen(false)}
+        onConfirm={() => setOpen(false)}
         title="Confirm action"
         description="Dialog foundation for confirmations and short forms."
       >
@@ -25,13 +26,7 @@ export function DialogDemo() {
           <code className="text-code text-foreground">&lt;dialog&gt;</code>{" "}
           element with focus management and Escape-to-close.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button onClick={() => setOpen(false)}>Continue</Button>
-          <Button variant="ghost" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-        </div>
-      </Dialog>
+      </ConfirmDialog>
     </div>
   );
 }

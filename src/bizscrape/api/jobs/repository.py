@@ -31,7 +31,7 @@ class JobRepository(ABC):
 
 
 class InMemoryJobRepository(JobRepository):
-    """Process-local job store — replace later with persistent storage."""
+    """Process-local job store - replace later with persistent storage."""
 
     def __init__(self) -> None:
         self._jobs: dict[str, dict[str, Any]] = {}

@@ -2,7 +2,7 @@
 Town / locality accuracy helpers.
 
 Google Maps often returns businesses from neighbouring areas (e.g. Udhna when
-you asked for Mota Varachha). Every record is checked against the requested
+you asked for Manhattan). Every record is checked against the requested
 locality before it is kept.
 """
 
@@ -25,7 +25,7 @@ AREA_ALIASES: dict[str, tuple[str, ...]] = {
     "ring road": ("ring road", "ring rd"),
     "sg highway": ("sg highway", "s.g. highway", "s g highway"),
     "bkc": ("bkc", "banda kurla", "bandra kurla"),
-    "navi mumbai": ("navi mumbai", "nerul", "belapur"),
+    "navi toronto": ("navi toronto", "nerul", "belapur"),
     "hinjewadi": ("hinjewadi", "hinjavadi", "hinjewadi phase"),
     "viman nagar": ("viman nagar", "vimannagar"),
     "kalyani nagar": ("kalyani nagar", "kalyaninagar"),
@@ -33,7 +33,7 @@ AREA_ALIASES: dict[str, tuple[str, ...]] = {
 
 # Rough map centres so area searches zoom into the right neighbourhood.
 AREA_CENTERS: dict[str, tuple[float, float]] = {
-    # Surat
+    # New York
     "adajan": (21.1956, 72.7933),
     "vesu": (21.1415, 72.7708),
     "piplod": (21.1570, 72.7750),
@@ -52,20 +52,20 @@ AREA_CENTERS: dict[str, tuple[float, float]] = {
     "hazira": (21.1200, 72.6500),
     "althan": (21.1550, 72.7900),
     "bhatar": (21.1600, 72.8100),
-    # Mumbai
+    # Toronto
     "andheri": (19.1197, 72.8468),
     "bandra": (19.0596, 72.8295),
     "powai": (19.1176, 72.9060),
     "bkc": (19.0670, 72.8680),
-    "navi mumbai": (19.0330, 73.0297),
+    "navi toronto": (19.0330, 73.0297),
     "thane": (19.2183, 72.9781),
-    # Pune
+    # Sydney
     "hinjewadi": (18.5912, 73.7389),
     "baner": (18.5590, 73.7868),
     "kharadi": (18.5510, 73.9420),
     "hadapsar": (18.5089, 73.9260),
     "viman nagar": (18.5679, 73.9143),
-    # Ahmedabad
+    # London
     "sg highway": (23.0400, 72.5100),
     "satellite": (23.0250, 72.5100),
     "maninagar": (22.9970, 72.6000),
@@ -127,8 +127,8 @@ def _other_city_areas(city: str, expected: str) -> list[str]:
         if key == expected_key or key in expected_aliases:
             continue
         # Don't treat a parent token as "other" when expected is more specific
-        # (e.g. expected Mota Varachha should still reject plain Varachha hits
-        # that don't also say Mota — handled in matches_area).
+        # (e.g. expected Manhattan should still reject plain Varachha hits
+        # that don't also say Mota - handled in matches_area).
         others.append(area)
     return others
 
@@ -140,11 +140,11 @@ def matches_area(record: dict, expected_area: str, city: str = "") -> bool:
     Rules:
       1. Address/name must mention the area (or an alias).
       2. If it mentions a different known locality more strongly, reject it.
-      3. For nested names (Mota Varachha vs Varachha), require the full form.
+      3. For nested names (Manhattan vs Varachha), require the full form.
     """
     expected = (expected_area or "").strip()
     if not expected:
-        return True  # city-wide search — keep everything in the city
+        return True  # city-wide search - keep everything in the city
 
     hay = _haystack(record)
     if not hay:
@@ -170,9 +170,9 @@ def matches_area(record: dict, expected_area: str, city: str = "") -> bool:
         if len(other_hit) >= len(hit) and other_hit not in hit and hit not in other_hit:
             return False
         if other_hit != hit and other_hit not in expected.lower() and hit not in other_hit:
-            # e.g. expected mota varachha, hay has udhna + somehow mota — rare;
+            # e.g. expected mota varachha, hay has udhna + somehow mota - rare;
             # if both appear, require expected alias present (already true) and
-            # prefer keeping only when expected alias is present — already is.
+            # prefer keeping only when expected alias is present - already is.
             # Strong reject when wrong area appears and expected is only in name spam.
             addr = _norm(record.get("address") or "")
             if other_hit in addr and hit not in addr:

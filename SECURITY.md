@@ -11,7 +11,7 @@
 Please report security issues **privately**.
 
 1. Prefer [GitHub Security Advisories](https://github.com/mayurnakum07/BizScrape/security/advisories/new) for this repository (Private vulnerability reporting).
-2. If advisories are unavailable, contact the repository owner through their [GitHub profile](https://github.com/mayurnakum07) — do not invent a public email for this policy.
+2. If advisories are unavailable, contact the repository owner through their [GitHub profile](https://github.com/mayurnakum07) - do not invent a public email for this policy.
 
 Do **not** open a public issue that includes:
 

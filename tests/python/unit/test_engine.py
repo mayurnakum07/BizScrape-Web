@@ -8,17 +8,17 @@ from bizscrape.engine import ScrapeRunConfig, config_to_namespace
 def test_config_to_namespace_maps_fields() -> None:
     cfg = ScrapeRunConfig(
         business_type="cafe",
-        city="Surat",
-        area="Mota Varachha",
+        city="New York",
+        area="Manhattan",
         target=20,
         sources=["gmaps"],
         out="data/test.csv",
     )
     ns = config_to_namespace(cfg)
     assert ns.niche == "cafe"
-    assert ns.city == "Surat"
+    assert ns.city == "New York"
     assert ns.target == 20
-    assert ns.area_list == ["Mota Varachha"]
+    assert ns.area_list == ["Manhattan"]
     assert ns.source == "gmaps"
     assert ns.out == "data/test.csv"
 
@@ -26,7 +26,7 @@ def test_config_to_namespace_maps_fields() -> None:
 def test_config_clamps_target() -> None:
     cfg = ScrapeRunConfig(
         business_type="it",
-        city="surat",
+        city="newyork",
         target=99999,
         out="data/x.csv",
     )

@@ -17,7 +17,7 @@ type MockRuntime = {
 
 /**
  * Development-only job driver.
- * Finite scripted transitions — not a live scrape and not production data.
+ * Finite scripted transitions - not a live scrape and not production data.
  */
 class MockScrapeJobProvider implements ScrapeJobProvider {
   readonly kind = "mock" as const;
@@ -79,7 +79,7 @@ class MockScrapeJobProvider implements ScrapeJobProvider {
         operationMessage: "Starting scrape pipeline…",
         activity: [
           ...job.activity,
-          activity("Job accepted (development mock — not a live Python scrape)"),
+          activity("Job accepted (development mock - not a live Python scrape)"),
         ].slice(-40),
       });
     }
@@ -99,7 +99,7 @@ class MockScrapeJobProvider implements ScrapeJobProvider {
       operationMessage: "Stopping scrape…",
       activity: [
         ...job.activity,
-        activity("Cancel requested — mock provider stopping local simulation"),
+        activity("Cancel requested - mock provider stopping local simulation"),
       ].slice(-40),
     });
 
@@ -120,7 +120,7 @@ class MockScrapeJobProvider implements ScrapeJobProvider {
       },
       activity: [
         ...current.activity,
-        activity("Job cancelled (mock — no Python process was stopped)"),
+        activity("Job cancelled (mock - no Python process was stopped)"),
       ].slice(-40),
     });
   }

@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 type CopyButtonProps = {
   value: string;
   label?: string;
-  /** Compact control for dense tables — shows a short glyph. */
+  /** Compact control for dense tables - shows a short glyph. */
   compact?: boolean;
   className?: string;
 };

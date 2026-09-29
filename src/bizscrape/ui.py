@@ -96,7 +96,7 @@ def red(text: str) -> str:
 def print_banner() -> None:
     title = (
         Text.from_markup(
-            "[bold cyan]BizScrape[/bold cyan]  [dim]Indian city company scraper[/dim]\n"
+            "[bold cyan]BizScrape[/bold cyan]  [dim]Global city company scraper[/dim]\n"
             "[dim]Google Maps → websites → emails → CSV[/dim]"
         )
         if _RICH
@@ -107,7 +107,7 @@ def print_banner() -> None:
     else:
         print(
             "\n+======================================================================+\n"
-            "|  BizScrape — Google Maps → websites → emails → CSV                 |\n"
+            "|  BizScrape - Google Maps → websites → emails → CSV                 |\n"
             "+======================================================================+\n",
             flush=True,
         )
@@ -355,7 +355,7 @@ class Dashboard:
 @dataclass
 class JobConfig:
     city: str = config.DEFAULT_CITY
-    city_label: str = "Surat"
+    city_label: str = "New York"
     niche: str = config.DEFAULT_NICHE
     niche_label: str = "IT / Software companies"
     areas: list[str] | None = field(default_factory=list)
@@ -370,7 +370,7 @@ class JobConfig:
 
 def run_wizard() -> JobConfig:
     print_banner()
-    rule("Step 1 — What data do you need?")
+    rule("Step 1 - What data do you need?")
 
     niche_options = [(key, config.NICHE_LABELS.get(key, key.title())) for key in config.NICHES]
     niche = ask_choice("Business type", niche_options, custom_label="Type my own search phrase")
@@ -380,19 +380,19 @@ def run_wizard() -> JobConfig:
         niche_label = niche
         info(f"Custom search phrase: {niche_label}")
 
-    rule("Step 2 — Which city?")
+    rule("Step 2 - Which city?")
     city_options = [(key, profile["label"]) for key, profile in config.CITIES.items()]
     city = ask_choice("City", city_options, custom_label="Other city (type name)")
     profile = config.resolve_city(city)
     city_key = profile["key"]
     city_label = profile["label"]
 
-    rule("Step 3 — Area / town (optional)")
+    rule("Step 3 - Area / town (optional)")
     known_areas = profile.get("areas") or []
     if known_areas:
         preview = ", ".join(known_areas[:8])
         info(f"Known areas include: {preview}…")
-        info("Type a town for accurate local results (e.g. Mota Varachha).")
+        info("Type a town for accurate local results (e.g. Manhattan).")
         info("Leave blank to search the whole city.")
     else:
         info("Type a locality, or leave blank for the whole city.")
@@ -419,7 +419,7 @@ def run_wizard() -> JobConfig:
     elif not areas:
         areas = []
 
-    rule("Step 4 — How many companies?")
+    rule("Step 4 - How many companies?")
     target = ask_int("Target count", default=config.DEFAULT_TARGET, minimum=5, maximum=20_000)
 
     out = config.output_csv_path(city_key, niche)

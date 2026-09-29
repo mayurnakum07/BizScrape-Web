@@ -33,13 +33,11 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableHeaderCell,
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Terminal } from "@/components/ui/terminal";
 import { Textarea } from "@/components/ui/textarea";
-import { ToastDemoList } from "@/components/ui/toast";
 import { Tooltip } from "@/components/ui/tooltip";
 import { colors } from "@/lib/design-tokens";
 
@@ -216,7 +214,7 @@ export default function DesignSystemPage() {
             <p className="text-label">Field label</p>
             <p className="text-metric text-primary">42 enriched · 3 failed</p>
             <p className="text-code text-muted">
-              $ bizscrape run --city surat --niche cafe
+              $ bizscrape run --city newyork --niche cafe
             </p>
           </div>
         </Section>
@@ -302,10 +300,10 @@ export default function DesignSystemPage() {
                   <Input placeholder="cafe" />
                 </Field>
                 <Field id="demo-city" label="City">
-                  <Input defaultValue="Surat" />
+                  <Input defaultValue="New York" />
                 </Field>
                 <Field id="demo-area" label="Area / locality" optional>
-                  <Input placeholder="Adajan" />
+                  <Input placeholder="Queens" />
                 </Field>
                 <Field
                   id="demo-target"
@@ -322,13 +320,21 @@ export default function DesignSystemPage() {
                 <Field id="demo-notes" label="Notes" optional>
                   <Textarea placeholder="Optional operator notes" />
                 </Field>
-                <Checkbox
-                  id="demo-headless"
-                  name="headless"
-                  label="Headless browser"
-                  description="Run without a visible browser window."
-                  defaultChecked
-                />
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="demo-headless"
+                    name="headless"
+                    defaultChecked
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label htmlFor="demo-headless" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Headless browser
+                    </label>
+                    <p className="text-sm text-muted">
+                      Run without a visible browser window.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -340,7 +346,7 @@ export default function DesignSystemPage() {
             <Badge variant="primary">Primary</Badge>
             <Badge variant="success">Success</Badge>
             <Badge variant="warning">Warning</Badge>
-            <Badge variant="error">Error</Badge>
+            <Badge variant="destructive">Error</Badge>
             <Badge variant="info">Info</Badge>
           </div>
 
@@ -395,28 +401,6 @@ export default function DesignSystemPage() {
             </Tabs>
           </div>
 
-          <div className="mt-6">
-            <ToastDemoList
-              items={[
-                {
-                  title: "Export ready",
-                  description: "surat_cafe.csv downloaded.",
-                  tone: "success",
-                },
-                {
-                  title: "Rate limited",
-                  description: "Wait a moment before starting another job.",
-                  tone: "warning",
-                },
-                {
-                  title: "Job failed",
-                  description: "Enrichment stopped after repeated errors.",
-                  tone: "error",
-                },
-              ]}
-            />
-          </div>
-
           <Divider className="my-8" label="Dividers" />
           <p className="text-small inline-flex items-center gap-2">
             <IconAlert size={16} className="text-warning" />
@@ -451,35 +435,35 @@ export default function DesignSystemPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableHeaderCell>Business</TableHeaderCell>
-                <TableHeaderCell>Phone</TableHeaderCell>
-                <TableHeaderCell>Email</TableHeaderCell>
-                <TableHeaderCell>Website</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHead>Business</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Website</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>Adajan Dental Care</TableCell>
-                <TableCell mono>+91 98765 43210</TableCell>
-                <TableCell mono truncate>
+                <TableCell>Queens Dental Care</TableCell>
+                <TableCell className="font-mono">+1 98765 43210</TableCell>
+                <TableCell className="font-mono truncate">
                   hello@example.com
                 </TableCell>
-                <TableCell mono truncate>
+                <TableCell className="font-mono truncate">
                   https://example.com/very/long/path
                 </TableCell>
                 <TableCell>
                   <Badge variant="success">enriched</Badge>
                 </TableCell>
               </TableRow>
-              <TableRow selected>
-                <TableCell>Surat Cafe Co.</TableCell>
-                <TableCell mono>+91 91234 56789</TableCell>
-                <TableCell mono truncate>
-                  —
+              <TableRow data-state="selected">
+                <TableCell>New York Cafe Co.</TableCell>
+                <TableCell className="font-mono">+1 91234 56789</TableCell>
+                <TableCell className="font-mono truncate">
+                  -
                 </TableCell>
-                <TableCell mono truncate>
-                  https://suratcafe.example
+                <TableCell className="font-mono truncate">
+                  https://nyccafe.example
                 </TableCell>
                 <TableCell>
                   <Badge variant="warning">pending</Badge>
@@ -495,7 +479,7 @@ export default function DesignSystemPage() {
 
         <Section id="terminal" title="Terminal">
           <Terminal title="bizscrape">
-            <span className="terminal-prompt">$</span> bizscrape run --city surat
+            <span className="terminal-prompt">$</span> bizscrape run --city newyork
             --niche cafe{"\n"}
             <span className="terminal-stage">DISCOVER</span>
             {"  "}scanning Google Maps…{"\n"}
@@ -504,7 +488,7 @@ export default function DesignSystemPage() {
             <span className="terminal-stage">ENRICH</span>
             {"  "}extracting public contact details…{"\n"}
             <span className="terminal-ok">EXPORT</span>
-            {"  "}wrote data/surat_cafe.csv
+            {"  "}wrote data/newyork_cafe.csv
           </Terminal>
         </Section>
 

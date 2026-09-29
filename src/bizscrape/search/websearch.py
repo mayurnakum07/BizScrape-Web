@@ -33,9 +33,9 @@ _GENERIC_TOKENS = {
     "corp",
     "company",
     "co",
-    "surat",
-    "india",
-    "gujarat",
+    "newyork",
+    "usa",
+    "ny",
     "best",
     "top",
     "rated",
@@ -80,7 +80,7 @@ class WebSearcher:
         if self._client:
             await self._client.aclose()
 
-    async def find_website(self, name: str, hint: str = "Surat") -> str:
+    async def find_website(self, name: str, hint: str = "New York") -> str:
         """
         Return the company's likely official site, or '' when nothing matches.
 
@@ -210,7 +210,7 @@ class GoogleSearcher:
                 except Exception:
                     pass
 
-    async def find_website(self, name: str, hint: str = "Surat") -> str:
+    async def find_website(self, name: str, hint: str = "New York") -> str:
         if self.blocked:
             return ""
 

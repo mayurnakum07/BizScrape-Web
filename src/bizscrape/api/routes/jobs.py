@@ -124,7 +124,7 @@ def get_result_file(
             job_id=job_id,
         ) from exc
     if not resolved.is_file():
-        # Partial results without a flushed CSV — client can still export locally.
+        # Partial results without a flushed CSV - client can still export locally.
         raise ApiError(
             codes.EXPORT_FAILED,
             codes.user_message(codes.EXPORT_FAILED),

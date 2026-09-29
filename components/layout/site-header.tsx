@@ -20,7 +20,10 @@ import { cn } from "@/lib/cn";
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-function navItemClass(active: boolean, tone: "workspace" | "secondary" = "workspace") {
+function navItemClass(
+  active: boolean,
+  tone: "workspace" | "secondary" = "workspace",
+) {
   return cn(
     "relative inline-flex items-center px-2.5 py-1.5 text-sm transition-ui",
     "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
@@ -45,10 +48,6 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!open) {
       return;
     }
@@ -67,10 +66,7 @@ export function SiteHeader() {
         menuRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [],
       );
       const toggle = menuButtonRef.current;
-      const focusables = [
-        ...(toggle ? [toggle] : []),
-        ...menuFocusables,
-      ];
+      const focusables = [...(toggle ? [toggle] : []), ...menuFocusables];
       if (focusables.length === 0) {
         return;
       }
@@ -115,7 +111,8 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-[var(--z-sticky)] border-b border-border bg-surface">
+    <header className="sticky top-0 z-[var(--z-sticky)] border-b border-primary/20 bg-black/90 backdrop-blur-md shadow-[0_4px_20px_rgba(200,240,74,0.03)]">
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50" />
       <Container
         size="wide"
         className="flex h-[var(--header-height)] items-center gap-3 sm:gap-4"
@@ -129,11 +126,11 @@ export function SiteHeader() {
           )}
           onClick={() => setOpen(false)}
         >
-          <span
-            className="size-2 shrink-0 bg-primary transition-ui group-hover:opacity-90"
-            aria-hidden="true"
+          <img
+            src="/assets/Logo-Full.png"
+            alt={APP_NAME}
+            className="h-7 w-auto drop-shadow-[0_0_8px_rgba(200,240,74,0.3)] transition-all group-hover:drop-shadow-[0_0_12px_rgba(200,240,74,0.6)]"
           />
-          {APP_NAME}
         </Link>
 
         <nav
@@ -188,7 +185,7 @@ export function SiteHeader() {
           <div className="ml-2 border-l border-border-subtle pl-3">
             <Link
               href={SCRAPE_PATH}
-              className={buttonClassName({ size: "sm" })}
+              className={cn(buttonClassName({ size: "sm" }), "bg-primary text-primary-foreground hover:bg-primary-hover shadow-[0_0_10px_rgba(200,240,74,0.2)] hover:shadow-[0_0_15px_rgba(200,240,74,0.4)]")}
             >
               Start scraping
             </Link>
@@ -198,7 +195,7 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2 md:hidden">
           <Link
             href={SCRAPE_PATH}
-            className={buttonClassName({ size: "sm" })}
+            className={cn(buttonClassName({ size: "sm" }), "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(200,240,74,0.2)]")}
             onClick={() => setOpen(false)}
           >
             Start scraping

@@ -16,14 +16,14 @@ router = APIRouter(tags=["health"])
 
 @router.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    """Liveness probe — process is running."""
+    """Liveness probe - process is running."""
     return HealthResponse(status="ok")
 
 
 @router.get("/health/ready", response_model=ReadinessResponse)
 def readiness(response: Response) -> ReadinessResponse:
     """
-    Readiness probe — required runtime dependencies without starting a scrape.
+    Readiness probe - required runtime dependencies without starting a scrape.
 
     Does not launch Playwright or open a browser.
     """

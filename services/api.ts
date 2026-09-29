@@ -12,7 +12,7 @@ export type ApiRequestOptions = {
 
 /**
  * Thin HTTP helper for the future Python-backed API.
- * No scrape logic lives here — only transport.
+ * No scrape logic lives here - only transport.
  */
 export async function apiRequest<T>(
   path: string,

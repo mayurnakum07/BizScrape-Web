@@ -1,50 +1,30 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+"use client"
 
-import { cn } from "@/lib/cn";
+import * as React from "react"
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { Check } from "lucide-react"
 
-export type CheckboxProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "type"
-> & {
-  label: ReactNode;
-  description?: ReactNode;
-};
+import { cn } from "@/lib/utils"
 
-export function Checkbox({
-  className,
-  id,
-  label,
-  description,
-  disabled,
-  ...props
-}: CheckboxProps) {
-  const inputId = id ?? props.name;
-
-  return (
-    <label
-      htmlFor={inputId}
-      className={cn(
-        "flex cursor-pointer gap-3 rounded-md",
-        disabled && "cursor-not-allowed opacity-50",
-        className,
-      )}
+const Checkbox = React.forwardRef<
+  React.ElementRef<typeof CheckboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <CheckboxPrimitive.Root
+    ref={ref}
+    className={cn(
+      "grid place-content-center peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+      className
+    )}
+    {...props}
+  >
+    <CheckboxPrimitive.Indicator
+      className={cn("grid place-content-center text-current")}
     >
-      <input
-        id={inputId}
-        type="checkbox"
-        disabled={disabled}
-        className={cn(
-          "mt-0.5 size-4 shrink-0 rounded-sm border border-border bg-surface text-primary accent-primary",
-          "focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:outline-primary",
-        )}
-        {...props}
-      />
-      <span className="flex min-w-0 flex-col gap-1">
-        <span className="text-sm font-medium text-foreground">{label}</span>
-        {description ? (
-          <span className="text-sm text-muted">{description}</span>
-        ) : null}
-      </span>
-    </label>
-  );
-}
+      <Check className="h-4 w-4" />
+    </CheckboxPrimitive.Indicator>
+  </CheckboxPrimitive.Root>
+))
+Checkbox.displayName = CheckboxPrimitive.Root.displayName
+
+export { Checkbox }

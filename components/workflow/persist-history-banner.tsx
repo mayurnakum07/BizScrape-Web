@@ -24,7 +24,7 @@ export function PersistHistoryBanner({
       variant="banner"
       copy={{
         description: onExportHint
-          ? `${error} Results remain on this page — download CSV before closing the tab.`
+          ? `${error} Results remain on this page - download CSV before closing the tab.`
           : error,
       }}
       actions={

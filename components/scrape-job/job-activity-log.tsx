@@ -31,7 +31,7 @@ function stageShort(stageId: JobActivityEntry["stage"]): string | null {
 
 /**
  * Technical activity panel. Newest first, capped to limit render cost.
- * Not a polite live region — JobView owns AT announcements.
+ * Not a polite live region - JobView owns AT announcements.
  */
 export function JobActivityLog({ entries }: JobActivityLogProps) {
   const rows = entries.slice(-MAX_VISIBLE).reverse();

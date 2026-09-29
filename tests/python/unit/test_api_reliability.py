@@ -160,8 +160,8 @@ async def _hang_until_cancel(cfg, event_callback=None, cancel_flag=None):
 
 
 VALID = {
-    "businessType": "cafe",    "country": "India",    "state": "Gujarat",    "city": "Surat",
-    "area": "Mota Varachha",
+    "businessType": "cafe",    "country": "USA",    "state": "NY",    "city": "New York",
+    "area": "Manhattan",
     "target": 20,
     "sources": ["gmaps"],
 }

@@ -2,7 +2,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { workflowCopy } from "@/lib/workflow-state";
 
 /**
- * Route-level loading UI — fills the viewport below the sticky header.
+ * Route-level loading UI - fills the viewport below the sticky header.
  */
 export default function Loading() {
   const copy = workflowCopy("loading");

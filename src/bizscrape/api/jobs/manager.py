@@ -180,7 +180,7 @@ class JobManager:
         if bus is None:
             bus = JobEventBus(job_id)
             self._buses[job_id] = bus
-            # Terminal job without bus — synthesize a terminal event for late subscribers.
+            # Terminal job without bus - synthesize a terminal event for late subscribers.
             status = job.get("status")
             if status == "completed":
                 bus.publish("job_completed", {"status": "completed"})
@@ -486,7 +486,7 @@ class JobManager:
             )
             self._append_activity(
                 job_id,
-                "Cancel requested — stopping scraper…",
+                "Cancel requested - stopping scraper…",
                 job.get("currentStage"),
             )
             self._schedule_cancel_watchdog(job_id)

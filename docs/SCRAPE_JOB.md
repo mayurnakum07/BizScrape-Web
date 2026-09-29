@@ -13,8 +13,8 @@ The UI never talks to Python directly. It consumes `ScrapeJobSnapshot` via `serv
 
 ## Providers
 
-- **mock** (`mock-provider.ts`) — finite development script for UI states. Labeled in the UI. Not production data.
-- **remote** (future) — SSE/WebSocket + REST against the Python engine.
+- **mock** (`mock-provider.ts`) - finite development script for UI states. Labeled in the UI. Not production data.
+- **remote** (future) - SSE/WebSocket + REST against the Python engine.
 
 Swap providers in `getActiveProvider()` without rewriting the job screen.
 

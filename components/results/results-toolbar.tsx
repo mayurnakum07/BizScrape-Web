@@ -17,7 +17,7 @@ import {
 import { ResultsExportActions } from "@/components/results/results-export-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,8 +45,6 @@ type ResultsToolbarProps = {
   onChange: (next: ResultsFilters) => void;
   total: number;
   visible: number;
-  density: ResultsDensity;
-  onDensityChange: (density: ResultsDensity) => void;
   visibleColumns: ResultsColumnId[];
   onVisibleColumnsChange: (columns: ResultsColumnId[]) => void;
   exportRecords: BusinessRecord[];
@@ -151,8 +149,6 @@ export function ResultsToolbar({
   onChange,
   total,
   visible,
-  density,
-  onDensityChange,
   visibleColumns,
   onVisibleColumnsChange,
   exportRecords,
@@ -277,34 +273,7 @@ export function ResultsToolbar({
               Columns
             </Button>
 
-            <Dropdown
-              label="Density"
-              align="end"
-              className="hidden md:inline-flex"
-              trigger={
-                <span className="text-sm">
-                  {density === "compact" ? "Compact" : "Comfortable"}
-                </span>
-              }
-              items={[
-                {
-                  id: "compact",
-                  label: density === "compact" ? "✓ Compact" : "Compact",
-                  onSelect: () => onDensityChange("compact"),
-                },
-                {
-                  id: "comfortable",
-                  label:
-                    density === "comfortable" ? "✓ Comfortable" : "Comfortable",
-                  onSelect: () => onDensityChange("comfortable"),
-                },
-                {
-                  id: "reset-density",
-                  label: "Reset density",
-                  onSelect: () => onDensityChange(DEFAULT_DENSITY),
-                },
-              ]}
-            />
+
 
             {hasActiveFilters(filters) || filters.query.trim() ? (
               <Button
@@ -334,92 +303,102 @@ export function ResultsToolbar({
       {filtersOpen ? (
         <Dialog
           open={filtersOpen}
-          onClose={() => setFiltersOpen(false)}
-          title="Filter results"
-          description="Narrow the dataset by area, category, or contact coverage."
-          size="md"
+          onOpenChange={(val) => !val && setFiltersOpen(false)}
         >
-          <div className="flex flex-col gap-4">
-            <FilterFields
-              filters={filters}
-              areas={areas}
-              categories={categories}
-              onChange={onChange}
-            />
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-              {hasActiveFilters(filters) ? (
-                <Button type="button" variant="ghost" onClick={clearFilters}>
-                  Clear filters
+          <DialogContent className="sm:max-w-md bg-black/95 border-primary/20">
+            <DialogHeader>
+              <DialogTitle className="text-primary font-mono tracking-wide">Filter results</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Narrow the dataset by area, category, or contact coverage.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 mt-2">
+              <FilterFields
+                filters={filters}
+                areas={areas}
+                categories={categories}
+                onChange={onChange}
+              />
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                {hasActiveFilters(filters) ? (
+                  <Button type="button" variant="ghost" onClick={clearFilters}>
+                    Clear filters
+                  </Button>
+                ) : null}
+                <Button type="button" onClick={() => setFiltersOpen(false)}>
+                  Done
                 </Button>
-              ) : null}
-              <Button type="button" onClick={() => setFiltersOpen(false)}>
-                Done
-              </Button>
+              </div>
             </div>
-          </div>
+          </DialogContent>
         </Dialog>
       ) : null}
 
       {columnsOpen ? (
         <Dialog
           open={columnsOpen}
-          onClose={() => setColumnsOpen(false)}
-          title="Visible columns"
-          description="Company stays visible. Optional fields can be shown for denser review."
-          size="md"
+          onOpenChange={(val) => !val && setColumnsOpen(false)}
         >
-          <div className="flex flex-col gap-3">
-            {RESULTS_COLUMNS.map((column) => {
-              const checked = visibleColumns.includes(column.id);
-              const locked = column.id === "company";
-              return (
-                <label
-                  key={column.id}
-                  className={cn(
-                    "flex min-h-10 items-center gap-3 border border-border-subtle px-3 py-2 text-sm",
-                    locked && "opacity-70",
-                  )}
+          <DialogContent className="sm:max-w-md bg-black/95 border-primary/20">
+            <DialogHeader>
+              <DialogTitle className="text-primary font-mono tracking-wide">Visible columns</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Company stays visible. Optional fields can be shown for denser review.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 mt-2">
+              {RESULTS_COLUMNS.map((column) => {
+                const checked = visibleColumns.includes(column.id);
+                const locked = column.id === "company";
+                return (
+                  <label
+                    key={column.id}
+                    className={cn(
+                      "flex min-h-10 items-center gap-3 border border-border-subtle px-3 py-2 text-sm",
+                      locked && "opacity-70",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      className="size-4 accent-primary"
+                      checked={checked}
+                      disabled={locked}
+                      onChange={() =>
+                        onVisibleColumnsChange(
+                          toggleColumnVisibility(visibleColumns, column.id),
+                        )
+                      }
+                    />
+                    <span className="text-foreground">{column.label}</span>
+                    {locked ? (
+                      <span className="ml-auto font-mono text-xs text-muted uppercase">
+                        Required
+                      </span>
+                    ) : null}
+                  </label>
+                );
+              })}
+              <div className="flex justify-between gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    onVisibleColumnsChange([...DEFAULT_VISIBLE_COLUMNS])
+                  }
                 >
-                  <input
-                    type="checkbox"
-                    className="size-4 accent-primary"
-                    checked={checked}
-                    disabled={locked}
-                    onChange={() =>
-                      onVisibleColumnsChange(
-                        toggleColumnVisibility(visibleColumns, column.id),
-                      )
-                    }
-                  />
-                  <span className="text-foreground">{column.label}</span>
-                  {locked ? (
-                    <span className="ml-auto font-mono text-xs text-muted uppercase">
-                      Required
-                    </span>
-                  ) : null}
-                </label>
-              );
-            })}
-            <div className="flex justify-between gap-2 pt-1">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() =>
-                  onVisibleColumnsChange([...DEFAULT_VISIBLE_COLUMNS])
-                }
-              >
-                Reset columns
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setColumnsOpen(false)}
-              >
-                Done
-              </Button>
+                  Reset columns
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setColumnsOpen(false)}
+                >
+                  Done
+                </Button>
+              </div>
             </div>
-          </div>
+          </DialogContent>
         </Dialog>
       ) : null}
     </section>

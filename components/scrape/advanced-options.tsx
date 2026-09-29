@@ -45,16 +45,25 @@ export function AdvancedOptions({
         </span>
       </summary>
       <div className="border-t border-border-subtle px-3 py-3">
-        <Checkbox
-          id="search-all-localities"
-          name="searchAllLocalities"
-          checked={searchAllLocalities}
-          onChange={(event) =>
-            onSearchAllLocalitiesChange(event.target.checked)
-          }
-          label="Search all known localities"
-          description="Expand discovery across known neighbourhoods for the selected city when the engine supports locality lists."
-        />
+        <div className="flex items-start gap-3">
+          <Checkbox
+            id="search-all-localities"
+            name="searchAllLocalities"
+            checked={searchAllLocalities}
+            onCheckedChange={onSearchAllLocalitiesChange}
+          />
+          <div className="grid gap-1.5 leading-none">
+            <label
+              htmlFor="search-all-localities"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground"
+            >
+              Search all known localities
+            </label>
+            <p className="text-sm text-muted">
+              Expand discovery across known neighbourhoods for the selected city when the engine supports locality lists.
+            </p>
+          </div>
+        </div>
       </div>
     </details>
   );

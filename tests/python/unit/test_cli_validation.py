@@ -38,5 +38,5 @@ def test_wizard_not_for_yes(monkeypatch):
     from bizscrape import cli
 
     monkeypatch.setattr(cli.sys, "argv", ["bizscrape", "run", "--yes"])
-    args = build_parser().parse_args(["run", "--yes", "--city", "surat"])
+    args = build_parser().parse_args(["run", "--yes", "--city", "newyork"])
     assert not cli._should_open_wizard(args)

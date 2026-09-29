@@ -57,7 +57,7 @@ export type ScrapeJob = {
   errorMessage?: string;
 };
 
-/** Real-time progress payload (SSE / WebSocket — future). */
+/** Real-time progress payload (SSE / WebSocket - future). */
 export type ScrapeProgressEvent = {
   jobId: string;
   stage: string;

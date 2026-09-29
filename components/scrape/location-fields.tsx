@@ -263,13 +263,13 @@ export function LocationFields({
           id="area"
           label="Area / locality"
           optional
-          hint="Optional neighbourhood filter (e.g. Adajan). Leave blank for city-wide."
+          hint="Optional neighbourhood filter (e.g. Queens). Leave blank for city-wide."
         >
           <Input
             name="area"
             value={area}
             onChange={(event) => onAreaChange(event.target.value)}
-            placeholder="Adajan, Vesu, downtown…"
+            placeholder="Queens, Brooklyn, downtown…"
             autoComplete="address-level3"
           />
         </Field>

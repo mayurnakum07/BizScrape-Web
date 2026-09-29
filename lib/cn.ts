@@ -1,5 +1,5 @@
 /**
- * Lightweight className joiner — avoids extra dependencies.
+ * Lightweight className joiner - avoids extra dependencies.
  */
 export function cn(
   ...values: Array<string | false | null | undefined>

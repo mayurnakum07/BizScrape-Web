@@ -16,46 +16,25 @@ import { cn } from "@/lib/cn";
 type ResultsCardsProps = {
   records: BusinessRecord[];
   onSelect: (record: BusinessRecord) => void;
-  selectedIds?: ReadonlySet<string>;
-  onToggleSelect?: (id: string) => void;
 };
 
 export const ResultsCards = memo(function ResultsCards({
   records,
   onSelect,
-  selectedIds,
-  onToggleSelect,
 }: ResultsCardsProps) {
-  const selectionEnabled = Boolean(onToggleSelect && selectedIds);
 
   return (
     <ul className={RESULTS_CARDS_CLASSES}>
       {records.map((record) => {
         const email = primaryEmail(record);
         const host = websiteHostname(record.website);
-        const selected = selectedIds?.has(record.id) ?? false;
 
         return (
           <li key={record.id}>
             <div
-              data-selected={selected ? "true" : undefined}
-              className={cn(
-                "border border-border bg-elevated transition-ui",
-                selected && "border-primary/40 bg-primary-muted",
-              )}
+              className="border border-border bg-elevated transition-ui"
             >
               <div className="flex items-start gap-2 p-3.5 pb-0">
-                {selectionEnabled ? (
-                  <label className="flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center">
-                    <input
-                      type="checkbox"
-                      className="size-4 accent-primary"
-                      checked={selected}
-                      onChange={() => onToggleSelect?.(record.id)}
-                      aria-label={`Select ${record.company_name}`}
-                    />
-                  </label>
-                ) : null}
                 <button
                   type="button"
                   onClick={() => onSelect(record)}
@@ -71,7 +50,7 @@ export const ResultsCards = memo(function ResultsCards({
                   </p>
                   <p className="mt-1 text-xs text-muted">
                     {[record.area, record.category].filter(Boolean).join(" · ") ||
-                      "—"}
+                      "-"}
                   </p>
                 </button>
               </div>
@@ -88,18 +67,18 @@ export const ResultsCards = memo(function ResultsCards({
                   <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
                     <dt className="text-label text-muted">Web</dt>
                     <dd className="truncate text-right text-primary">
-                      {host || "—"}
+                      {host || "-"}
                     </dd>
                   </div>
                   <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
                     <dt className="text-label text-muted">Phone</dt>
                     <dd className="truncate text-right font-mono text-xs">
-                      {record.phone_primary.trim() || "—"}
+                      {record.phone_primary.trim() || "-"}
                     </dd>
                   </div>
                   <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
                     <dt className="text-label text-muted">Email</dt>
-                    <dd className="truncate text-right">{email || "—"}</dd>
+                    <dd className="truncate text-right">{email || "-"}</dd>
                   </div>
                 </dl>
                 <p className="mt-3 font-mono text-xs text-muted">

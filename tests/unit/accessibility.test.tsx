@@ -18,10 +18,10 @@ const sampleRecord: BusinessRecord = {
   website: "https://samplecafe.example",
   email_primary: "hello@samplecafe.example",
   emails_all: "",
-  phone_primary: "+91 98765 43210",
+  phone_primary: "+1 98765 43210",
   phones_all: "",
   address: "Sample Street",
-  area: "Vesu",
+  area: "Brooklyn",
   category: "Cafe",
   rating: "4.5",
   review_count: "120",
@@ -58,7 +58,7 @@ describe("accessibility regressions", () => {
     const { container } = render(
       <ResultsExportActions
         records={[sampleRecord]}
-        config={{ city: "Surat", businessType: "Cafe", area: "Vesu" }}
+        config={{ city: "New York", businessType: "Cafe", area: "Brooklyn" }}
       />,
     );
 

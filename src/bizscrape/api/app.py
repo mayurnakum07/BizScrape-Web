@@ -57,7 +57,7 @@ def create_app() -> FastAPI:
         title="BizScrape API",
         description=(
             "HTTP API for BizScrape scrape jobs. "
-            "Uses the same Python engine as the CLI — not a shell wrapper. "
+            "Uses the same Python engine as the CLI - not a shell wrapper. "
             "Live progress is delivered via SSE at GET /jobs/{id}/events."
         ),
         version="0.1.0",

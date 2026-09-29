@@ -10,7 +10,7 @@ type GlobalErrorProps = {
 /**
  * Root-level fallback when the root layout itself fails.
  * Must define its own html/body because it replaces the root layout.
- * Colors mirror design tokens (inline — globals.css is unavailable here).
+ * Colors mirror design tokens (inline - globals.css is unavailable here).
  */
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {

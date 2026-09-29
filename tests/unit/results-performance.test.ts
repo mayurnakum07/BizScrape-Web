@@ -12,10 +12,10 @@ function makeRecord(index: number): BusinessRecord {
     website: index % 2 === 0 ? `https://example-${index}.com` : "",
     email_primary: index % 3 === 0 ? `team${index}@example.com` : "",
     emails_all: "",
-    phone_primary: index % 4 === 0 ? `+91 90000${String(index).padStart(5, "0")}` : "",
+    phone_primary: index % 4 === 0 ? `+1 90000${String(index).padStart(5, "0")}` : "",
     phones_all: "",
     address: `Street ${index}`,
-    area: index % 2 === 0 ? "Vesu" : "Adajan",
+    area: index % 2 === 0 ? "Brooklyn" : "Queens",
     category: index % 5 === 0 ? "Cafe" : "Agency",
     rating: String(5 - (index % 5) * 0.5),
     review_count: String(index * 3),
@@ -46,13 +46,13 @@ describe("results derived-data pipeline", () => {
     const filtered = filterAndSortRecords(records, {
       ...baseFilters,
       query: "cafe",
-      area: "Vesu",
+      area: "Brooklyn",
       hasWebsite: true,
       sort: "review_count",
     });
 
     expect(filtered.length).toBeGreaterThan(0);
-    expect(filtered.every((record) => record.area === "Vesu")).toBe(true);
+    expect(filtered.every((record) => record.area === "Brooklyn")).toBe(true);
     expect(filtered.every((record) => record.website)).toBe(true);
     expect(Number(filtered[0]?.review_count ?? 0)).toBeGreaterThanOrEqual(
       Number(filtered.at(-1)?.review_count ?? 0),

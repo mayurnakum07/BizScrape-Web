@@ -64,7 +64,7 @@ async def stream_job_events(
                 try:
                     item = await asyncio.wait_for(queue.get(), timeout=KEEPALIVE_SECONDS)
                 except asyncio.TimeoutError:
-                    # SSE comment — not a user-facing event.
+                    # SSE comment - not a user-facing event.
                     yield ": keepalive\n\n"
                     # If job finished but we missed the sentinel, exit cleanly.
                     current = manager.get_job(job_id)

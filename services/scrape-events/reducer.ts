@@ -478,7 +478,7 @@ export function createEmptyResultsForJob(jobId: string): ScrapeResultsSnapshot {
   };
 }
 
-/** Test helper — blank job shell. */
+/** Test helper - blank job shell. */
 export function createBlankJobShell(
   jobId: string,
   partial?: Partial<ScrapeJobSnapshot>,
@@ -489,9 +489,9 @@ export function createBlankJobShell(
     provider: "remote",
     config: {
       businessType: "cafe",
-      country: "India",
-      state: "Gujarat",
-      city: "Surat",
+      country: "USA",
+      state: "NY",
+      city: "New York",
       area: "",
       target: 20,
       sources: ["gmaps"],
@@ -499,9 +499,9 @@ export function createBlankJobShell(
     },
     request: {
       niche: "cafe",
-      country: "India",
-      state: "Gujarat",
-      city: "Surat",
+      country: "USA",
+      state: "NY",
+      city: "New York",
       targetCount: 20,
       sources: ["gmaps"],
       searchAllLocalities: false,

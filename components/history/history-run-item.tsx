@@ -51,7 +51,7 @@ export function HistoryRunItem({ item, busy, onDelete }: HistoryRunItemProps) {
   const towardTarget = Math.min(
     100,
     Math.round(
-      (item.summary.businesses / Math.max(item.config.target, 1)) * 100,
+      ((item.summary?.businesses ?? 0) / Math.max(item.config?.target ?? 1, 1)) * 100,
     ),
   );
 
@@ -163,19 +163,19 @@ export function HistoryRunItem({ item, busy, onDelete }: HistoryRunItemProps) {
           <p className="mt-1.5 font-mono text-xs text-muted">
             job/{item.jobId.slice(0, 8)}
             <span className="mx-1.5 text-border">·</span>
-            target {item.config.target}
+            target {item.config?.target ?? 0}
             <span className="mx-1.5 text-border">·</span>
             {towardTarget}% of target
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-          <Metric label="Records" value={String(item.summary.businesses)} />
+          <Metric label="Records" value={String(item.summary?.businesses ?? 0)} />
           <Metric label="Duration" value={duration} />
           <Metric label="Saved" value={formatRunTimestampShort(item.savedAt)} />
           <Metric
             label="Coverage"
-            value={`${item.summary.websites}W · ${item.summary.emails}E · ${item.summary.phones}P`}
+            value={`${item.summary?.websites ?? 0}W · ${item.summary?.emails ?? 0}E · ${item.summary?.phones ?? 0}P`}
           />
         </div>
 

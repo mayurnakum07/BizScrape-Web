@@ -8,7 +8,7 @@ import {
 
 describe("filename sanitization", () => {
   it("slugifies spaces and punctuation", () => {
-    expect(sanitizeFilenamePart("Mota Varachha")).toBe("mota-varachha");
+    expect(sanitizeFilenamePart("Manhattan")).toBe("manhattan");
     expect(sanitizeFilenamePart("IT & Software")).toBe("it-and-software");
   });
 
@@ -23,11 +23,11 @@ describe("filename sanitization", () => {
   it("builds city_niche_date filenames", () => {
     expect(
       buildCsvFilename({
-        city: "Surat",
+        city: "New York",
         niche: "Cafe",
         date: new Date(2026, 8, 16),
       }),
-    ).toBe("surat_cafe_2026-09-16.csv");
+    ).toBe("new-york_cafe_2026-09-16.csv");
   });
 
   it("formats dates as YYYY-MM-DD", () => {

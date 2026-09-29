@@ -99,7 +99,7 @@ export async function refreshScrapeJob(jobId: string): Promise<void> {
     await getRemoteScrapeJobProvider().refreshJob(jobId);
     return;
   }
-  // Mock: no-op — snapshot already local.
+  // Mock: no-op - snapshot already local.
 }
 
 export function subscribeScrapeJob(
@@ -109,7 +109,7 @@ export function subscribeScrapeJob(
   return getActiveProvider().subscribe(jobId, listener);
 }
 
-/** Development helpers — only available on the mock provider. */
+/** Development helpers - only available on the mock provider. */
 export function simulateJobConnectionInterrupt(jobId: string): void {
   getActiveProvider().simulateConnectionInterrupt?.(jobId);
 }

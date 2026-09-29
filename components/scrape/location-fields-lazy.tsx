@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Lazy wrapper — `react-country-state-city` is large and only needed on
+ * Lazy wrapper - `react-country-state-city` is large and only needed on
  * configure screens. Keeps it out of the results/history bundles.
  */
 export const LocationFields = dynamic(

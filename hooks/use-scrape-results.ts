@@ -14,7 +14,7 @@ import {
 } from "@/types/scrape-results";
 import { isTerminalJobStatus } from "@/types/scrape-job";
 
-/** Stable empty snapshots — `useSyncExternalStore` requires referential equality. */
+/** Stable empty snapshots - `useSyncExternalStore` requires referential equality. */
 const emptyResultsCache = new Map<string, ScrapeResultsSnapshot>();
 
 function getStableEmptyResults(jobId: string): ScrapeResultsSnapshot {

@@ -20,7 +20,7 @@ export type ResultSummary = {
 };
 
 /**
- * Result set for one job — separate from ScrapeJobSnapshot runtime state.
+ * Result set for one job - separate from ScrapeJobSnapshot runtime state.
  */
 export type ScrapeResultsSnapshot = {
   jobId: string;

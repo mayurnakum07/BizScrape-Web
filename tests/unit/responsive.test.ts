@@ -58,7 +58,7 @@ describe("results filter helpers", () => {
     expect(
       activeFilterCount({
         ...baseFilters,
-        area: "Vesu",
+        area: "Brooklyn",
         hasEmail: true,
       }),
     ).toBe(2);

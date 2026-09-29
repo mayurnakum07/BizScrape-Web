@@ -1,5 +1,5 @@
 /**
- * BizScrape workflow state catalog — consistent titles, explanations, and next steps.
+ * BizScrape workflow state catalog - consistent titles, explanations, and next steps.
  * Presentation only; does not replace AppError / ScrapeError normalization.
  */
 
@@ -162,7 +162,7 @@ export const WORKFLOW_COPY: Record<WorkflowKind, WorkflowCopy> = {
     eyebrow: "Export failed",
     title: "CSV could not be generated",
     description:
-      "Businesses are still in the dataset. The download step failed — this does not re-run the scraper.",
+      "Businesses are still in the dataset. The download step failed - this does not re-run the scraper.",
     nextStep: "Retry export. If it keeps failing, copy rows from the table or try another browser.",
   },
   export_empty: {

@@ -6,7 +6,7 @@
  * single quote. The quote is visible in the cell text but prevents formula
  * execution. Empty values are left unchanged.
  *
- * Documented behavior — do not remove without an explicit alternative policy.
+ * Documented behavior - do not remove without an explicit alternative policy.
  */
 
 const DANGEROUS_PREFIX = /^[=+\-@\t\r]/;

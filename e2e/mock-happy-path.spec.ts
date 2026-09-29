@@ -14,7 +14,7 @@ test.describe("mock provider happy path", () => {
 
     await fillScrapeForm(page, {
       businessType: "cafe",
-      city: "Surat",
+      city: "New York",
       target: "10",
     });
     await submitScrapeForm(page);

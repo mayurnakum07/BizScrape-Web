@@ -39,7 +39,7 @@ _limiter = RateLimiter()
 
 
 def reset_rate_limiter() -> None:
-    """Test helper — clears in-process counters."""
+    """Test helper - clears in-process counters."""
     _limiter._hits.clear()
 
 

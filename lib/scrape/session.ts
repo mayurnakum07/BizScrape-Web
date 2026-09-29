@@ -72,7 +72,7 @@ export function loadLocalScrapeJob(jobId: string): LocalScrapeJob | null {
   }
 }
 
-/** No-op subscribe — session drafts do not emit live updates yet. */
+/** No-op subscribe - session drafts do not emit live updates yet. */
 export function subscribeLocalScrapeJobs(
   onStoreChange: () => void,
 ): () => void {
@@ -81,7 +81,7 @@ export function subscribeLocalScrapeJobs(
 }
 
 /**
- * Future real backend entrypoint — intentionally not called from the form yet.
+ * Future real backend entrypoint - intentionally not called from the form yet.
  */
 export function createRemoteScrapeJob(config: ScrapeConfig): Promise<never> {
   void config;

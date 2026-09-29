@@ -5,7 +5,7 @@ Interactive:
     bizscrape run
 
 Non-interactive:
-    bizscrape run --city surat --niche it --areas "Mota Varachha" --target 50 --yes
+    bizscrape run --city newyork --niche it --areas "Manhattan" --target 50 --yes
 """
 
 from __future__ import annotations
@@ -38,10 +38,10 @@ hard_stop.install()
 _EPILOG = """
 examples:
   bizscrape run
-  bizscrape run --city surat --niche it --areas "Mota Varachha" --target 50 --yes
-  bizscrape discover --city mumbai --niche food --target 20 --yes
+  bizscrape run --city newyork --niche it --areas "Manhattan" --target 50 --yes
+  bizscrape discover --city toronto --niche food --target 20 --yes
   bizscrape enrich --concurrency 8
-  bizscrape stats --out data/surat_it_2026-09-15.csv
+  bizscrape stats --out data/newyork_it_2026-09-15.csv
 
 exit codes:
   0  success
@@ -54,7 +54,7 @@ exit codes:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="bizscrape",
-        description="BizScrape — scrape Indian city company contacts into a CSV.",
+        description="BizScrape - scrape Global city company contacts into a CSV.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=_EPILOG,
     )
@@ -136,7 +136,7 @@ def build_parser() -> argparse.ArgumentParser:
         "discover",
         help="Find companies via Google Maps",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="example:\n  bizscrape discover --city surat --niche cafe --target 20 --yes",
+        epilog="example:\n  bizscrape discover --city newyork --niche cafe --target 20 --yes",
     )
     add_discover_flags(discover)
     discover.add_argument("--yes", action="store_true", help="Non-interactive (no prompts)")
@@ -171,7 +171,7 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=(
             "examples:\n"
             "  bizscrape run\n"
-            '  bizscrape run --city surat --niche it --areas "Mota Varachha" '
+            '  bizscrape run --city newyork --niche it --areas "Manhattan" '
             "--target 50 --yes"
         ),
     )
@@ -250,7 +250,7 @@ def _should_open_wizard(args: argparse.Namespace) -> bool:
 def _print_dry_run(args: argparse.Namespace) -> None:
     queries = preview_queries(args)
     profile = config.resolve_city(args.city)
-    ui.rule("Dry run — planned Maps queries")
+    ui.rule("Dry run - planned Maps queries")
     print(f"  city     : {profile['label']}")
     print(f"  niche    : {args.niche}")
     print(f"  target   : {args.target}")

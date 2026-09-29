@@ -8,7 +8,7 @@ def test_upsert_dedupe_by_phone(tmp_csv):
         store.upsert(
             {
                 "name": "Acme Soft",
-                "phones": ["+919876543211"],
+                "phones": ["+19876543211"],
                 "source": "gmaps",
             }
         )
@@ -18,7 +18,7 @@ def test_upsert_dedupe_by_phone(tmp_csv):
         store.upsert(
             {
                 "name": "Acme Software",
-                "phones": ["+919876543211"],
+                "phones": ["+19876543211"],
                 "website": "https://acme.example",
                 "source": "gmaps",
             }
@@ -30,7 +30,7 @@ def test_upsert_dedupe_by_phone(tmp_csv):
     assert "gmaps" in row["sources"]
     assert row["website"] == "https://acme.example"
     first_seen = row["first_seen"]
-    store.upsert({"name": "Acme Soft", "phones": ["+919876543211"], "source": "gmaps"})
+    store.upsert({"name": "Acme Soft", "phones": ["+19876543211"], "source": "gmaps"})
     assert store._rows[0]["first_seen"] == first_seen
 
 
@@ -40,7 +40,7 @@ def test_target_limit_via_count(tmp_csv):
         store.upsert(
             {
                 "name": f"Company Number {i} Alpha",
-                "phones": [f"+9198765432{i:02d}"],
+                "phones": [f"+198765432{i:02d}"],
                 "source": "gmaps",
             }
         )
@@ -53,7 +53,7 @@ def test_atomic_csv_roundtrip(tmp_csv):
         {
             "name": "Demo Co",
             "emails": ["info@demo.example"],
-            "phones": ["+919811122233"],
+            "phones": ["+19811122233"],
             "website": "https://demo.example",
             "source": "gmaps",
         }
@@ -74,7 +74,7 @@ def test_merge_unions_emails(tmp_csv):
     store.upsert(
         {
             "name": "Union Corp Limited",
-            "phones": ["+919811100001"],
+            "phones": ["+19811100001"],
             "emails": ["a@union.example"],
             "source": "gmaps",
         }
@@ -82,7 +82,7 @@ def test_merge_unions_emails(tmp_csv):
     store.upsert(
         {
             "name": "Union Corp",
-            "phones": ["+919811100001"],
+            "phones": ["+19811100001"],
             "emails": ["b@union.example"],
             "source": "gmaps",
         }

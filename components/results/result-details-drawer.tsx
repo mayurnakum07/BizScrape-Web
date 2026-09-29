@@ -4,7 +4,14 @@ import { useEffect, useMemo } from "react";
 
 import { ResultDetails } from "@/components/results/result-details";
 import { Button } from "@/components/ui/button";
-import { Drawer } from "@/components/ui/drawer";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter
+} from "@/components/ui/sheet";
 import type { BusinessRecord } from "@/types/business-record";
 
 type ResultDetailsDrawerProps = {
@@ -15,9 +22,6 @@ type ResultDetailsDrawerProps = {
   onSelect?: (record: BusinessRecord) => void;
 };
 
-/**
- * Business detail drawer — inset right rail on desktop, ~88vh sheet on mobile.
- */
 export function ResultDetailsDrawer({
   record,
   records = [],
@@ -75,32 +79,38 @@ export function ResultDetailsDrawer({
     : undefined;
 
   return (
-    <Drawer
-      open={Boolean(record)}
-      onClose={onClose}
-      title={record?.company_name.trim() || "Business details"}
-      description={description}
-      size="lg"
-      footer={
-        hasNav ? (
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-mono text-[0.7rem] text-muted">
+    <Sheet open={Boolean(record)} onOpenChange={(val) => !val && onClose()}>
+      <SheetContent className="sm:max-w-xl w-[500px] overflow-y-auto">
+        <SheetHeader className="mb-4">
+          <SheetTitle>{record?.company_name.trim() || "Business details"}</SheetTitle>
+          {description && <SheetDescription>{description}</SheetDescription>}
+        </SheetHeader>
+        
+        {record ? (
+          <div key={record.id} className="result-details-enter pb-8">
+            <ResultDetails record={record} />
+          </div>
+        ) : null}
+
+        {hasNav && (
+          <SheetFooter className="sm:justify-between items-center pt-4 border-t border-border mt-4">
+            <p className="font-mono text-[0.7rem] text-muted-foreground w-full sm:w-auto text-left">
               Record{" "}
               <span className="tabular-nums text-foreground">{index + 1}</span>{" "}
               of{" "}
               <span className="tabular-nums text-foreground">
                 {records.length}
               </span>
-              <span className="ml-2 hidden text-muted sm:inline">
+              <span className="ml-2 hidden text-muted-foreground sm:inline">
                 ← → to navigate
               </span>
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
-                className="min-h-10 flex-1 sm:flex-none"
+                className="flex-1 sm:flex-none"
                 disabled={!previous}
                 onClick={() => previous && onSelect?.(previous)}
               >
@@ -110,27 +120,21 @@ export function ResultDetailsDrawer({
                 type="button"
                 size="sm"
                 variant="outline"
-                className="min-h-10 flex-1 sm:flex-none"
+                className="flex-1 sm:flex-none"
                 disabled={!next}
                 onClick={() => next && onSelect?.(next)}
               >
                 Next
               </Button>
             </div>
-          </div>
-        ) : undefined
-      }
-    >
-      {record ? (
-        <div key={record.id} className="result-details-enter">
-          <ResultDetails record={record} />
-        </div>
-      ) : null}
-    </Drawer>
+          </SheetFooter>
+        )}
+      </SheetContent>
+    </Sheet>
   );
 }
 
-/** @deprecated Prefer ResultDetailsDrawer — kept for existing imports/tests. */
+/** @deprecated Prefer ResultDetailsDrawer - kept for existing imports/tests. */
 export function ResultDetailsDialog(props: ResultDetailsDrawerProps) {
   return <ResultDetailsDrawer {...props} />;
 }

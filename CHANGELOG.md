@@ -12,9 +12,9 @@ This repository currently ships three surfaces under one version line (`0.1.x`):
 
 ## Versioning
 
-- **Git tags** — Prefer annotated tags like `v0.1.0` on `main` when cutting a release.
-- **GitHub Releases** — Attach release notes that say which surfaces changed (UI / API / CLI).
-- **npm `package.json` / `pyproject.toml`** — Keep versions aligned unless you deliberately split packages later.
+- **Git tags** - Prefer annotated tags like `v0.1.0` on `main` when cutting a release.
+- **GitHub Releases** - Attach release notes that say which surfaces changed (UI / API / CLI).
+- **npm `package.json` / `pyproject.toml`** - Keep versions aligned unless you deliberately split packages later.
 - Do not invent historical releases that were never tagged.
 
 ## Unreleased
@@ -40,7 +40,7 @@ This repository currently ships three surfaces under one version line (`0.1.x`):
 - UX polish: full-viewport route loader, wider scrollable Start scrape modal, history name links + custom confirm dialogs, ink-black primary button text and dark selection on lime
 - Flow fixes: scrape submit opens job page (not in-modal processing); closed dialogs no longer paint; CSV above filters; smaller detail drawer; body scroll lock; react-toastify for export/delete
 
-## 0.1.0 — 2026-09-16 (initial public alpha)
+## 0.1.0 - 2026-09-16 (initial public alpha)
 
 See [docs/RELEASE_NOTES_v0.1.0.md](docs/RELEASE_NOTES_v0.1.0.md).
 

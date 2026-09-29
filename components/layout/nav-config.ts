@@ -7,7 +7,7 @@ export type NavLink = {
   external?: boolean;
 };
 
-/** Primary workspace destinations — current route is highlighted. */
+/** Primary workspace destinations - current route is highlighted. */
 export const workspaceNav: NavLink[] = [
   { href: SCRAPE_PATH, label: "Scrape" },
   { href: "/scrape/history", label: "History" },

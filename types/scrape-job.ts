@@ -1,5 +1,5 @@
 /**
- * Scraping job runtime types — separate from ScrapeConfig (user request).
+ * Scraping job runtime types - separate from ScrapeConfig (user request).
  * Compatible with a future Python event stream.
  */
 
@@ -81,7 +81,7 @@ export type JobProviderKind = "mock" | "remote";
 
 /**
  * Full snapshot consumed by the job UI.
- * Configuration and runtime state are explicit fields — do not mix them.
+ * Configuration and runtime state are explicit fields - do not mix them.
  */
 export type ScrapeJobSnapshot = {
   id: string;

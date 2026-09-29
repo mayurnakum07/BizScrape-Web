@@ -15,7 +15,7 @@ const STORAGE_PREFIX = `${SESSION_JOB_KEY_PREFIX}results:`;
 
 /**
  * Development-only incremental results driver.
- * Streams synthetic fixtures — not live scrape data.
+ * Streams synthetic fixtures - not live scrape data.
  */
 class MockScrapeResultsProvider implements ScrapeResultsProvider {
   private readonly sets = new Map<string, ScrapeResultsSnapshot>();

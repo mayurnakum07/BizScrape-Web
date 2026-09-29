@@ -16,7 +16,7 @@ type ResultsSelectionBarProps = {
 };
 
 /**
- * Bulk actions for selected rows — currently export + clear.
+ * Bulk actions for selected rows - currently export + clear.
  * Extends existing CSV export without inventing new scrapers.
  */
 export function ResultsSelectionBar({

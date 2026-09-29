@@ -1,4 +1,4 @@
-"""Full-stack API smoke test (mocked scraper — no Playwright required)."""
+"""Full-stack API smoke test (mocked scraper - no Playwright required)."""
 
 from __future__ import annotations
 
@@ -73,9 +73,9 @@ async def _smoke_scrape(cfg, event_callback=None, cancel_flag=None):
             "website": "https://example.com",
             "email_primary": "hello@example.com",
             "emails_all": "hello@example.com",
-            "phone_primary": "+91 90000 00001",
-            "phones_all": "+91 90000 00001",
-            "address": "Surat",
+            "phone_primary": "+1 90000 00001",
+            "phones_all": "+1 90000 00001",
+            "address": "New York",
             "area": "Test Area",
             "category": "Cafe",
             "rating": "4.0",
@@ -119,7 +119,7 @@ def client(tmp_path):
 
 
 VALID_BODY = {
-    "businessType": "cafe",    "country": "India",    "state": "Gujarat",    "city": "Surat",
+    "businessType": "cafe",    "country": "USA",    "state": "NY",    "city": "New York",
     "area": "Test Area",
     "target": 5,
     "sources": ["gmaps"],

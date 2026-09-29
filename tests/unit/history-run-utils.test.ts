@@ -22,7 +22,7 @@ function makeRecord(overrides: Partial<BusinessRecord> = {}): BusinessRecord {
     emails_all: "",
     phone_primary: "",
     phones_all: "",
-    area: "Vesu",
+    area: "Brooklyn",
     category: "Cafe",
     address: "",
     rating: "",
@@ -48,10 +48,10 @@ function makeItem(
     status: "completed",
     config: {
       businessType: "Cafe",
-      country: "India",
-      state: "Gujarat",
-      city: "Surat",
-      area: "Vesu",
+      country: "USA",
+      state: "NY",
+      city: "New York",
+      area: "Brooklyn",
       target: 20,
       sources: ["gmaps"],
       searchAllLocalities: false,
@@ -71,7 +71,7 @@ function makeItem(
 
 describe("history run utils", () => {
   it("builds a compact query label", () => {
-    expect(buildRunQueryLabel(makeItem())).toBe("Cafe · Vesu");
+    expect(buildRunQueryLabel(makeItem())).toBe("Cafe · Brooklyn");
   });
 
   it("uses cached duration when present", () => {
@@ -97,9 +97,9 @@ describe("history run utils", () => {
         status: "cancelled",
         config: {
           businessType: "Bakery",
-          country: "India",
-          state: "Gujarat",
-          city: "Ahmedabad",
+          country: "USA",
+          state: "NY",
+          city: "London",
           target: 10,
           sources: ["gmaps"],
           searchAllLocalities: false,
@@ -109,6 +109,6 @@ describe("history run utils", () => {
 
     expect(filterHistoryRuns(items, "bakery", "all")).toHaveLength(1);
     expect(filterHistoryRuns(items, "", "cancelled")).toHaveLength(1);
-    expect(filterHistoryRuns(items, "surat", "completed")).toHaveLength(1);
+    expect(filterHistoryRuns(items, "new york", "completed")).toHaveLength(1);
   });
 });

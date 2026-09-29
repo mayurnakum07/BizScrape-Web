@@ -1,7 +1,57 @@
 @import "tailwindcss";
 
-/*
-  BizScrape design system — dark-first visual foundation.
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: hsl(var(--background-hsl));
+  --color-foreground: hsl(var(--foreground-hsl));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary-hsl));
+  --color-primary-foreground: hsl(var(--primary-foreground-hsl));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted-hsl));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border-hsl));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background-hsl: 150 8% 5%;
+  --foreground-hsl: 100 11% 91%;
+  --card: 150 8% 7%;
+  --card-foreground: 100 11% 91%;
+  --popover: 150 8% 7%;
+  --popover-foreground: 100 11% 91%;
+  --primary-hsl: 74 86% 61%;
+  --primary-foreground-hsl: 150 8% 5%;
+  --secondary: 137 8% 12%;
+  --secondary-foreground: 100 11% 91%;
+  --muted-hsl: 137 8% 15%;
+  --muted-foreground: 100 11% 60%;
+  --accent: 137 8% 15%;
+  --accent-foreground: 100 11% 91%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border-hsl: 137 8% 17%;
+  --input: 137 8% 17%;
+  --ring: 74 86% 61%;
+  --radius: 0.5rem;
+}/*
+  BizScrape design system - dark-first visual foundation.
 
   Direction: deep blue-black canvas, electric lime signal, sharp geometry.
   No gradients, glassmorphism, glow effects, or decorative SaaS styling.
@@ -13,7 +63,7 @@
 :root {
   color-scheme: dark;
 
-  /* ——— Color ——— */
+  /* --- Color --- */
   --canvas: #0b0d0c;
   --background: #0b0d0c;
   --surface: #111513;
@@ -25,14 +75,14 @@
   --border: #29302b;
   --border-subtle: #1c221e;
 
-  /* Signal — primary interaction / data accent */
+  /* Signal - primary interaction / data accent */
   --primary: #c8f04a;
   --signal: #c8f04a;
   --primary-foreground: #0b0d0c;
   --primary-hover: #d4f56a;
   --primary-muted: color-mix(in srgb, var(--primary) 14%, transparent);
 
-  /* Status — restrained */
+  /* Status - restrained */
   --success: #76d6a0;
   --success-foreground: #0b0d0c;
   --success-muted: color-mix(in srgb, var(--success) 14%, transparent);
@@ -42,7 +92,7 @@
   --error: #ff7568;
   --error-foreground: #0b0d0c;
   --error-muted: color-mix(in srgb, var(--error) 14%, transparent);
-  /* Info maps to a quiet sage — no competing blue accent */
+  /* Info maps to a quiet sage - no competing blue accent */
   --info: #9bb5a4;
   --info-foreground: #0b0d0c;
   --info-muted: color-mix(in srgb, var(--info) 14%, transparent);
@@ -51,7 +101,7 @@
   --terminal-bg: #080a09;
   --terminal-fg: #c5cbc4;
 
-  /* ——— Spacing ——— */
+  /* --- Spacing --- */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -65,22 +115,22 @@
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* ——— Borders ——— */
+  /* --- Borders --- */
   --border-width: 1px;
 
-  /* ——— Radii — minimal / sharp ——— */
+  /* --- Radii - minimal / sharp --- */
   --radius-none: 0;
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.375rem;
   --radius-xl: 0.5rem;
 
-  /* ——— Shadows — flat elevation only ——— */
+  /* --- Shadows - flat elevation only --- */
   --shadow-none: none;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
 
-  /* ——— Typography ——— */
+  /* --- Typography --- */
   --font-sans: var(--font-ibm-plex-sans), "Segoe UI", sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
   --text-xs: 0.75rem;
@@ -95,14 +145,14 @@
   --leading-snug: 1.375;
   --leading-normal: 1.5;
 
-  /* ——— Layout ——— */
+  /* --- Layout --- */
   --container-narrow: 40rem;
   --container-default: 64rem;
   --container-wide: 80rem;
   --container-pad: clamp(0.875rem, 2.5vw, 1.5rem);
   --header-height: 3rem;
 
-  /* ——— Motion ——— */
+  /* --- Motion --- */
   --duration-fast: 120ms;
   --duration-normal: 180ms;
   --duration-slow: 280ms;
@@ -111,12 +161,12 @@
   /* Live/status loops stay short and subtle when tied to real state */
   --duration-live: 1.25s;
 
-  /* ——— Focus ——— */
+  /* --- Focus --- */
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --focus-ring-color: var(--primary);
 
-  /* ——— Z-index ——— */
+  /* --- Z-index --- */
   --z-base: 0;
   --z-sticky: 40;
   --z-dropdown: 50;
@@ -125,7 +175,7 @@
   --z-toast: 80;
   --z-tooltip: 90;
 
-  /* ——— Control sizes ——— */
+  /* --- Control sizes --- */
   --control-h-sm: 2.25rem;
   --control-h-md: 2.5rem;
   --control-h-lg: 2.75rem;
@@ -272,7 +322,7 @@ a {
   color: var(--primary-foreground);
 }
 
-/* ——— Typography ———
+/* --- Typography ---
    Sans = interface copy. Mono = metrics, logs, IDs, scraped data. */
 
 .text-display {
@@ -327,7 +377,7 @@ a {
   font-variant-ligatures: none;
 }
 
-/* ——— Form conventions ——— */
+/* --- Form conventions --- */
 
 .field-group {
   display: flex;
@@ -358,7 +408,7 @@ a {
   color: var(--muted);
 }
 
-/* ——— Focus utility (reusable on custom controls) ——— */
+/* --- Focus utility (reusable on custom controls) --- */
 
 .focus-ring {
   outline: none;
@@ -369,7 +419,7 @@ a {
   outline-offset: var(--focus-ring-offset);
 }
 
-/* ——— Terminal surface ——— */
+/* --- Terminal surface --- */
 
 .terminal {
   overflow: auto;
@@ -424,7 +474,7 @@ a {
   color: var(--error);
 }
 
-/* ——— Data table ——— */
+/* --- Data table --- */
 
 .table-wrap {
   width: 100%;
@@ -493,7 +543,7 @@ a {
   background: var(--surface-hover);
 }
 
-/* ——— Results data workspace ——— */
+/* --- Results data workspace --- */
 
 .results-workspace {
   border-radius: var(--radius-md);
@@ -616,7 +666,7 @@ a {
   }
 }
 
-/* ——— Motion system ——— */
+/* --- Motion system --- */
 
 .transition-ui {
   transition-property: color, background-color, border-color, opacity, box-shadow,
@@ -632,7 +682,7 @@ a {
   transition-timing-function: var(--ease-out);
 }
 
-/* Press feedback — transform only, no layout shift */
+/* Press feedback - transform only, no layout shift */
 .control-press {
   transition-property: color, background-color, border-color, opacity, box-shadow,
     transform;
@@ -664,12 +714,12 @@ a {
   animation: motion-fade-up var(--duration-fast) var(--ease-out) both;
 }
 
-/* Indeterminate scrape progress — transform only, when job is running */
+/* Indeterminate scrape progress - transform only, when job is running */
 .motion-indeterminate {
   animation: motion-indeterminate var(--duration-live) var(--ease-in-out) infinite;
 }
 
-/* Live status dot — only for running/reconnecting tones */
+/* Live status dot - only for running/reconnecting tones */
 .motion-live-dot {
   animation: motion-live-dot var(--duration-live) var(--ease-out) infinite;
 }
@@ -896,7 +946,7 @@ dialog::backdrop {
 
 .dialog-root,
 .dialog-sheet {
-  /* Do NOT set display here — closed <dialog> must stay display:none */
+  /* Do NOT set display here - closed <dialog> must stay display:none */
   margin: auto;
   max-height: min(92dvh, 100%);
   overflow: hidden;
@@ -983,7 +1033,7 @@ dialog::backdrop {
   }
 }
 
-/* ——— Landing motion ——— */
+/* --- Landing motion --- */
 
 .reveal {
   opacity: 0;
@@ -1038,7 +1088,7 @@ dialog::backdrop {
   }
 }
 
-/* ——— Live job workspace ——— */
+/* --- Live job workspace --- */
 
 .job-stage-active {
   box-shadow: inset 3px 0 0 var(--primary);
@@ -1065,7 +1115,7 @@ dialog::backdrop {
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-/* Nav active underline — scaleX avoids layout shift */
+/* Nav active underline - scaleX avoids layout shift */
 .nav-underline {
   position: relative;
 }
@@ -1136,7 +1186,7 @@ dialog::backdrop {
   }
 }
 
-/* ——— react-toastify · M0 ——— */
+/* --- react-toastify · M0 --- */
 .Toastify__toast-container {
   z-index: var(--z-toast);
   width: min(100% - 2rem, 22rem);

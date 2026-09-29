@@ -25,7 +25,7 @@ function iconProps(
   };
 }
 
-/** Simple geometric icons — one coherent stroke style. */
+/** Simple geometric icons - one coherent stroke style. */
 
 export function IconGithub(props: IconProps) {
   return (

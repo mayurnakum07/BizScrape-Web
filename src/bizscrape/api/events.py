@@ -84,7 +84,7 @@ class JobEventBus:
         if closed and not replay:
             self._enqueue(queue, None)
         elif closed and replay and replay[-1]["type"] in TERMINAL_EVENT_TYPES:
-            # Replay includes terminal — SSE handler will close after draining replay.
+            # Replay includes terminal - SSE handler will close after draining replay.
             pass
 
         return queue, replay

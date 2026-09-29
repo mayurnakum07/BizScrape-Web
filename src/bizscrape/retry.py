@@ -55,7 +55,7 @@ async def async_retry(
             return await func()
         except asyncio.CancelledError:
             raise
-        except BaseException as exc:  # noqa: BLE001 — classified below
+        except BaseException as exc:  # noqa: BLE001 - classified below
             last = exc
             if attempt >= attempts or not predicate(exc):
                 raise

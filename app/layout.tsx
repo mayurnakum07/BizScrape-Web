@@ -1,29 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { getSiteUrl } from "@/lib/env";
 
 import "./globals.css";
 
-const ibmPlexSans = IBM_Plex_Sans({
+const sansFont = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-ibm-plex-sans",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const monoFont = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-ibm-plex-mono",
+  variable: "--font-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "BizScrape — Local Business Data",
+    default: "BizScrape - Local Business Data",
     template: "%s · BizScrape",
   },
   description:
@@ -44,18 +42,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "BizScrape",
-    title: "BizScrape — Local Business Data",
+    title: "BizScrape - Local Business Data",
     description:
       "Web interface for BizScrape: discover local businesses, enrich public website data, and export structured CSV.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BizScrape — Local Business Data",
+    title: "BizScrape - Local Business Data",
     description:
       "Web interface for BizScrape: discover local businesses, enrich public website data, and export structured CSV.",
   },
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/favicon.ico" }],
   },
 };
 
@@ -72,10 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
-    >
+    <html lang="en" className={`${sansFont.variable} ${monoFont.variable}`}>
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
         <AppShell>{children}</AppShell>
       </body>

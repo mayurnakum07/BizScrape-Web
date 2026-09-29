@@ -13,7 +13,7 @@ Browser
   ↓ HTTPS
 Next.js (Vercel or similar)
   ↓ REST + SSE (NEXT_PUBLIC_API_URL)
-Python FastAPI (VPS / Docker — long-running process)
+Python FastAPI (VPS / Docker - long-running process)
   ↓ in-process JobManager
 BizScrape engine
   ↓ Playwright + httpx
@@ -31,7 +31,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting, [ENVIRONMENT.md](ENVIRONMENT.md)
 | `components/layout/` | App shell, header, footer |
 | `components/icons/` | Shared stroke icons |
 | `lib/` | Env, errors, small utilities |
-| `services/` | HTTP / job API clients — transport only |
+| `services/` | HTTP / job API clients - transport only |
 | `services/scrape-job/` | Job facade + remote/mock providers |
 | `types/` | Shared TypeScript contracts |
 | `hooks/` | Client-side React hooks |

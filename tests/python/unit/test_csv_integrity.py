@@ -17,10 +17,10 @@ def test_export_has_bom_unicode_formula_safety_and_valid_csv(tmp_path: Path) -> 
         {
             "name": "=cmd|'/c calc'!A0",
             "emails": ["info@cafe.example"],
-            "phones": ["+919811122233"],
+            "phones": ["+19811122233"],
             "website": "https://cafe.example",
-            "address": "Surat — Café ☕",
-            "area": "Vesu",
+            "address": "New York - Café ☕",
+            "area": "Brooklyn",
             "category": "Cafe",
             "source": "gmaps",
         }
@@ -45,4 +45,4 @@ def test_export_has_bom_unicode_formula_safety_and_valid_csv(tmp_path: Path) -> 
 
 
 def test_neutralize_matches_store_export_policy() -> None:
-    assert neutralize_csv_formula("+919999") == "'+919999"
+    assert neutralize_csv_formula("+19999") == "'+19999"

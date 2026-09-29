@@ -82,7 +82,7 @@ class BusinessRecord:
         )
 
 
-# Field-level merge rules (documented for contributors — implemented in Store._merge):
+# Field-level merge rules (documented for contributors - implemented in Store._merge):
 # - Prefer non-empty scalars; longer address wins
 # - Union phones/emails/sources without duplicates
 # - Never reset first_seen on update

@@ -30,15 +30,9 @@ export {
   TableBody,
   TableCell,
   TableHead,
-  TableHeaderCell,
   TableRow,
 } from "@/components/ui/table";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export { Terminal, TerminalLine } from "@/components/ui/terminal";
 export { Textarea } from "@/components/ui/textarea";
-export {
-  ToastDemoList,
-  ToastProvider,
-  useToast,
-} from "@/components/ui/toast";
 export { Tooltip } from "@/components/ui/tooltip";

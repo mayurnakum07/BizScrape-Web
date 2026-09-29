@@ -87,8 +87,8 @@ def client(tmp_path, monkeypatch):
 
 
 VALID_BODY = {
-    "businessType": "cafe",    "country": "India",    "state": "Gujarat",    "city": "Surat",
-    "area": "Mota Varachha",
+    "businessType": "cafe",    "country": "USA",    "state": "NY",    "city": "New York",
+    "area": "Manhattan",
     "target": 20,
     "sources": ["gmaps"],
 }
@@ -118,12 +118,12 @@ def test_reject_control_characters_in_text_fields(client: TestClient) -> None:
 def test_normalize_whitespace_in_text_fields(client: TestClient) -> None:
     response = client.post(
         "/jobs",
-        json={**VALID_BODY, "city": "  Surat   Gujarat  "},
+        json={**VALID_BODY, "city": "  New York   NY  "},
     )
     assert response.status_code == 201
     job_id = response.json()["jobId"]
     snapshot = client.get(f"/jobs/{job_id}").json()
-    assert snapshot["config"]["city"] == "Surat Gujarat"
+    assert snapshot["config"]["city"] == "New York NY"
 
 
 def test_job_capacity_returns_429(tmp_path, monkeypatch) -> None:
@@ -206,5 +206,5 @@ def test_openapi_hidden_when_debug_disabled(client: TestClient) -> None:
 
 def test_python_csv_formula_neutralization() -> None:
     assert neutralize_csv_formula("=1+1") == "'=1+1"
-    assert neutralize_csv_formula("+919999999999") == "'+919999999999"
+    assert neutralize_csv_formula("+19999999999") == "'+19999999999"
     assert neutralize_csv_formula("hello") == "hello"

@@ -13,10 +13,10 @@ import { isTerminalJobStatus, type ScrapeJobSnapshot } from "@/types/scrape-job"
 
 /**
  * Subscribes to a job by ID and ensures the mock/remote provider is attached.
- * Leaving the page does not cancel the job — only Stop scraping does.
+ * Leaving the page does not cancel the job - only Stop scraping does.
  */
 export function useScrapeJob(jobId: string): ScrapeJobSnapshot | null {
-  // Subscribe must be referentially stable — a new function each render
+  // Subscribe must be referentially stable - a new function each render
   // causes useSyncExternalStore to resubscribe, which restarts SSE and loops.
   const subscribe = useCallback(
     (onStoreChange: () => void) => subscribeScrapeJob(jobId, onStoreChange),
@@ -40,7 +40,7 @@ export function useScrapeJob(jobId: string): ScrapeJobSnapshot | null {
 
     async function ensureAttached() {
       let job = getScrapeJob(jobId);
-      // Remote jobs live in API memory — hydrate after refresh / deep link.
+      // Remote jobs live in API memory - hydrate after refresh / deep link.
       if (!job && isRemoteApiConfigured()) {
         await refreshScrapeJob(jobId);
         if (cancelled) {

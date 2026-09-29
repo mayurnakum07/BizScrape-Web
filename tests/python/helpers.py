@@ -38,10 +38,10 @@ def make_settings(**overrides: Any) -> Settings:
 
 VALID_JOB_BODY = {
     "businessType": "cafe",
-    "country": "India",
-    "state": "Gujarat",
-    "city": "Surat",
-    "area": "Mota Varachha",
+    "country": "USA",
+    "state": "NY",
+    "city": "New York",
+    "area": "Manhattan",
     "target": 10,
     "sources": ["gmaps"],
 }
@@ -54,9 +54,9 @@ def sample_record(record_id: str, *, company_name: str | None = None) -> dict[st
         "website": "https://example.com",
         "email_primary": f"{record_id}@example.com",
         "emails_all": f"{record_id}@example.com",
-        "phone_primary": "+91 90000 00001",
-        "phones_all": "+91 90000 00001",
-        "address": "Surat",
+        "phone_primary": "+1 90000 00001",
+        "phones_all": "+1 90000 00001",
+        "address": "New York",
         "area": "Test Area",
         "category": "Cafe",
         "rating": "4.0",

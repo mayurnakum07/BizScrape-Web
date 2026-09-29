@@ -44,7 +44,7 @@ function SavedDatasetHeader({ item, onDeleted }: SavedDatasetHeaderProps) {
   const status = resolveHistoryRunStatus(item);
   const location = runLocation(item);
   const duration = formatDuration(estimateRunDurationMs(item));
-  const sources = formatSources(item.config.sources.join("|"));
+  const sources = formatSources(item.config?.sources?.join("|") ?? "");
   const queryLabel = buildRunQueryLabel(item);
 
   async function handleRetry() {
@@ -106,7 +106,7 @@ function SavedDatasetHeader({ item, onDeleted }: SavedDatasetHeaderProps) {
           <p className="mt-2 text-sm text-muted">
             {location || "Location unset"}
             <span className="mx-2 text-border">·</span>
-            target {item.config.target}
+            target {item.config?.target ?? 0}
             {sources ? (
               <>
                 <span className="mx-2 text-border">·</span>
@@ -116,7 +116,7 @@ function SavedDatasetHeader({ item, onDeleted }: SavedDatasetHeaderProps) {
           </p>
           <p className="mt-2 font-mono text-xs text-muted">
             <span className="tabular-nums text-foreground">
-              {item.summary.businesses}
+              {item.summary?.businesses ?? 0}
             </span>{" "}
             records
             <span className="mx-1.5 text-border">·</span>
@@ -247,7 +247,7 @@ export function SavedDatasetView({ item }: SavedDatasetViewProps) {
         }}
       />
 
-      <ResultsSummary summary={item.summary} />
+      <ResultsSummary summary={item.summary ?? { businesses: 0, websites: 0, emails: 0, phones: 0, duplicates: 0 }} />
 
       {item.status === "partial" || item.status === "cancelled" ? (
         <WorkflowStatePanel
@@ -256,7 +256,7 @@ export function SavedDatasetView({ item }: SavedDatasetViewProps) {
           copy={
             item.status === "cancelled"
               ? {
-                  title: "Partial dataset — scrape was cancelled",
+                  title: "Partial dataset - scrape was cancelled",
                   description:
                     "This IndexedDB copy was saved after the run stopped early. Coverage may be incomplete versus the original target.",
                   nextStep:
@@ -268,15 +268,15 @@ export function SavedDatasetView({ item }: SavedDatasetViewProps) {
       ) : null}
 
       <DatasetWorkspace
-        records={item.records}
-        totalCount={item.summary.businesses}
-        config={item.config}
-        collectionStatus={item.records.length === 0 ? "empty" : "ready"}
+        records={item.records || []}
+        totalCount={item.summary?.businesses ?? 0}
+        config={item.config ?? {} as any}
+        collectionStatus={(item.records || []).length === 0 ? "empty" : "ready"}
         emptyVariant="saved"
         ariaLabel="Saved dataset workspace"
         exportFilteredHint={
-          item.records.length > 0
-            ? `Exports the full saved dataset (${item.records.length} local records). Filters apply to the table only.`
+          (item.records || []).length > 0
+            ? `Exports the full saved dataset (${(item.records || []).length} local records). Filters apply to the table only.`
             : undefined
         }
       />

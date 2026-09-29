@@ -27,7 +27,7 @@ _win_handler_ref: Any = None
 
 
 class JobCancelled(BaseException):
-    """Cooperative cancel — BaseException so ``except Exception`` cannot swallow it."""
+    """Cooperative cancel - BaseException so ``except Exception`` cannot swallow it."""
 
 
 def register_store(store: Any) -> None:
@@ -46,7 +46,7 @@ def is_stopping() -> bool:
 
 
 def check() -> None:
-    """Call between scrape steps — exits if Ctrl+C was requested."""
+    """Call between scrape steps - exits if Ctrl+C was requested."""
     if _job_cancel_flag is not None and _job_cancel_flag.is_set():
         raise JobCancelled("Job cancelled")
     if _stopping:
@@ -76,7 +76,7 @@ def install() -> None:
         except (ValueError, OSError):
             pass
 
-    # Windows console handler — fires even while blocked in Playwright C++.
+    # Windows console handler - fires even while blocked in Playwright C++.
     if os.name == "nt":
         _install_windows_console_handler()
 
@@ -89,7 +89,7 @@ def force_exit(code: int = 130) -> None:
     _stopping = True
 
     try:
-        sys.stderr.write("\n^C — killing process…\n")
+        sys.stderr.write("\n^C - killing process…\n")
         sys.stderr.flush()
     except Exception:
         pass
@@ -233,7 +233,7 @@ def _install_windows_console_handler() -> None:
 
     def _console_ctrl(ctrl_type: int) -> bool:
         if ctrl_type in (CTRL_C_EVENT, CTRL_BREAK_EVENT, CTRL_CLOSE_EVENT):
-            # Run kill on a daemon thread — the console handler has restrictions.
+            # Run kill on a daemon thread - the console handler has restrictions.
             threading.Thread(
                 target=force_exit, args=(130,), name="ctrl-c-kill", daemon=True
             ).start()

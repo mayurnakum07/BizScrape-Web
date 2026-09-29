@@ -1,5 +1,5 @@
 /**
- * Remote scrape-job provider — SSE primary, GET hydrate on reconnect.
+ * Remote scrape-job provider - SSE primary, GET hydrate on reconnect.
  */
 
 import {
@@ -81,7 +81,7 @@ class RemoteScrapeJobProvider implements ScrapeJobProvider {
 
   subscribe(jobId: string, listener: () => void): () => void {
     // Subscribe must stay side-effect free aside from registering the listener.
-    // Hydrate / SSE attach belong in startJob / refreshJob — otherwise an
+    // Hydrate / SSE attach belong in startJob / refreshJob - otherwise an
     // unstable useSyncExternalStore subscribe restarts the stream every render.
     let set = this.listeners.get(jobId);
     if (!set) {
@@ -261,7 +261,7 @@ class RemoteScrapeJobProvider implements ScrapeJobProvider {
       connection = isTerminalJobStatus(job.status) ? "connected" : "interrupted";
     }
 
-    // Skip no-op connection updates — they still emit and can loop React.
+    // Skip no-op connection updates - they still emit and can loop React.
     if (
       job.connection === connection &&
       job.operationMessage === operationMessage
@@ -280,7 +280,7 @@ class RemoteScrapeJobProvider implements ScrapeJobProvider {
   private handleEvent(event: ScrapeEvent): void {
     const job = this.getJob(event.jobId);
     if (!job) {
-      // Late SSE packet before hydrate finished — pull authoritative state.
+      // Late SSE packet before hydrate finished - pull authoritative state.
       void this.hydrate(event.jobId, { includeResults: true });
       return;
     }

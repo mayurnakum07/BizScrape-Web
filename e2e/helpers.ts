@@ -30,8 +30,8 @@ export async function fillScrapeForm(
   const form = scrapeForm(page);
   await form.getByRole("textbox", { name: "Business category" }).fill(input.businessType);
 
-  await pickSearchable(page, form, "country", input.country ?? "India");
-  await pickSearchable(page, form, "state", input.state ?? "Gujarat");
+  await pickSearchable(page, form, "country", input.country ?? "USA");
+  await pickSearchable(page, form, "state", input.state ?? "NY");
   await pickSearchable(page, form, "city", input.city);
 
   if (input.target !== undefined) {

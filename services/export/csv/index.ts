@@ -23,7 +23,7 @@ export type CsvExportResult = {
 
 /**
  * Generate CSV text + filename for the complete result set.
- * Does not apply UI search/filter — callers must pass the full job records.
+ * Does not apply UI search/filter - callers must pass the full job records.
  */
 export function generateCsv(request: CsvExportRequest): CsvExportResult {
   if (request.records.length === 0) {
@@ -58,7 +58,7 @@ export function generateCsv(request: CsvExportRequest): CsvExportResult {
   }
 }
 
-/** Async variant — yields during serialize for large datasets. */
+/** Async variant - yields during serialize for large datasets. */
 export async function generateCsvAsync(
   request: CsvExportRequest,
 ): Promise<CsvExportResult> {
@@ -130,7 +130,7 @@ export function exportAndDownloadCsv(request: CsvExportRequest): CsvExportResult
   return result;
 }
 
-/** Async convenience — preferred for UI export buttons. */
+/** Async convenience - preferred for UI export buttons. */
 export async function exportAndDownloadCsvAsync(
   request: CsvExportRequest,
 ): Promise<CsvExportResult> {

@@ -2,9 +2,9 @@ from bizscrape import utils
 
 
 def test_normalize_phone_mobile():
-    assert utils.normalize_phone("9876543211") == "+919876543211"
-    assert utils.normalize_phone("+91 98765 43211") == "+919876543211"
-    assert utils.normalize_phone("0919876543211") == "+919876543211"
+    assert utils.normalize_phone("9876543211") == "+19876543211"
+    assert utils.normalize_phone("+1 98765 43211") == "+19876543211"
+    assert utils.normalize_phone("019876543211") == "+19876543211"
 
 
 def test_normalize_phone_rejects_garbage():

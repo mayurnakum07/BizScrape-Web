@@ -61,8 +61,9 @@ export function Field({
 
   return (
     <div className={cn("field", className)}>
-      <Label htmlFor={id} optional={optional}>
+      <Label htmlFor={id}>
         {label}
+        {optional ? <span className="text-muted font-normal ml-1.5">(optional)</span> : null}
       </Label>
       {control}
       {hintId ? (

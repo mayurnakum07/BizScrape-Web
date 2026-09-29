@@ -41,15 +41,15 @@ External sources → CSV on disk
 
 ### What this is NOT suitable for
 
-- **Serverless functions** for the Python API — scrape jobs are long-running (minutes) and need a persistent process.
-- **Multi-instance API** without sticky sessions — job state is in-memory per process.
-- **Free-tier hosts that sleep** — in-flight jobs are lost when the process stops.
+- **Serverless functions** for the Python API - scrape jobs are long-running (minutes) and need a persistent process.
+- **Multi-instance API** without sticky sessions - job state is in-memory per process.
+- **Free-tier hosts that sleep** - in-flight jobs are lost when the process stops.
 
 ---
 
 ## Environment separation
 
-Use environment variables only — no hardcoded hostnames.
+Use environment variables only - no hardcoded hostnames.
 
 | Environment | Frontend URL | API URL | Notes |
 |-------------|--------------|---------|-------|
@@ -116,7 +116,7 @@ See [`.env.example`](../.env.example) for development placeholders.
 
 **Checks:**
 
-- No hardcoded API hostname in source — all requests use `NEXT_PUBLIC_API_URL`.
+- No hardcoded API hostname in source - all requests use `NEXT_PUBLIC_API_URL`.
 - CSP `connect-src` in `next.config.ts` includes your API URL automatically.
 - Client components only read `NEXT_PUBLIC_*` vars ([`lib/env.ts`](../lib/env.ts)).
 
@@ -124,7 +124,7 @@ See [`.env.example`](../.env.example) for development placeholders.
 
 ## Python API deployment
 
-### Option A — Docker (recommended for reproducibility)
+### Option A - Docker (recommended for reproducibility)
 
 ```bash
 docker build -t bizscrape-api .
@@ -139,7 +139,7 @@ docker run --rm -p 8000:8000 \
 
 The image uses Microsoft's Playwright Python base (`mcr.microsoft.com/playwright/python`) with Chromium pre-installed.
 
-### Option B — Bare metal / VPS
+### Option B - Bare metal / VPS
 
 ```bash
 python -m venv .venv
@@ -175,8 +175,8 @@ Do **not** assume serverless runtimes include a browser.
 
 | Endpoint | Purpose |
 |----------|---------|
-| `GET /health` | Liveness — process is up |
-| `GET /health/ready` | Readiness — job data dir writable, Playwright importable |
+| `GET /health` | Liveness - process is up |
+| `GET /health/ready` | Readiness - job data dir writable, Playwright importable |
 
 Readiness does **not** launch a browser or start a scrape.
 
@@ -275,7 +275,7 @@ Monitor disk usage on small VPS plans.
 | `ENRICH_CONCURRENCY` | 16 | Parallel website fetches |
 | Playwright page timeout | 30s | Maps interaction timeout |
 
-These are tuned for real scraping — do not set arbitrarily low values.
+These are tuned for real scraping - do not set arbitrarily low values.
 
 ---
 
@@ -308,7 +308,7 @@ See [SECURITY.md](../SECURITY.md).
 
 ## Local development
 
-**Terminal 1 — Python API:**
+**Terminal 1 - Python API:**
 
 ```bash
 pip install -e ".[dev]"
@@ -316,7 +316,7 @@ playwright install chromium
 python -m bizscrape.api
 ```
 
-**Terminal 2 — Next.js:**
+**Terminal 2 - Next.js:**
 
 ```bash
 npm install
@@ -336,7 +336,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Vercel + Railway/Fly free | Vercel | Free container tier | May sleep; long jobs fail; RAM limits |
 | Self-hosted Docker | Any static host or same VPS | Docker on same machine | Simplest for SSE; single instance |
 
-Free providers may impose CPU/RAM limits, sleeping services, and no guaranteed browser support. Document limitations for operators — do not promise indefinite free-tier suitability for browser automation workloads.
+Free providers may impose CPU/RAM limits, sleeping services, and no guaranteed browser support. Document limitations for operators - do not promise indefinite free-tier suitability for browser automation workloads.
 
 ---
 

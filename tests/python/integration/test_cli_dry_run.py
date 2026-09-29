@@ -6,11 +6,11 @@ def test_dry_run_exits_zero_no_network(capsys):
         [
             "discover",
             "--city",
-            "surat",
+            "newyork",
             "--niche",
             "it",
             "--areas",
-            "Mota Varachha",
+            "Manhattan",
             "--source",
             "gmaps",
             "--target",

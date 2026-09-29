@@ -9,7 +9,7 @@ export type TerminalProps = HTMLAttributes<HTMLDivElement> & {
 
 /**
  * Developer-tool surface for CLI examples, logs, and progress events.
- * Styling only — no scrape console behavior.
+ * Styling only - no scrape console behavior.
  */
 export function Terminal({
   title = "Terminal",

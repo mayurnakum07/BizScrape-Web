@@ -2,7 +2,7 @@
 
 Copy [`.env.example`](../.env.example) to `.env.local` for local development. Never commit real secrets.
 
-`NEXT_PUBLIC_*` values are embedded in the browser bundle — treat them as public.
+`NEXT_PUBLIC_*` values are embedded in the browser bundle - treat them as public.
 
 ## Frontend (Next.js)
 
@@ -36,6 +36,6 @@ Copy [`.env.example`](../.env.example) to `.env.local` for local development. Ne
 
 ## Safety notes
 
-- There are **no API keys** required for the default Maps/website pipeline today — but do not paste credentials into env templates.
+- There are **no API keys** required for the default Maps/website pipeline today - but do not paste credentials into env templates.
 - Production: `DEBUG=false`, explicit `ALLOWED_ORIGINS`, HTTPS origins only.
 - Rate limits are **in-process**; they reset per API instance.

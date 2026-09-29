@@ -1,4 +1,4 @@
-"""API validation tests — malformed payloads rejected cleanly."""
+"""API validation tests - malformed payloads rejected cleanly."""
 
 from __future__ import annotations
 

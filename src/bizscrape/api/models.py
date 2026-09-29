@@ -94,7 +94,7 @@ class CreateJobRequest(BaseModel):
             raise ValueError("at least one source is required")
         if any(source != "gmaps" for source in self.sources):
             raise ValueError("only source 'gmaps' (Google Maps) is supported")
-        # Normalize duplicates — discovery is Google Maps only.
+        # Normalize duplicates - discovery is Google Maps only.
         self.sources = ["gmaps"]
         return self
 

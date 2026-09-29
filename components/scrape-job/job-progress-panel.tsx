@@ -36,7 +36,7 @@ export function JobProgressPanel({ job }: JobProgressPanelProps) {
           <span className="font-mono text-xs text-muted">
             {progress.stageIndex > 0
               ? `${progress.stageIndex}/${progress.stageCount}`
-              : "—"}
+              : "-"}
           </span>
         </div>
 

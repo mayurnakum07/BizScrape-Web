@@ -32,7 +32,7 @@ async def _empty_discover(cfg, event_callback=None, cancel_flag=None):
 async def _blocked_source(cfg, event_callback=None, cancel_flag=None):
     if event_callback:
         event_callback({"type": "stage_started", "stage": "discover"})
-    raise ProviderError("HTTP 429 rate limited — access denied")
+    raise ProviderError("HTTP 429 rate limited - access denied")
 
 
 def test_empty_discovery_completes_with_zero_results(tmp_path) -> None:

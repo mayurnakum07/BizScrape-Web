@@ -10,7 +10,7 @@ async function startMockJob(page: import("@playwright/test").Page): Promise<void
   await page.goto("/scrape");
   await fillScrapeForm(page, {
     businessType: "cafe",
-    city: "Surat",
+    city: "New York",
     target: "20",
   });
   await submitScrapeForm(page);

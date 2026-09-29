@@ -3,7 +3,7 @@ import { getScrapeJob } from "@/services/scrape-job";
 import { formatLocationLabel } from "@/types/scrape";
 import { isTerminalJobStatus } from "@/types/scrape-job";
 
-/** UI status for run rows — includes live overlays when a job is still in memory. */
+/** UI status for run rows - includes live overlays when a job is still in memory. */
 export type HistoryRunStatus =
   | StoredScrapeStatus
   | "running"
@@ -65,7 +65,7 @@ export function estimateRunDurationMs(
 
 export function formatDuration(ms: number | null): string {
   if (ms == null || ms <= 0) {
-    return "—";
+    return "-";
   }
   const totalSeconds = Math.round(ms / 1000);
   if (totalSeconds < 60) {
@@ -108,8 +108,8 @@ export function formatRunTimestampShort(iso: string): string {
 export function buildRunQueryLabel(
   item: Pick<HistoryRunLike, "config">,
 ): string {
-  const type = item.config.businessType.trim() || "Untitled scrape";
-  const area = item.config.area?.trim();
+  const type = item.config?.businessType?.trim() || "Untitled scrape";
+  const area = item.config?.area?.trim();
   return area ? `${type} · ${area}` : type;
 }
 
@@ -117,14 +117,14 @@ export function buildRunSearchText(
   item: Pick<HistoryRunLike, "config" | "status" | "jobId" | "summary">,
 ): string {
   return [
-    item.config.businessType,
-    item.config.area,
-    item.config.city,
-    item.config.state,
-    item.config.country,
+    item.config?.businessType,
+    item.config?.area,
+    item.config?.city,
+    item.config?.state,
+    item.config?.country,
     item.status,
     item.jobId,
-    String(item.summary.businesses),
+    String(item.summary?.businesses ?? 0),
   ]
     .filter(Boolean)
     .join(" ")
@@ -150,7 +150,7 @@ export function filterHistoryRuns<T extends HistoryRunLike>(
 }
 
 export function runLocation(item: Pick<HistoryRunLike, "config">): string {
-  return formatLocationLabel(item.config);
+  return item.config ? formatLocationLabel(item.config) : "Location unset";
 }
 
 export const HISTORY_STATUS_LABEL: Record<HistoryRunStatus, string> = {

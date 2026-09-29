@@ -1,5 +1,5 @@
 /**
- * BizScrape business record — mirrors documented CSV output fields.
+ * BizScrape business record - mirrors documented CSV output fields.
  */
 
 export type BusinessRecord = {

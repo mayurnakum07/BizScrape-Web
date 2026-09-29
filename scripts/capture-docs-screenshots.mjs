@@ -8,13 +8,13 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
 await page.goto("http://localhost:3000/scrape", { waitUntil: "networkidle" });
 await page.getByRole("textbox", { name: "Business category" }).fill("cafe");
-// Country defaults to India in the modal; pick state + city.
+// Country defaults to USA in the modal; pick state + city.
 await page.locator("#state").click();
-await page.locator('input[type="search"]').last().fill("Gujarat");
-await page.getByRole("option", { name: "Gujarat", exact: true }).click();
+await page.locator('input[type="search"]').last().fill("NY");
+await page.getByRole("option", { name: "NY", exact: true }).click();
 await page.locator("#city").click();
-await page.locator('input[type="search"]').last().fill("Surat");
-await page.getByRole("option", { name: "Surat", exact: true }).click();
+await page.locator('input[type="search"]').last().fill("New York");
+await page.getByRole("option", { name: "New York", exact: true }).click();
 await page.getByRole("spinbutton", { name: "Target count" }).fill("10");
 await page.locator("form").first().getByRole("button", { name: "Start scrape" }).click();
 
@@ -34,7 +34,7 @@ try {
   await page.waitForTimeout(1200);
   await page.screenshot({ path: "docs/images/04-results.png" });
 
-  // Results workspace — table is the primary viewport focus.
+  // Results workspace - table is the primary viewport focus.
   console.log("captured job + results");
 } catch (error) {
   console.error("capture failed:", error instanceof Error ? error.message : error);

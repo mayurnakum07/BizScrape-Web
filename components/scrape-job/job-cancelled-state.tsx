@@ -95,7 +95,7 @@ export function JobCancelledState({ job }: JobCancelledStateProps) {
 
       {retryError ? (
         <p className="text-sm text-error" role="alert">
-          {retryError} — check your connection, then try Start a new search again.
+          {retryError} - check your connection, then try Start a new search again.
         </p>
       ) : null}
 
