@@ -27,7 +27,6 @@ RUN pip install --no-cache-dir -e .
 
 RUN playwright install chromium
 
-VOLUME ["/data/jobs"]
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
