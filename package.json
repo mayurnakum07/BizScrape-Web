@@ -2,7 +2,7 @@
   "name": "bizscrape-web",
   "version": "0.1.0",
   "private": true,
-  "description": "BizScrape Web - Python-powered local business discovery and data enrichment tool (web interface)",
+  "description": "A Python CLI for discovering local businesses, enriching public contact data, and exporting clean, deduplicated results to CSV.",
   "engines": {
     "node": ">=20.9.0"
   },

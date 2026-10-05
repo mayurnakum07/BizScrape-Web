@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bizscrape"
 version = "0.1.0"
-description = "CLI to discover Global city businesses and enrich public contact details into CSV"
+description = "A Python CLI for discovering local businesses, enriching public contact data, and exporting clean, deduplicated results to CSV."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"

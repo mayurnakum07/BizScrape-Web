@@ -33,9 +33,6 @@ _GENERIC_TOKENS = {
     "corp",
     "company",
     "co",
-    "newyork",
-    "usa",
-    "ny",
     "best",
     "top",
     "rated",
@@ -67,7 +64,7 @@ class WebSearcher:
     async def __aenter__(self) -> WebSearcher:
         self._client = httpx.AsyncClient(
             follow_redirects=True,
-            timeout=httpx.Timeout(20.0, connect=10.0),
+            timeout=httpx.Timeout(6.0, connect=3.0),
             headers={
                 "User-Agent": utils.random_user_agent(),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -309,8 +306,8 @@ def _domain_matches(tokens: list[str], flattened: str) -> bool:
     # need a stronger signal above, otherwise "Amreli Tech" would claim amreli.org.
     if len(tokens) == 1:
         primary = tokens[0]
-        if len(primary) >= 5 and flattened.startswith(primary):
-            return (len(primary) / len(flattened)) >= 0.85
+        if len(primary) >= 4 and flattened.startswith(primary):
+            return (len(primary) / len(flattened)) >= 0.50
     return False
 
 

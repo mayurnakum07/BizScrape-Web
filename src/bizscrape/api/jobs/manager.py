@@ -354,10 +354,19 @@ class JobManager:
             return
 
         stats = self._stats_from_engine(result.stats, job)
-        # Always persist engine records on the job (authoritative final set).
         self._patch(
             job_id,
             {
+                "status": "completed",
+                "currentStage": None,
+                "stages": {s: "completed" for s in PIPELINE_STAGES},
+                "progress": {
+                    "mode": "stage",
+                    "percent": 100,
+                    "stageIndex": len(PIPELINE_STAGES),
+                    "stageCount": len(PIPELINE_STAGES),
+                },
+                "operationMessage": "Scrape complete.",
                 "records": result.records,
                 "stats": stats,
                 "targetProgress": {
@@ -369,23 +378,8 @@ class JobManager:
                 "error": None,
             },
         )
-        job_now = self.repository.get(job_id) or job
-        if job_now.get("status") != "completed":
-            self._patch(
-                job_id,
-                {
-                    "status": "completed",
-                    "currentStage": None,
-                    "stages": {s: "completed" for s in PIPELINE_STAGES},
-                    "progress": {
-                        "mode": "stage",
-                        "percent": 100,
-                        "stageIndex": len(PIPELINE_STAGES),
-                        "stageCount": len(PIPELINE_STAGES),
-                    },
-                    "operationMessage": "Scrape complete.",
-                },
-            )
+        bus = self._buses.get(job_id)
+        if bus and not bus.closed:
             self._publish(
                 job_id,
                 "results_updated",
@@ -395,7 +389,11 @@ class JobManager:
             self._publish(
                 job_id,
                 "job_completed",
-                {"count": len(result.records), "status": "completed"},
+                {
+                    "count": len(result.records),
+                    "records": result.records,
+                    "status": "completed",
+                },
             )
         logger.info(
             "job_completed job_id=%s records=%s",

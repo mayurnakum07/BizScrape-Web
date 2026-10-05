@@ -107,3 +107,32 @@ def validate_fetch_url(url: str, *, resolve: bool = True) -> str:
     if resolve:
         resolve_and_check_host(host)
     return url
+
+
+async def async_resolve_and_check_host(host: str) -> None:
+    """Non-blocking DNS check using default thread executor."""
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, resolve_and_check_host, host)
+
+
+async def async_validate_fetch_url(url: str, *, resolve: bool = True) -> str:
+    """Non-blocking URL validation for async HTTP crawlers."""
+    url = (url or "").strip()
+    if not url:
+        raise ValueError("empty URL")
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(f"unsupported URL scheme: {parsed.scheme!r}")
+    host = parsed.hostname
+    if not host:
+        raise ValueError("URL missing host")
+    if parsed.username or parsed.password:
+        raise ValueError("URL userinfo not allowed")
+
+    if hostname_is_literal_blocked(host):
+        raise ValueError(f"blocked host: {host}")
+
+    if resolve:
+        await async_resolve_and_check_host(host)
+    return url

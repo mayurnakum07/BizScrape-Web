@@ -146,8 +146,12 @@ class Store:
             keys.append("p:" + phone)
 
         slug = utils.slugify_name(record.get("name", ""))
-        if len(slug) >= 6:
-            keys.append("n:" + slug)
+        if len(slug) >= 4:
+            area_tag = utils.slugify_name(record.get("area") or "")
+            if area_tag:
+                keys.append(f"n:{slug}:{area_tag}")
+            else:
+                keys.append("n:" + slug)
         return keys
 
     def _lookup(self, keys: list[str]) -> int | None:
@@ -217,7 +221,7 @@ class Store:
         if len(incoming_address) > len(row.get("address") or ""):
             row["address"] = incoming_address
 
-        for field in ("area", "category", "maps_url"):
+        for field in ("area", "category", "maps_url", "linkedin", "facebook", "instagram"):
             if not row.get(field) and record.get(field):
                 row[field] = record[field]
 

@@ -37,12 +37,17 @@ async def launch_browser(
     Returns (browser, label) where label is useful for logs
     ('chrome', 'msedge', 'chromium', ...).
     """
+    import os, sys
+
+    is_container = os.path.exists("/.dockerenv") or bool(os.getenv("CONTAINER") or os.getenv("DOCKER"))
     args = [
         "--disable-blink-features=AutomationControlled",
         "--disable-dev-shm-usage",
-        "--no-sandbox",
-        *(extra_args or []),
     ]
+    if is_container or sys.platform.startswith("linux"):
+        args.append("--no-sandbox")
+    if extra_args:
+        args.extend(extra_args)
 
     channels: list[str | None] = []
     if preferred_channel:

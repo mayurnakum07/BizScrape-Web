@@ -50,10 +50,11 @@ export function Field({
 
     // Input / Textarea / Select understand `invalid` for visual error styles.
     if (
-      typeof child.type === "function" ||
-      typeof child.type === "object"
+      (typeof child.type === "function" ||
+      typeof child.type === "object") &&
+      error
     ) {
-      nextProps.invalid = Boolean(error);
+      nextProps.invalid = true;
     }
 
     return cloneElement(child as ReactElement<Record<string, unknown>>, nextProps);

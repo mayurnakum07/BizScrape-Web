@@ -8,6 +8,7 @@ The API calls ``run_scrape`` with an event callback and cancel flag.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -40,10 +41,11 @@ class ScrapeRunConfig:
     headful: bool = False
     max_scrolls: int = 40
     max_queries: int = 0
-    website_limit: int = 0
-    enrich_limit: int = 0
+    website_limit: int = 10
+    enrich_limit: int = 10
     retry_failed: bool = False
     require: str = "any"
+    timeout_seconds: int = 1800
 
 
 def _map_stage(label: str) -> str:
@@ -183,15 +185,12 @@ def config_to_namespace(cfg: ScrapeRunConfig) -> argparse.Namespace:
     source = "gmaps"
 
     area = (cfg.area or "").strip()
-    if cfg.search_all_localities:
+    if cfg.search_all_localities or not area:
         area_list = None
         areas = ""
-    elif area:
+    else:
         area_list = [area]
         areas = area
-    else:
-        area_list = []
-        areas = ""
 
     out = cfg.out.strip()
     if not out:
@@ -299,8 +298,10 @@ async def run_scrape(
         event_callback({"type": "job_started", "stage": "discover"})
 
     cancelled = False
+    timed_out = False
     try:
-        await cmd_run(store, args, dash=dash)
+        timeout_val = getattr(cfg, "timeout_seconds", 1800) or 1800
+        await asyncio.wait_for(cmd_run(store, args, dash=dash), timeout=timeout_val)
         if event_callback:
             event_callback({"type": "stage_started", "stage": "deduplicate"})
             event_callback({"type": "stage_completed", "stage": "deduplicate"})
@@ -315,7 +316,28 @@ async def run_scrape(
             )
             event_callback({"type": "csv_ready", "count": len(records)})
             event_callback({"type": "stage_completed", "stage": "export"})
-            event_callback({"type": "job_completed", "count": len(records)})
+            event_callback(
+                {
+                    "type": "job_completed",
+                    "count": len(records),
+                    "records": records,
+                    "status": "completed",
+                }
+            )
+    except asyncio.TimeoutError:
+        timed_out = True
+        store.flush()
+        records = store_rows_as_records(store)
+        if event_callback:
+            event_callback(
+                {
+                    "type": "results_updated",
+                    "count": len(records),
+                    "records": records,
+                }
+            )
+            event_callback({"type": "csv_ready", "count": len(records)})
+            event_callback({"type": "job_completed", "count": len(records), "note": "Job reached time limit"})
     except hard_stop.JobCancelled:
         cancelled = True
         store.flush()
@@ -332,6 +354,8 @@ async def run_scrape(
             event_callback({"type": "job_cancelled"})
     finally:
         hard_stop.set_job_cancel_flag(None)
+        final_records = store_rows_as_records(store)
+        final_stats = store.stats()
         try:
             store.close()
         except Exception:
@@ -339,7 +363,7 @@ async def run_scrape(
 
     return ScrapeRunResult(
         csv_path=args.out,
-        records=store_rows_as_records(store),
-        stats=store.stats(),
+        records=final_records,
+        stats=final_stats,
         cancelled=cancelled,
     )

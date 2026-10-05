@@ -54,7 +54,7 @@ exit codes:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="bizscrape",
-        description="BizScrape - scrape Global city company contacts into a CSV.",
+        description="A Python CLI for discovering local businesses, enriching public contact data, and exporting clean, deduplicated results to CSV.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=_EPILOG,
     )

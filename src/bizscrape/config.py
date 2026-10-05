@@ -22,6 +22,7 @@ CITIES: dict[str, dict[str, Any]] = {
         "label": "New York",
         "center": (40.7128, -74.0060),
         "zoom": 12,
+        "country_code": "+1",
         "areas": [
             "Manhattan",
             "Brooklyn",
@@ -49,6 +50,7 @@ CITIES: dict[str, dict[str, Any]] = {
         "label": "Toronto",
         "center": (43.6510, -79.3470),
         "zoom": 11,
+        "country_code": "+1",
         "areas": [
             "Downtown",
             "North York",
@@ -70,6 +72,7 @@ CITIES: dict[str, dict[str, Any]] = {
         "label": "London",
         "center": (51.5072, -0.1276),
         "zoom": 12,
+        "country_code": "+44",
         "areas": [
             "City of London",
             "Westminster",
@@ -92,6 +95,7 @@ CITIES: dict[str, dict[str, Any]] = {
         "label": "Sydney",
         "center": (-33.8688, 151.2093),
         "zoom": 12,
+        "country_code": "+61",
         "areas": [
             "CBD",
             "North Sydney",
@@ -107,6 +111,297 @@ CITIES: dict[str, dict[str, Any]] = {
             "Balmain",
             "Coogee",
             "Cronulla",
+        ],
+    },
+    "losangeles": {
+        "label": "Los Angeles",
+        "center": (34.0522, -118.2437),
+        "zoom": 12,
+        "country_code": "+1",
+        "areas": [
+            "Downtown",
+            "Hollywood",
+            "Santa Monica",
+            "Beverly Hills",
+            "Pasadena",
+            "Burbank",
+            "Glendale",
+            "Long Beach",
+            "Westwood",
+            "Culver City",
+            "Silver Lake",
+            "Venice",
+        ],
+    },
+    "chicago": {
+        "label": "Chicago",
+        "center": (41.8781, -87.6298),
+        "zoom": 12,
+        "country_code": "+1",
+        "areas": [
+            "Loop",
+            "River North",
+            "Lincoln Park",
+            "West Loop",
+            "Wicker Park",
+            "Lakeview",
+            "Logan Square",
+            "Hyde Park",
+        ],
+    },
+    "sanfrancisco": {
+        "label": "San Francisco",
+        "center": (37.7749, -122.4194),
+        "zoom": 12,
+        "country_code": "+1",
+        "areas": [
+            "SoMa",
+            "Financial District",
+            "Mission District",
+            "Marina",
+            "Pacific Heights",
+            "Castro",
+            "Sunset",
+            "Richmond",
+        ],
+    },
+    "mumbai": {
+        "label": "Mumbai",
+        "center": (19.0760, 72.8777),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Andheri",
+            "Bandra",
+            "BKC",
+            "Nariman Point",
+            "Powai",
+            "Lower Parel",
+            "Dadar",
+            "Borivali",
+            "Thane",
+            "Navi Mumbai",
+            "Malad",
+            "Goregaon",
+            "Juhu",
+            "Worli",
+        ],
+    },
+    "delhi": {
+        "label": "Delhi",
+        "center": (28.6139, 77.2090),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Connaught Place",
+            "Nehru Place",
+            "South Extension",
+            "Saket",
+            "Karol Bagh",
+            "Lajpat Nagar",
+            "Rohini",
+            "Dwarka",
+            "Janakpuri",
+            "Noida",
+            "Gurgaon",
+        ],
+    },
+    "bengaluru": {
+        "label": "Bengaluru",
+        "center": (12.9716, 77.5946),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Koramangala",
+            "Indiranagar",
+            "Whitefield",
+            "HSR Layout",
+            "Electronic City",
+            "Jayanagar",
+            "Marathahalli",
+            "BTM Layout",
+            "Malleshwaram",
+            "Bellandur",
+            "JP Nagar",
+        ],
+    },
+    "surat": {
+        "label": "Surat",
+        "center": (21.1702, 72.8311),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Ring Road",
+            "Varachha",
+            "Adajan",
+            "Vesu",
+            "Piplod",
+            "Katargam",
+            "Athwa",
+            "Udhna",
+            "Rander",
+            "City Light",
+            "Althan",
+            "Pal",
+        ],
+    },
+    "ahmedabad": {
+        "label": "Ahmedabad",
+        "center": (23.0225, 72.5714),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "SG Highway",
+            "Prahlad Nagar",
+            "Navrangpura",
+            "Bodakdev",
+            "Satellite",
+            "Vastrapur",
+            "Ashram Road",
+            "Maninagar",
+            "CG Road",
+            "Thaltej",
+        ],
+    },
+    "pune": {
+        "label": "Pune",
+        "center": (18.5204, 73.8567),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Hinjewadi",
+            "Baner",
+            "Kothrud",
+            "Viman Nagar",
+            "Kharadi",
+            "Kalyani Nagar",
+            "Shivajinagar",
+            "Magarpatta",
+            "Hadapsar",
+            "Wakad",
+        ],
+    },
+    "hyderabad": {
+        "label": "Hyderabad",
+        "center": (17.3850, 78.4867),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Hitech City",
+            "Madhapur",
+            "Gachibowli",
+            "Banjara Hills",
+            "Jubilee Hills",
+            "Kondapur",
+            "Begumpet",
+            "Secunderabad",
+            "Kukatpally",
+        ],
+    },
+    "chennai": {
+        "label": "Chennai",
+        "center": (13.0827, 80.2707),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "T Nagar",
+            "OMR",
+            "Guindy",
+            "Velachery",
+            "Anna Nagar",
+            "Adyar",
+            "Nungambakkam",
+            "Alwarpet",
+            "Mylapore",
+        ],
+    },
+    "kolkata": {
+        "label": "Kolkata",
+        "center": (22.5726, 88.3639),
+        "zoom": 12,
+        "country_code": "+91",
+        "areas": [
+            "Salt Lake",
+            "Park Street",
+            "New Town",
+            "BBD Bagh",
+            "Ballygunge",
+            "Alipore",
+            "Howrah",
+            "Sector V",
+        ],
+    },
+    "paris": {
+        "label": "Paris",
+        "center": (48.8566, 2.3522),
+        "zoom": 12,
+        "country_code": "+33",
+        "areas": [
+            "Le Marais",
+            "Montmartre",
+            "La Defense",
+            "Latin Quarter",
+            "Bastille",
+            "Saint-Germain",
+        ],
+    },
+    "berlin": {
+        "label": "Berlin",
+        "center": (52.5200, 13.4050),
+        "zoom": 12,
+        "country_code": "+49",
+        "areas": [
+            "Mitte",
+            "Kreuzberg",
+            "Friedrichshain",
+            "Charlottenburg",
+            "Prenzlauer Berg",
+            "Schoneberg",
+        ],
+    },
+    "tokyo": {
+        "label": "Tokyo",
+        "center": (35.6762, 139.6503),
+        "zoom": 12,
+        "country_code": "+81",
+        "areas": [
+            "Shibuya",
+            "Shinjuku",
+            "Ginza",
+            "Roppongi",
+            "Akihabara",
+            "Chiyoda",
+            "Minato",
+        ],
+    },
+    "singapore": {
+        "label": "Singapore",
+        "center": (1.3521, 103.8198),
+        "zoom": 12,
+        "country_code": "+65",
+        "areas": [
+            "Raffles Place",
+            "Marina Bay",
+            "Orchard",
+            "Tanjong Pagar",
+            "Jurong",
+            "Bugis",
+        ],
+    },
+    "dubai": {
+        "label": "Dubai",
+        "center": (25.2048, 55.2708),
+        "zoom": 12,
+        "country_code": "+971",
+        "areas": [
+            "Downtown",
+            "Business Bay",
+            "Dubai Marina",
+            "JLT",
+            "Deira",
+            "Bur Dubai",
+            "DIFC",
+            "Al Barsha",
         ],
     },
 }
@@ -255,6 +550,7 @@ MIN_TARGET = 1
 # Enrichment redirect / retry defaults
 MAX_REDIRECTS = 5
 HTTP_RETRY_ATTEMPTS = 3
+VERIFY_SSL = os.getenv("BIZSCRAPE_VERIFY_SSL", "false").lower() in ("true", "1", "yes")
 
 # --- crawling behaviour ------------------------------------------------------
 
@@ -386,7 +682,7 @@ EMAIL_FAKE_TLDS = {
 
 # --- pacing ------------------------------------------------------------------
 
-MAPS_DELAY = 1.8
+MAPS_DELAY = 1.0
 SEARCH_DELAY = 1.5
 ENRICH_CONCURRENCY = 16
 SITE_TIMEOUT = 18
@@ -450,23 +746,84 @@ def safe_filename_component(value: str) -> str:
     return text[:80]
 
 
-def resolve_city(city: str) -> dict[str, Any]:
+def _match_city_key(key: str) -> str | None:
+    """Find matching key in CITIES considering underscores or no underscores."""
+    if not key:
+        return None
+    compact = key.replace("_", "")
+    for candidate in (key, compact):
+        if candidate in CITIES:
+            return candidate
+    for city_key in CITIES:
+        if city_key.replace("_", "") == compact:
+            return city_key
+    return None
+
+
+def resolve_city(city: str, country: str = "") -> dict[str, Any]:
     """
-    Return a city profile. Unknown cities get a sensible default center in
-    the USA and an empty area list (city-wide searches only).
+    Return a city profile. Supports composite city strings (e.g. "New York, NY, USA",
+    "London, UK", "Surat, Gujarat, India"), normalized city keys, and smart
+    international country/coordinate inference.
     """
-    key = slugify(city)
-    if key in CITIES:
-        profile = dict(CITIES[key])
-        profile["key"] = key
+    raw = (city or "").strip()
+    # Check if city contains commas (e.g. "City, State, Country")
+    parts = [p.strip() for p in raw.split(",") if p.strip()] if "," in raw else [raw]
+    primary = parts[0] if parts else "Unknown"
+
+    full_key = slugify(raw)
+    primary_key = slugify(primary)
+
+    # 1. Try exact or compact match for full string or primary component
+    matched_key = _match_city_key(full_key) or _match_city_key(primary_key)
+    if matched_key:
+        profile = dict(CITIES[matched_key])
+        profile["key"] = matched_key
+        # If the input was more detailed (e.g. "Manhattan, New York"), preserve useful label
         return profile
 
-    label = city.strip().title() or "Unknown"
+    # 2. Check for country indications in the combined string
+    combined = f"{raw} {country}".lower()
+    label = primary.title() or "Unknown"
+
+    # International inference defaults
+    if any(term in combined for term in ("india", "gujarat", "maharashtra", "karnataka", "tamil nadu", "delhi")):
+        country_code = "+91"
+        center = (20.5937, 78.9629)
+    elif any(term in combined for term in ("united kingdom", "england", "scotland", "wales")) or "uk" in combined.split():
+        country_code = "+44"
+        center = (51.5072, -0.1276)
+    elif any(term in combined for term in ("australia", "nsw", "queensland", "victoria")) or "au" in combined.split():
+        country_code = "+61"
+        center = (-33.8688, 151.2093)
+    elif any(term in combined for term in ("canada", "ontario", "quebec", "alberta", "bc")) or "ca" in combined.split():
+        country_code = "+1"
+        center = (43.6510, -79.3470)
+    elif any(term in combined for term in ("france", "paris")):
+        country_code = "+33"
+        center = (48.8566, 2.3522)
+    elif any(term in combined for term in ("germany", "deutschland", "berlin")):
+        country_code = "+49"
+        center = (52.5200, 13.4050)
+    elif any(term in combined for term in ("dubai", "uae", "united arab emirates", "abu dhabi")):
+        country_code = "+971"
+        center = (25.2048, 55.2708)
+    elif "singapore" in combined:
+        country_code = "+65"
+        center = (1.3521, 103.8198)
+    elif any(term in combined for term in ("japan", "tokyo")):
+        country_code = "+81"
+        center = (35.6762, 139.6503)
+    else:
+        country_code = "+1"
+        center = (37.0902, -95.7129)  # USA centroid fallback
+
     return {
-        "key": key or "custom",
+        "key": full_key or "custom",
         "label": label,
-        "center": (37.0902, -95.7129),  # USA centroid fallback
+        "center": center,
         "zoom": 11,
+        "country_code": country_code,
         "areas": [],
     }
 
@@ -494,8 +851,7 @@ def build_queries(
     Produce (search phrase, area) pairs.
 
     - areas is a non-empty list → ONLY those towns (no city-wide bleed)
-    - areas is [] → city-wide only
-    - areas is None → city-wide first, then every known locality
+    - areas is [] or None → city-wide first, then all known localities
     """
     profile = resolve_city(city)
     city_label = profile["label"]
@@ -509,7 +865,11 @@ def build_queries(
             if not area:
                 continue
             for category in categories:
-                queries.append((f"{category} in {area} {city_label}", area))
+                queries.append((f"{category} in {area}, {city_label}", area))
+        if not area_list:
+            for quad in ("Downtown", "North", "South", "East", "West", "Central"):
+                for category in categories:
+                    queries.append((f"{category} in {quad} {city_label}", ""))
         return queries
 
     if not areas:

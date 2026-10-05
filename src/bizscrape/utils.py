@@ -64,7 +64,7 @@ def _expand_abbreviations(text: str) -> str:
     return text
 
 
-def infer_area(address: str, areas: list[str] | None = None) -> str:
+def infer_area(address: str, areas: list[str] | None = None, city: str = "") -> str:
     """
     Recover a locality name from a free-text address.
 
@@ -77,17 +77,22 @@ def infer_area(address: str, areas: list[str] | None = None) -> str:
         return ""
 
     if areas is None:
-        areas = []
-        for profile in config.CITIES.values():
-            areas.extend(profile.get("areas") or [])
-        areas = list(dict.fromkeys(areas))
+        if city:
+            profile = config.resolve_city(city)
+            areas = list(profile.get("areas") or [])
+        else:
+            areas = []
+            for profile in config.CITIES.values():
+                areas.extend(profile.get("areas") or [])
+            areas = list(dict.fromkeys(areas))
 
     haystack = _expand_abbreviations(address)
     best = ""
     for area in areas:
-        token = _expand_abbreviations(re.sub(r"(?i)\bsurat\b", "", area).strip())
-        if len(token) >= 3 and token in haystack and len(token) > len(best):
-            best = area
+        token = _expand_abbreviations(area.strip())
+        if len(token) >= 3 and len(token) > len(best):
+            if re.search(r"\b" + re.escape(token) + r"\b", haystack, re.IGNORECASE):
+                best = area
     return best
 
 
@@ -126,60 +131,136 @@ PHONE_SCAN_RE = re.compile(r"(?<![\w@.])\+?\d[\d \t().\-]{8,18}\d(?![\w@])")
 
 _EXTENSION_RE = re.compile(r"(?i)\b(?:ext|extn|x)\b.*$")
 
+# Country-aware phone normalization context.
+# Set by the pipeline at start based on the target city's country code.
+_phone_country_code: str = "+1"
 
-def normalize_phone(raw: object) -> str | None:
+_PHONE_RULES: dict[str, dict] = {
+    "+1": {"strip_trunk": "1", "lengths": (10,), "starts": "23456789"},
+    "+44": {"strip_trunk": "0", "lengths": (10, 11), "starts": ""},
+    "+61": {"strip_trunk": "0", "lengths": (9, 10), "starts": ""},
+    "+91": {"strip_trunk": "0", "lengths": (10,), "starts": "6789"},
+    "+33": {"strip_trunk": "0", "lengths": (9, 10), "starts": ""},
+    "+49": {"strip_trunk": "0", "lengths": (9, 10, 11), "starts": ""},
+    "+81": {"strip_trunk": "0", "lengths": (9, 10), "starts": ""},
+    "+65": {"strip_trunk": "", "lengths": (8,), "starts": "3689"},
+    "+971": {"strip_trunk": "0", "lengths": (9,), "starts": "456789"},
+}
+
+
+def set_phone_country(country_code: str) -> None:
+    """Set the country code used by normalize_phone (called by pipeline at start)."""
+    global _phone_country_code
+    if country_code:
+        if not country_code.startswith("+"):
+            country_code = "+" + country_code
+        _phone_country_code = country_code
+
+
+def normalize_phone(raw: object, country_code: str | None = None) -> str | None:
     """
-    Convert a messy Global phone string into +1XXXXXXXXXX form.
+    Normalize a phone number using the active country context or explicit prefix.
 
-    Returns None when the digits cannot be a real Global mobile or landline,
-    which filters out the pin codes, years and GST numbers that leak into
-    scraped page text.
+    Returns None when the digits cannot form a valid phone number for the
+    active country, filtering out pin codes, years, and ID numbers.
     """
     if not raw:
         return None
 
-    text = _EXTENSION_RE.sub("", str(raw))
+    raw_str = clean_text(str(raw))
+    text = _EXTENSION_RE.sub("", raw_str)
     digits = re.sub(r"\D", "", text)
     if not digits:
         return None
 
-    digits = digits.lstrip("0") or digits
-    if digits.startswith("001"):
-        digits = digits[3:]
-    elif digits.startswith("1") and len(digits) > 10:
+    # Obvious garbage / repetitive digits
+    if len(set(digits)) <= 2:
+        return None
+    if digits in {"1234567890", "9876543210", "1234512345", "0123456789"}:
+        return None
+
+    # Detect international country code directly from number prefix if present
+    detected_cc = None
+    if raw_str.startswith("+"):
+        for cc in sorted(_PHONE_RULES.keys(), key=len, reverse=True):
+            if digits.startswith(cc.lstrip("+")):
+                detected_cc = cc
+                break
+    elif raw_str.startswith("00"):
+        for cc in sorted(_PHONE_RULES.keys(), key=len, reverse=True):
+            if digits.startswith("00" + cc.lstrip("+")):
+                detected_cc = cc
+                break
+
+    country = detected_cc or country_code or _phone_country_code
+    if not country.startswith("+"):
+        country = "+" + country
+    rules = _PHONE_RULES.get(country, _PHONE_RULES["+1"])
+    cc_digits = country.lstrip("+")
+
+    # Strip international dialing prefix: 00CC or just CC
+    if digits.startswith("00" + cc_digits):
+        digits = digits[2 + len(cc_digits):]
+    elif digits.startswith(cc_digits) and len(digits) >= min(rules["lengths"]) + len(cc_digits):
+        remaining = digits[len(cc_digits):]
+        if len(remaining) in rules["lengths"] or (rules.get("strip_trunk") and remaining.startswith(rules["strip_trunk"])):
+            digits = remaining
+
+    # Strip extraneous leading zeros if number is longer than valid length (e.g. "01987..." -> "1987...")
+    while digits.startswith("0") and len(digits) > max(rules["lengths"]):
         digits = digits[1:]
-    digits = digits.lstrip("0") or digits
 
-    if len(set(digits)) <= 2:  # 0000000000, 1111111111, ...
+    # Strip trunk prefix (0 for UK/AU/IN, 1 for US long-distance)
+    trunk = rules.get("strip_trunk", "")
+    if trunk and digits.startswith(trunk):
+        stripped = digits[len(trunk):]
+        if len(stripped) in rules["lengths"]:
+            digits = stripped
+        elif len(digits) > max(rules["lengths"]):
+            digits = stripped
+
+    # Strip remaining leading zeros only if number is still longer than required
+    while digits.startswith("0") and len(digits) > min(rules["lengths"]):
+        digits = digits[1:]
+
+    # Validate national number length
+    if len(digits) not in rules["lengths"]:
         return None
-    if digits in {"1234567890", "9876543210", "1234512345"}:
+
+    # Validate starting digit when the country has restrictions
+    valid_starts = rules.get("starts", "")
+    if valid_starts and digits[0] not in valid_starts:
         return None
 
-    if len(digits) == 10 and digits[0] in "6789":
-        return "+1" + digits  # mobile
-    if 10 <= len(digits) <= 11 and digits[0] in "12345678":
-        return "+1" + digits  # landline including STD code
-    return None
+    return country + digits
 
 
-def extract_phones(text: str) -> list[str]:
-    """Pull every distinct valid Global phone number out of a blob of text."""
+def extract_phones(text: str, country_code: str | None = None) -> list[str]:
+    """Pull every distinct valid phone number out of a blob of text."""
     if not text:
         return []
     found: list[str] = []
     for match in PHONE_SCAN_RE.finditer(text):
-        number = normalize_phone(match.group(0))
+        candidate = match.group(0).strip()
+        # Fast pre-check: require at least 8 digits in the raw match to avoid zip codes/years
+        if sum(c.isdigit() for c in candidate) < 8:
+            continue
+        number = normalize_phone(candidate, country_code=country_code)
         if number and number not in found:
             found.append(number)
     return found
 
 
 def pretty_phone(number: str) -> str:
-    """Render +19876543210 as +1 98765 43210 for human-friendly CSV cells."""
-    if number.startswith("+1") and len(number) == 13:
-        return f"+1 {number[3:8]} {number[8:]}"
-    if number.startswith("+1"):
-        return f"+1 {number[3:]}"
+    """Format a phone number for human-friendly display."""
+    if not number.startswith("+"):
+        return number
+    for cc in ("+1", "+44", "+61", "+91"):
+        if number.startswith(cc):
+            national = number[len(cc):]
+            if cc == "+1" and len(national) == 10:
+                return f"+1 ({national[:3]}) {national[3:6]}-{national[6:]}"
+            return f"{cc} {national}"
     return number
 
 
@@ -362,6 +443,36 @@ NON_WEBSITE_HOSTS = (
     "gov.in",
     "bing.com",
     "duckduckgo.com",
+    "business.google.com",
+    "maps.app.goo.gl",
+    "goo.gl",
+    "g.co",
+    "g.page",
+    "google.co.in",
+    "google.co.uk",
+    "google.ca",
+    "google.com.au",
+    "support.google.com",
+    "sites.google.com",
+    "bit.ly",
+    "tinyurl.com",
+    "indiamart.com",
+    "tradeindia.com",
+    "magicbricks.com",
+    "housing.com",
+    "99acres.com",
+    "tripadvisor.com",
+    "tripadvisor.in",
+    "zomato.com",
+    "swiggy.com",
+    "practo.com",
+    "jdmagicbox.com",
+    "bark.com",
+    "trustpilot.com",
+    "quikr.com",
+    "olx.in",
+    "olx.com",
+    "mapsofindia.com",
 )
 
 
@@ -405,11 +516,22 @@ def canonical_url(url: str) -> str:
 
 
 def is_company_website(url: str) -> bool:
-    """True when a URL looks like a company's own site rather than a profile."""
+    """True when a URL looks like a company's own site rather than a profile or map redirect."""
+    if not url:
+        return False
     domain = registrable_domain(url)
     if not domain or "." not in domain:
         return False
-    return not any(domain == host or domain.endswith("." + host) for host in NON_WEBSITE_HOSTS)
+    if any(domain == host or domain.endswith("." + host) for host in NON_WEBSITE_HOSTS):
+        return False
+    try:
+        parsed = urlparse(url if "://" in url else "https://" + url)
+        path = (parsed.path or "").lower()
+        if "google." in domain and ("/maps" in path or "/search" in path or "/url" in path):
+            return False
+    except ValueError:
+        return False
+    return True
 
 
 def classify_social(url: str) -> str | None:

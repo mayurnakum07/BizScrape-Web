@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 
 from .. import config, utils
 from ..retry import async_retry, is_transient
-from ..security import validate_fetch_url
+from ..security import async_validate_fetch_url, validate_fetch_url
 
 # "sales [at] acme [dot] com" and friends, a very common spam-avoidance trick.
 _OBFUSCATED_EMAIL_RE = re.compile(
@@ -64,22 +64,21 @@ class SiteEnricher:
         counters = {"done": 0, "failed": 0, "emails": 0, "processed": 0}
         total = len(targets)
 
-        # Certificates on small Global business sites are frequently expired or
-        # misconfigured; refusing them would silently drop a lot of real data.
-        # verify=False: many Global SME sites use expired/misconfigured certs.
-        # Documented risk - enrichment only fetches user-derived company URLs.
+        # Certificates on small business sites are frequently expired or misconfigured.
+        # SSL verification is configurable via BIZSCRAPE_VERIFY_SSL (default False for compatibility).
+        verify_ssl = getattr(config, "VERIFY_SSL", False)
         async with httpx.AsyncClient(
             follow_redirects=True,
             max_redirects=config.MAX_REDIRECTS,
             timeout=httpx.Timeout(self.timeout, connect=10.0),
-            verify=False,
+            verify=verify_ssl,
             limits=httpx.Limits(
                 max_connections=self.concurrency * 2, max_keepalive_connections=self.concurrency
             ),
             headers={
                 "User-Agent": utils.random_user_agent(),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "en-IN,en;q=0.9",
+                "Accept-Language": "en-US,en;q=0.9",
             },
         ) as client:
 
@@ -134,7 +133,7 @@ class SiteEnricher:
             return {"emails": [], "phones": [], "status": "failed", "note": "bad url"}
 
         try:
-            validate_fetch_url(base, resolve=True)
+            await async_validate_fetch_url(base, resolve=True)
         except ValueError as exc:
             return {"emails": [], "phones": [], "status": "failed", "note": f"blocked: {exc}"}
 
@@ -173,12 +172,12 @@ class SiteEnricher:
 
     async def _fetch(self, client: httpx.AsyncClient, url: str) -> tuple[str | None, str | None]:
         try:
-            validate_fetch_url(url, resolve=True)
+            await async_validate_fetch_url(url, resolve=True)
         except ValueError:
             return None, None
 
         async def _once() -> httpx.Response:
-            return await client.get(url)
+            return await client.get(url, headers={"User-Agent": utils.random_user_agent()})
 
         try:
             response = await async_retry(
@@ -191,7 +190,7 @@ class SiteEnricher:
 
         final = str(response.url)
         try:
-            validate_fetch_url(final, resolve=True)
+            await async_validate_fetch_url(final, resolve=True)
         except ValueError:
             return None, None
 
@@ -213,13 +212,16 @@ class SiteEnricher:
         Pick the pages most likely to carry an email.
 
         Links discovered in the page's own navigation come first because they
-        reflect the real site structure; the generic /contact style guesses are
-        a fallback for sites whose menu is rendered by JavaScript.
+        reflect the real site structure; generic /contact guesses only run when
+        discovered links don't exhaust the page budget.
         """
         soup = BeautifulSoup(html, "html.parser")
         seen: list[str] = []
+        limit = max(1, self.max_pages - 1)
 
         for anchor in soup.find_all("a", href=True):
+            if len(seen) >= limit:
+                break
             href = anchor["href"].strip()
             if not href or href.startswith(("mailto:", "tel:", "javascript:", "#")):
                 continue
@@ -235,13 +237,16 @@ class SiteEnricher:
             if absolute and utils.same_site(absolute, root) and absolute not in seen:
                 seen.append(absolute)
 
-        base_root = utils.canonical_url(root)
-        for path in config.CONTACT_PATH_GUESSES:
-            guess = utils.canonical_url(urljoin(base_root + "/", path.lstrip("/")))
-            if guess and guess not in seen:
-                seen.append(guess)
+        if len(seen) < limit:
+            base_root = utils.canonical_url(root)
+            for path in config.CONTACT_PATH_GUESSES:
+                if len(seen) >= limit:
+                    break
+                guess = utils.canonical_url(urljoin(base_root + "/", path.lstrip("/")))
+                if guess and guess not in seen:
+                    seen.append(guess)
 
-        return seen[: self.max_pages - 1]
+        return seen[:limit]
 
     @staticmethod
     def _harvest(
@@ -264,6 +269,9 @@ class SiteEnricher:
                 add_email(utils.normalize_email(href[7:]))
             elif href.lower().startswith("tel:"):
                 add_phone(utils.normalize_phone(href[4:]))
+                tel_text = anchor.get_text(" ", strip=True)
+                if tel_text:
+                    add_phone(utils.normalize_phone(tel_text))
             else:
                 network = utils.classify_social(urljoin(page_url, href))
                 if network and network not in socials:

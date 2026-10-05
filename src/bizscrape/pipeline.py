@@ -77,6 +77,9 @@ async def _discover_gmaps(
 ) -> None:
     city = getattr(args, "city", config.DEFAULT_CITY)
     profile = config.resolve_city(city)
+    # Set active phone country from resolved city profile
+    utils.set_phone_country(profile.get("country_code", "+1"))
+
     areas = resolve_areas(args)
     queries = config.build_queries(args.niche, city=city, areas=areas)
     if args.max_queries:
@@ -99,11 +102,8 @@ async def _discover_gmaps(
     ui.rule("Discover - Google Maps")
     ui.info(f"{profile['label']} · {len(queries)} queries · target {args.target}")
 
-    max_scrolls = args.max_scrolls
-    if args.target <= 50:
-        max_scrolls = min(max_scrolls, 12)
-    elif args.target <= 200:
-        max_scrolls = min(max_scrolls, 24)
+    # Use sufficient scrolls so post-filtering and deduplication meet the target
+    max_scrolls = max(args.max_scrolls, 25)
 
     try:
         async with MapsScraper(
@@ -130,6 +130,19 @@ async def _discover_gmaps(
                     hard_stop.check()
                     ui.warn(f"{query[:48]} → {type(exc).__name__}: {exc}")
                     continue
+
+                # Blank query retry: if 0 cards returned, retry once with simplified phrasing
+                if not records and store.count() < args.target:
+                    clean_q = query.replace('"', '')
+                    if " in " in clean_q:
+                        p_cat, _, p_loc = clean_q.partition(" in ")
+                        retry_blank = f"{p_cat.strip()} {p_loc.strip()}"
+                    else:
+                        retry_blank = f"{clean_q} {profile['label']}"
+                    try:
+                        records = await scraper.search(retry_blank, area_hint=area)
+                    except Exception:
+                        records = []
 
                 hard_stop.check()
                 added, kept, rejected = ingest(
@@ -187,6 +200,79 @@ async def _discover_gmaps(
                     break
                 await asyncio.sleep(utils.jitter(config.MAPS_DELAY))
                 hard_stop.check()
+
+            # Fallback strategy: if queries exhausted and target not reached, broaden search
+            if store.count() < args.target and not hard_stop.is_stopping():
+                fallback_queries: list[tuple[str, str]] = []
+                queried_phrases = {q[0] for q in queries}
+
+                all_cats = config.niche_categories(args.niche)
+                city_areas = list(profile.get("areas") or [])
+                city_label = profile["label"]
+
+                # 1. Any city localities not yet queried
+                for area_name in city_areas:
+                    for cat in all_cats:
+                        fq = (f"{cat} in {area_name}, {city_label}", area_name)
+                        if fq[0] not in queried_phrases:
+                            fallback_queries.append(fq)
+                            queried_phrases.add(fq[0])
+
+                # 2. City-wide category variations
+                for cat in all_cats:
+                    fq = (f"{cat} in {city_label}", "")
+                    if fq[0] not in queried_phrases:
+                        fallback_queries.append(fq)
+                        queried_phrases.add(fq[0])
+
+                # 3. Compass / directional quadrants
+                for quad in ("Downtown", "North", "South", "East", "West", "Central"):
+                    for cat in all_cats:
+                        fq = (f"{cat} in {quad} {city_label}", "")
+                        if fq[0] not in queried_phrases:
+                            fallback_queries.append(fq)
+                            queried_phrases.add(fq[0])
+
+                # 4. Modifiers & synonyms
+                for cat in all_cats:
+                    for mod in ("best", "top", "popular"):
+                        fq = (f"{mod} {cat} in {city_label}", "")
+                        if fq[0] not in queried_phrases:
+                            fallback_queries.append(fq)
+                            queried_phrases.add(fq[0])
+
+                if fallback_queries:
+                    for f_idx, (f_query, f_area) in enumerate(fallback_queries, start=1):
+                        hard_stop.check()
+                        if store.count() >= args.target:
+                            ui.ok(f"Target of {args.target} reached")
+                            break
+                        if stats:
+                            stats.query = f_query
+                            stats.stage = f"Maps fallback {f_idx}/{len(fallback_queries)}"
+                            dash.refresh()
+                        try:
+                            f_records = await scraper.search(f_query, area_hint=f_area)
+                        except Exception:
+                            continue
+                        hard_stop.check()
+                        ingest(
+                            store,
+                            f_records,
+                            target=args.target,
+                            expected_area=f_area,
+                            city=city,
+                            stats=stats,
+                        )
+                        store.flush()
+                        if stats:
+                            dash.refresh()
+                        if store.count() >= args.target:
+                            ui.ok(f"Target of {args.target} reached")
+                            break
+                        await asyncio.sleep(utils.jitter(config.MAPS_DELAY))
+                        hard_stop.check()
+
     except RuntimeError as exc:
         ui.error(str(exc))
         raise
@@ -199,7 +285,10 @@ async def stage_websites(
 ) -> None:
     from .search import GoogleSearcher, WebSearcher
 
-    rows = store.missing_website(limit=args.website_limit)
+    user_limit = getattr(args, "website_limit", None)
+    # Bounded limit (max 10) when 0 or unspecified to prevent multi-minute stalls
+    limit = user_limit if (user_limit is not None and user_limit > 0) else 10
+    rows = store.missing_website(limit=limit)
     if not rows:
         ui.ok("Every company already has a website")
         return
@@ -214,30 +303,34 @@ async def stage_websites(
     if args.engine == "google":
         searcher_cm: Any = GoogleSearcher(headless=not args.headful, verbose=False)
     else:
-        searcher_cm = WebSearcher(engine=args.engine, verbose=False)
+        searcher_cm = WebSearcher(engine=args.engine, delay=0.2, verbose=False)
 
     try:
         async with searcher_cm as searcher:
-            for index, row in enumerate(rows, start=1):
-                hard_stop.check()
-                hint = row["area"] or city_label
-                try:
-                    website = await searcher.find_website(row["name"], f"{hint} {city_label}")
-                except Exception:
-                    website = ""
-                if website:
-                    store.set_website(row["id"], website)
-                    found += 1
-                if index % 5 == 0:
-                    store.flush()
-                if dash:
-                    dash.stats.query = row["name"]
-                    dash.stats.stage = f"Websites {index}/{len(rows)}"
-                    dash.refresh()
-                if getattr(searcher, "blocked", False):
-                    ui.warn("Search engine blocking - stopping early")
-                    break
-                hard_stop.check()
+            concurrency = min(5, max(1, getattr(args, "concurrency", 5)))
+            sem = asyncio.Semaphore(concurrency)
+
+            async def _lookup(index: int, row: dict) -> None:
+                nonlocal found
+                async with sem:
+                    if hard_stop.is_stopping() or getattr(searcher, "blocked", False):
+                        return
+                    hint = row.get("area") or city_label
+                    try:
+                        async with asyncio.timeout(6.0):
+                            website = await searcher.find_website(row["name"], f"{hint} {city_label}")
+                    except Exception:
+                        website = ""
+                    if website:
+                        store.set_website(row["id"], website)
+                        found += 1
+                    if dash:
+                        dash.stats.query = row["name"]
+                        dash.stats.stage = f"Websites {index}/{len(rows)}"
+                        dash.refresh()
+
+            tasks = [_lookup(i, r) for i, r in enumerate(rows, start=1)]
+            await asyncio.gather(*tasks)
     except RuntimeError as exc:
         ui.warn(str(exc))
         return
@@ -251,7 +344,10 @@ async def stage_enrich(
     args: argparse.Namespace,
     dash: ui.Dashboard | None = None,
 ) -> None:
-    rows = store.pending_enrichment(limit=args.enrich_limit, retry_failed=args.retry_failed)
+    user_limit = getattr(args, "enrich_limit", None)
+    # Bounded limit (max 10) when 0 or unspecified to prevent multi-minute stalls
+    limit = user_limit if (user_limit is not None and user_limit > 0) else 10
+    rows = store.pending_enrichment(limit=limit, retry_failed=args.retry_failed)
     if not rows:
         ui.ok("Nothing pending for email crawl")
         return

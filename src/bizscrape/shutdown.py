@@ -172,11 +172,12 @@ def _nuke_process_tree(pid: int) -> None:
 
 def _taskkill_children(pid: int) -> None:
     try:
+        ps_cmd = f"Get-CimInstance Win32_Process -Filter 'ParentProcessId = {pid}' | Select-Object -ExpandProperty ProcessId"
         listed = subprocess.run(
-            ["wmic", "process", "where", f"ParentProcessId={pid}", "get", "ProcessId"],
+            ["powershell", "-NoProfile", "-Command", ps_cmd],
             capture_output=True,
             text=True,
-            timeout=3,
+            timeout=4,
         )
         child_ids = [
             int(piece)
@@ -189,7 +190,7 @@ def _taskkill_children(pid: int) -> None:
     for child in child_ids:
         try:
             subprocess.run(
-                ["taskkill", "/F", "/T", "/PID", str(child)],
+                ["taskkill", "/F", "/PID", str(child)],
                 capture_output=True,
                 timeout=3,
             )

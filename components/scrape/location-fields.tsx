@@ -32,13 +32,21 @@ type LocationFieldsProps = {
 function toOptions(
   rows: Array<{ id: number; name: string; keywords?: string }>,
 ): SearchableOption[] {
-  return rows
-    .map((row) => ({
-      value: row.name,
-      label: row.name,
+  const seen = new Set<string>();
+  const unique: SearchableOption[] = [];
+  for (const row of rows) {
+    const name = row.name?.trim();
+    if (!name) continue;
+    const lower = name.toLowerCase();
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+    unique.push({
+      value: name,
+      label: name,
       keywords: row.keywords ?? String(row.id),
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    });
+  }
+  return unique.sort((a, b) => a.label.localeCompare(b.label));
 }
 
 export function LocationFields({
@@ -192,7 +200,7 @@ export function LocationFields({
             value={country}
             options={countryOptions}
             loading={loadingCountries}
-            invalid={Boolean(countryError)}
+            invalid={Boolean(countryError) || undefined}
             required
             placeholder="Select country"
             searchPlaceholder="Search countries…"
@@ -222,7 +230,7 @@ export function LocationFields({
           options={stateOptions}
           loading={loadingStates}
           disabled={!country}
-          invalid={Boolean(stateError)}
+          invalid={Boolean(stateError) || undefined}
           required
           placeholder={country ? "Select state" : "Select country first"}
           searchPlaceholder="Search states…"
@@ -250,7 +258,7 @@ export function LocationFields({
           options={cityOptions}
           loading={loadingCities}
           disabled={!state}
-          invalid={Boolean(cityError)}
+          invalid={Boolean(cityError) || undefined}
           required
           placeholder={state ? "Select city" : "Select state first"}
           searchPlaceholder="Search cities…"

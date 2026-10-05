@@ -1,6 +1,6 @@
 # BizScrape Web
 
-A web interface for the open-source BizScrape Python business-discovery and enrichment engine.
+A Python CLI for discovering local businesses, enriching public contact data, and exporting clean, deduplicated results to CSV.
 
 [![CI](https://github.com/mayurnakum07/BizScrape/actions/workflows/ci.yml/badge.svg)](https://github.com/mayurnakum07/BizScrape/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

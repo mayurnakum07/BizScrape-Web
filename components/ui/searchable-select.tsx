@@ -214,7 +214,7 @@ export function SearchableSelect({
               aria-controls={listboxId}
               aria-activedescendant={
                 filtered[activeIndex]
-                  ? `${optionIdPrefix}-option-${filtered[activeIndex]!.value}`
+                  ? `${optionIdPrefix}-opt-${activeIndex}`
                   : undefined
               }
             />
@@ -232,9 +232,9 @@ export function SearchableSelect({
                 const active = index === activeIndex;
                 const chosen = option.value === value;
                 return (
-                  <li key={option.value} role="presentation">
+                  <li key={`${option.value}-${index}`} role="presentation">
                     <button
-                      id={`${optionIdPrefix}-option-${option.value}`}
+                      id={`${optionIdPrefix}-opt-${index}`}
                       type="button"
                       role="option"
                       aria-selected={chosen}

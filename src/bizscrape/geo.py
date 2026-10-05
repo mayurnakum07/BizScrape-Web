@@ -15,60 +15,117 @@ from . import config, utils
 
 # Alternate spellings people (and Maps) use for the same place.
 AREA_ALIASES: dict[str, tuple[str, ...]] = {
-    "mota varachha": ("mota varachha", "mota varacha", "mota varcha", "motavarachha"),
-    "nana varachha": ("nana varachha", "nana varacha", "nanavarachha"),
-    "varachha": ("varachha", "varacha", "varcha"),
-    "ghod dod road": ("ghod dod", "ghoddod", "ghod dod road"),
-    "city light": ("city light", "citylight"),
-    "sachin gidc": ("sachin gidc", "sachin"),
-    "new textile market": ("new textile market", "textile market"),
-    "ring road": ("ring road", "ring rd"),
-    "sg highway": ("sg highway", "s.g. highway", "s g highway"),
-    "bkc": ("bkc", "banda kurla", "bandra kurla"),
-    "navi toronto": ("navi toronto", "nerul", "belapur"),
-    "hinjewadi": ("hinjewadi", "hinjavadi", "hinjewadi phase"),
-    "viman nagar": ("viman nagar", "vimannagar"),
-    "kalyani nagar": ("kalyani nagar", "kalyaninagar"),
+    # New York
+    "manhattan": ("manhattan", "midtown", "downtown manhattan"),
+    "brooklyn": ("brooklyn", "bklyn"),
+    "queens": ("queens",),
+    "bronx": ("bronx", "the bronx"),
+    "staten island": ("staten island",),
+    "upper east side": ("upper east side", "ues"),
+    "upper west side": ("upper west side", "uws"),
+    "soho": ("soho",),
+    "tribeca": ("tribeca",),
+    "financial district": ("financial district", "fidi"),
+    "williamsburg": ("williamsburg",),
+    "long island city": ("long island city", "lic"),
+    # Toronto
+    "north york": ("north york",),
+    "scarborough": ("scarborough",),
+    "etobicoke": ("etobicoke",),
+    "mississauga": ("mississauga",),
+    "richmond hill": ("richmond hill",),
+    # London
+    "city of london": ("city of london", "the city", "square mile"),
+    "tower hamlets": ("tower hamlets",),
+    "hammersmith": ("hammersmith",),
+    # Sydney
+    "cbd": ("cbd", "central business district", "sydney cbd"),
+    "north sydney": ("north sydney",),
+    "surry hills": ("surry hills",),
+    # Mumbai
+    "andheri": ("andheri", "andheri west", "andheri east"),
+    "bandra": ("bandra", "bandra west", "bandra east"),
+    "bkc": ("bkc", "bandra kurla complex"),
+    # Bengaluru
+    "koramangala": ("koramangala",),
+    "indiranagar": ("indiranagar",),
+    "whitefield": ("whitefield",),
+    # Surat
+    "ring road": ("ring road",),
+    "varachha": ("varachha", "mota varachha", "nana varachha"),
+    "adajan": ("adajan",),
+    "vesu": ("vesu",),
 }
 
 # Rough map centres so area searches zoom into the right neighbourhood.
 AREA_CENTERS: dict[str, tuple[float, float]] = {
     # New York
-    "adajan": (21.1956, 72.7933),
-    "vesu": (21.1415, 72.7708),
-    "piplod": (21.1570, 72.7750),
-    "athwa": (21.1700, 72.7950),
-    "katargam": (21.2300, 72.8300),
-    "varachha": (21.2200, 72.8600),
-    "nana varachha": (21.2280, 72.8700),
-    "mota varachha": (21.2380, 72.8880),
-    "udhna": (21.1620, 72.8410),
-    "pandesara": (21.1450, 72.8450),
-    "ring road": (21.1850, 72.8330),
-    "sarthana": (21.2450, 72.9000),
-    "kapodra": (21.2150, 72.8550),
-    "amroli": (21.2550, 72.8550),
-    "sachin gidc": (21.0850, 72.8700),
-    "hazira": (21.1200, 72.6500),
-    "althan": (21.1550, 72.7900),
-    "bhatar": (21.1600, 72.8100),
+    "manhattan": (40.7831, -73.9712),
+    "brooklyn": (40.6782, -73.9442),
+    "queens": (40.7282, -73.7949),
+    "bronx": (40.8448, -73.8648),
+    "staten island": (40.5795, -74.1502),
+    "harlem": (40.8116, -73.9465),
+    "upper east side": (40.7736, -73.9566),
+    "upper west side": (40.7870, -73.9754),
+    "chelsea": (40.7465, -74.0014),
+    "greenwich village": (40.7336, -74.0027),
+    "soho": (40.7233, -73.9985),
+    "tribeca": (40.7163, -74.0086),
+    "chinatown": (40.7158, -73.9970),
+    "financial district": (40.7075, -74.0113),
+    "williamsburg": (40.7081, -73.9571),
+    "dumbo": (40.7033, -73.9881),
+    "astoria": (40.7720, -73.9301),
+    "flushing": (40.7654, -73.8318),
+    "long island city": (40.7440, -73.9489),
+    "jamaica": (40.7028, -73.7901),
     # Toronto
-    "andheri": (19.1197, 72.8468),
-    "bandra": (19.0596, 72.8295),
-    "powai": (19.1176, 72.9060),
-    "bkc": (19.0670, 72.8680),
-    "navi toronto": (19.0330, 73.0297),
-    "thane": (19.2183, 72.9781),
-    # Sydney
-    "hinjewadi": (18.5912, 73.7389),
-    "baner": (18.5590, 73.7868),
-    "kharadi": (18.5510, 73.9420),
-    "hadapsar": (18.5089, 73.9260),
-    "viman nagar": (18.5679, 73.9143),
+    "downtown": (43.6510, -79.3837),
+    "north york": (43.7615, -79.4111),
+    "scarborough": (43.7731, -79.2577),
+    "etobicoke": (43.6205, -79.5132),
+    "mississauga": (43.5890, -79.6441),
+    "brampton": (43.7315, -79.7624),
+    "markham": (43.8561, -79.3370),
+    "vaughan": (43.8563, -79.5085),
+    "richmond hill": (43.8828, -79.4403),
     # London
-    "sg highway": (23.0400, 72.5100),
-    "satellite": (23.0250, 72.5100),
-    "maninagar": (22.9970, 72.6000),
+    "city of london": (51.5155, -0.0922),
+    "westminster": (51.4975, -0.1357),
+    "kensington": (51.4990, -0.1941),
+    "camden": (51.5390, -0.1426),
+    "islington": (51.5362, -0.1033),
+    "hackney": (51.5450, -0.0553),
+    "tower hamlets": (51.5154, -0.0726),
+    "greenwich": (51.4769, 0.0005),
+    "southwark": (51.5035, -0.0804),
+    "lambeth": (51.4861, -0.1160),
+    "wandsworth": (51.4571, -0.1818),
+    "hammersmith": (51.4927, -0.2248),
+    "fulham": (51.4828, -0.1950),
+    # Sydney
+    "cbd": (-33.8688, 151.2093),
+    "north sydney": (-33.8390, 151.2070),
+    "parramatta": (-33.8150, 151.0011),
+    "chatswood": (-33.7969, 151.1832),
+    "bondi": (-33.8915, 151.2767),
+    "manly": (-33.7970, 151.2878),
+    "newtown": (-33.8977, 151.1788),
+    "surry hills": (-33.8836, 151.2113),
+    # Mumbai
+    "andheri": (19.1136, 72.8697),
+    "bandra": (19.0596, 72.8295),
+    "bkc": (19.0674, 72.8689),
+    # Bengaluru
+    "koramangala": (12.9352, 77.6245),
+    "indiranagar": (12.9784, 77.6408),
+    "whitefield": (12.9698, 77.7500),
+    # Surat
+    "ring road": (21.1860, 72.8485),
+    "varachha": (21.2173, 72.8665),
+    "adajan": (21.1959, 72.7933),
+    "vesu": (21.1418, 72.7709),
 }
 
 
@@ -135,49 +192,64 @@ def _other_city_areas(city: str, expected: str) -> list[str]:
 
 def matches_area(record: dict, expected_area: str, city: str = "") -> bool:
     """
-    True when the business clearly belongs to expected_area.
+    True when the business plausibly belongs to expected_area.
 
-    Rules:
-      1. Address/name must mention the area (or an alias).
-      2. If it mentions a different known locality more strongly, reject it.
-      3. For nested names (Manhattan vs Varachha), require the full form.
+    Lenient approach: keep records unless they clearly belong to a DIFFERENT
+    known area or a completely different city. Records with no area info at all
+    are kept (they probably belong to the searched locality but just don't
+    mention it in their brief address text).
     """
     expected = (expected_area or "").strip()
     if not expected:
-        return True  # city-wide search - keep everything in the city
+        return True  # city-wide search - keep everything
+
+    aliases = aliases_for(expected)
+    aliases = sorted(set(aliases), key=len, reverse=True)
+
+    # 1. If record explicitly carries an area tag:
+    rec_area = _norm(record.get("area") or "")
+    if rec_area:
+        if any(alias in rec_area or rec_area in alias for alias in aliases):
+            return True
+        if len(rec_area) >= 3 and rec_area not in aliases:
+            # Explicitly tagged with a different locality/area → reject
+            return False
 
     hay = _haystack(record)
     if not hay:
-        return False
+        return True  # no data to check - keep it
 
-    aliases = aliases_for(expected)
-    # Prefer longer aliases first (mota varachha before varachha).
-    aliases = sorted(set(aliases), key=len, reverse=True)
-
+    # 2. Positive match: area name appears in the record text → definitely keep
     hit = next((alias for alias in aliases if alias and alias in hay), "")
-    if not hit:
-        return False
+    if hit:
+        return True
 
-    # Reject clear wrong-neighbourhood hits: address names another locality
-    # and does NOT also contain our expected area as the primary place.
-    for other in _other_city_areas(city, expected):
-        other_aliases = aliases_for(other)
-        other_hit = next((a for a in sorted(other_aliases, key=len, reverse=True) if a in hay), "")
-        if not other_hit:
-            continue
-        # If the other locality string is longer/more specific than our hit,
-        # or appears as a distinct place, treat as mismatch.
-        if len(other_hit) >= len(hit) and other_hit not in hit and hit not in other_hit:
-            return False
-        if other_hit != hit and other_hit not in expected.lower() and hit not in other_hit:
-            # e.g. expected mota varachha, hay has udhna + somehow mota - rare;
-            # if both appear, require expected alias present (already true) and
-            # prefer keeping only when expected alias is present - already is.
-            # Strong reject when wrong area appears and expected is only in name spam.
-            addr = _norm(record.get("address") or "")
-            if other_hit in addr and hit not in addr:
+    # 3. Contradiction checks against address:
+    addr = _norm(record.get("address") or "")
+    if not addr:
+        return True  # no address to contradict - keep
+
+    # Reject if address explicitly mentions a DIFFERENT known city
+    current_profile = config.resolve_city(city) if city else {}
+    current_label = _norm(current_profile.get("label", ""))
+    for c_key, c_prof in config.CITIES.items():
+        c_label = _norm(c_prof.get("label", ""))
+        if c_label and c_label != current_label:
+            # Match city name as a distinct word in address
+            if re.search(r"\b" + re.escape(c_label) + r"\b", addr):
                 return False
 
+    # Reject if address explicitly mentions a DIFFERENT known area in this city
+    for other in _other_city_areas(city, expected):
+        other_aliases = aliases_for(other)
+        other_hit = next(
+            (a for a in sorted(other_aliases, key=len, reverse=True) if re.search(r"\b" + re.escape(a) + r"\b", addr)),
+            "",
+        )
+        if other_hit and len(other_hit) >= 3:
+            return False
+
+    # No contradicting city or area found - keep the record
     return True
 
 
